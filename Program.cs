@@ -1,5 +1,7 @@
 using Asp.Versioning;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
+using SlyceAPI.Data;
 using Sufra.Infrastructure.ExceptionHandling;
 
 namespace SlyceAPI
@@ -13,6 +15,8 @@ namespace SlyceAPI
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
             builder.Services.AddProblemDetails();
+
+            builder.Services.AddDbContext<SlyceDbContext>(options =>options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddControllers();
 
