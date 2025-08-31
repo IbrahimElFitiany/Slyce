@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using Serilog;
 using Sufra.Infrastructure.ExceptionHandling;
 
 namespace SlyceAPI
@@ -8,7 +9,6 @@ namespace SlyceAPI
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
 
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
@@ -28,11 +28,14 @@ namespace SlyceAPI
             }
             ).AddMvc();
 
+            builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
+
+
             var app = builder.Build();
 
-
+            //app.UseSerilogRequestLogging();
             app.UseExceptionHandler();
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseAuthorization();
             app.MapControllers();
 
