@@ -1,5 +1,6 @@
 ﻿using Customers.Application.Interfaces;
 using Customers.Domain.Entites;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -19,6 +20,7 @@ namespace SlyceAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "platform_admin")]
         public async Task<IActionResult> GetCustomers()
         {
             _logger.LogInformation("User {UserId} placed an order at {Time}",123 , DateTime.UtcNow);
