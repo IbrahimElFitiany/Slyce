@@ -7,6 +7,7 @@ using Customers.Infrastructure.Persistence;
 using Customers.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Slyce.Infrastructure.ExceptionHandling;
 
@@ -30,54 +31,33 @@ namespace SlyceAPI
             })
             .AddJwtBearer(options =>
             {
-                options.Authority = "http://localhost:8080/realms/slyce";
-                options.Audience = "account";
+                options.Authority = "http://localhost:8080/realms/slyce-realm";
+                options.Audience = "slyce-api";
                 options.RequireHttpsMetadata = false;
-                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateAudience = true,
                     ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero,
                     RoleClaimType = "realm_access.roles"
                 };
 
                 options.Events = new JwtBearerEvents
                 {
-                    OnTokenValidated = context =>
-                    {
-                        var claimsIdentity = context.Principal.Identity as System.Security.Claims.ClaimsIdentity;
-                        if (claimsIdentity != null)
-                        {
-                            var realmAccess = context.Principal.FindFirst("realm_access");
-                            if (realmAccess != null)
-                            {
-                                // realm_access is JSON; parse it to add role claims
-                                var obj = System.Text.Json.JsonDocument.Parse(realmAccess.Value);
-                                if (obj.RootElement.TryGetProperty("roles", out var roles))
-                                {
-                                    foreach (var role in roles.EnumerateArray())
-                                    {
-                                        claimsIdentity.AddClaim(new System.Security.Claims.Claim(claimsIdentity.RoleClaimType, role.GetString()));
-                                    }
-                                }
-                            }
-                        }
-                        return Task.CompletedTask;
-                    }
+
                 };
             });
 
             builder.Services.AddAuthorization();
 
-            // Register DbContext (Infrastructure)
             builder.Services.AddDbContext<CustomersDbContext>(options =>
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            // Register Repositories (Infrastructure implements Domain interfaces)
             builder.Services.AddScoped<ICustomerRepository, EFCustomerRepository>();
 
-            // Register Application Services
             builder.Services.AddScoped<ICustomerService, CustomerService>();
-
+            
             builder.Services.AddControllers();
 
             builder.Services.AddApiVersioning(options =>
@@ -97,8 +77,8 @@ namespace SlyceAPI
             var app = builder.Build();
 
             //app.UseSerilogRequestLogging();
-            app.UseAuthentication();
-            app.UseAuthorization();
+            //app.UseAuthentication();
+            //app.UseAuthorization();
             app.UseExceptionHandler();
             //app.UseHttpsRedirection();
             app.MapControllers();
