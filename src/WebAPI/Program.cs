@@ -24,6 +24,17 @@ namespace SlyceAPI
 
             builder.Services.AddProblemDetails();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowFrontend", policy =>
+                {
+                    policy.WithOrigins("http://localhost:5173", "http://localhost:5173") 
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
+            });
+
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -76,6 +87,7 @@ namespace SlyceAPI
 
             var app = builder.Build();
 
+            app.UseCors("AllowFrontend");
             //app.UseSerilogRequestLogging();
             //app.UseAuthentication();
             //app.UseAuthorization();
