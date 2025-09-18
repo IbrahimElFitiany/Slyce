@@ -8,8 +8,14 @@ using Customers.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Orders.Application.Interfaces;
+using Orders.Infrastructure.Notifications;
+using Orders.Infrastructure.Persistence;
+using Orders.Infrastructure.Repositores;
 using Serilog;
 using Slyce.Infrastructure.ExceptionHandling;
+using System.Text.Json.Serialization;
+using WebAPI.Hubs;
 
 
 namespace SlyceAPI
@@ -56,6 +62,16 @@ namespace SlyceAPI
 
                 options.Events = new JwtBearerEvents
                 {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        if (!string.IsNullOrEmpty(accessToken) &&
+                            context.HttpContext.Request.Path.StartsWithSegments("/hubs/orders"))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
 
                 };
             });
@@ -65,11 +81,23 @@ namespace SlyceAPI
             builder.Services.AddDbContext<CustomersDbContext>(options =>
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            builder.Services.AddScoped<ICustomerRepository, EFCustomerRepository>();
+            builder.Services.AddDbContext<OrdersDbContext>(options =>
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+
+
+            builder.Services.AddScoped<ICustomerRepository, EFCustomerRepository>();
             builder.Services.AddScoped<ICustomerService, CustomerService>();
-            
-            builder.Services.AddControllers();
+            builder.Services.AddScoped<CreateOrder>();
+            builder.Services.AddScoped<UpdateOrderStatus>();
+            builder.Services.AddScoped<IOrderRepository, EFOrderRepository>();
+            builder.Services.AddScoped<IOrderNotifier, SignalROrderNotifier>();
+
+            builder.Services.AddSignalR();
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
 
             builder.Services.AddApiVersioning(options =>
             {
@@ -88,6 +116,7 @@ namespace SlyceAPI
             var app = builder.Build();
 
             app.UseCors("AllowFrontend");
+            app.MapHub<OrderHub>("/hubs/orders");
             //app.UseSerilogRequestLogging();
             //app.UseAuthentication();
             //app.UseAuthorization();
