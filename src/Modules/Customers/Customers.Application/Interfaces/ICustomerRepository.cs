@@ -7,6 +7,7 @@ namespace Customers.Domain.Interfaces
         Task<Customer?> GetByIdAsync(Guid id);
         Task AddAsync(Customer customer);
         Task<IEnumerable<Customer>> ListAsync();
+        Task DeleteAsync(Guid id);
         Task SaveChangesAsync();
     }
 }
