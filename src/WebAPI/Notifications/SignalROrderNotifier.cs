@@ -3,7 +3,7 @@ using Orders.Application.Interfaces;
 using Orders.Domain.Enums;
 using WebAPI.Hubs;
 
-namespace Orders.Infrastructure.Notifications
+namespace WebAPI.Notifications
 {
     public class SignalROrderNotifier : IOrderNotifier
     {

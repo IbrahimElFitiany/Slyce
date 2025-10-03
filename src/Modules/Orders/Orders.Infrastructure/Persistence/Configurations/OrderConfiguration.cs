@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Orders.Domain.Entities;
 
-namespace Orders.Infrastructure.Persistence.Configerations
+namespace Orders.Infrastructure.Persistence.Configurations
 {
 
     public class OrderConfiguration : IEntityTypeConfiguration<Order>

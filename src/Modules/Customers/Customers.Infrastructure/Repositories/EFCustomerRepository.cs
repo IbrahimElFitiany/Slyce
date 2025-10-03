@@ -1,5 +1,5 @@
-﻿using Customers.Domain.Entites;
-using Customers.Domain.Interfaces;
+﻿using Customers.Application.Interfaces;
+using Customers.Domain.Entities;
 using Customers.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
