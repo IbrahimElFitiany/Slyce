@@ -1,0 +1,25 @@
+﻿using Customers.Application.Interfaces;
+using Customers.Application.UseCases;
+using Customers.Infrastructure.Persistence;
+using Customers.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+
+namespace Customers.Infrastructure
+{
+    public static class ServiceCollectionExtensions
+    {
+        public static IServiceCollection AddCustomerModule(this IServiceCollection services ,IConfiguration configuration) {
+
+            services.AddScoped<RegisterCustomerUseCase>();
+            services.AddScoped<DeleteCustomerUseCase>();
+
+            services.AddDbContext<CustomersDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<ICustomerRepository, EFCustomerRepository>();
+
+            return services;
+        }
+    }
+}
