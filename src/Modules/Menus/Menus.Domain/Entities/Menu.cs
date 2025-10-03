@@ -1,4 +1,4 @@
-﻿namespace Menus.Domain.Entites
+﻿namespace Menus.Domain.Entities
 {
     public class Menu
     {

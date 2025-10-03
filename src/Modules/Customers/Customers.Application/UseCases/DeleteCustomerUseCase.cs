@@ -1,10 +1,4 @@
-﻿using Customers.Domain.Entites;
-using Customers.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Customers.Application.Interfaces;
 
 namespace Customers.Application.UseCases
 {

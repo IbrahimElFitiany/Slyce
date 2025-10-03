@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace SlyceAPI.Exceptions
+namespace WebAPI.Exceptions
 {
     public class DomainException : Exception
     {

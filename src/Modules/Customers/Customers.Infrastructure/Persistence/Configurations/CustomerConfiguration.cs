@@ -1,7 +1,6 @@
-﻿using Customers.Domain.Entites;
+﻿using Customers.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Reflection.Emit;
 
 
 namespace Customers.Infrastructure.Persistence.Configurations

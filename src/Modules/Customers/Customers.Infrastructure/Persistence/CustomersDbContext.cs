@@ -1,5 +1,4 @@
-﻿using Customers.Domain.Entites;
-using Customers.Infrastructure.Persistence.Configurations;
+﻿using Customers.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Customers.Infrastructure.Persistence

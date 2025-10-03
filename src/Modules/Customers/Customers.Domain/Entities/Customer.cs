@@ -1,4 +1,4 @@
-﻿namespace Customers.Domain.Entites
+﻿namespace Customers.Domain.Entities
 {
     public enum Gender
     {
@@ -14,21 +14,21 @@
         public string? Email { get; private set; }
         public string? ProfileImage { get; private set; }
         public DateOnly Bday { get; private set; }
-        public string? Phone { get; private set; }
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow.Date;
 
-        public Customer(string Fname , string Lname , Gender gender, DateOnly Bday) {
+        public Customer(Guid id , string fname , string lname, Gender gender, string email, DateOnly bday) {
 
-            Id = Guid.NewGuid();
-            this.Fname = Fname;
-            this.Lname = Lname;
-            this.Gender = gender;
-            this.Bday = Bday;
+            Id = id;
+            Fname = fname;
+            Lname = lname;
+            Gender = gender;
+            Email = email;
+            Bday = bday;
         }
 
-        public void UpdateEmail(string Email)
+        public void UpdateEmail(string email)
         {
-            this.Email = Email;
+            Email = email;
         }
     }
 }

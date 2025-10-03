@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using SlyceAPI.Exceptions;
+using WebAPI.Exceptions;
 
-namespace Slyce.Infrastructure.ExceptionHandling
+namespace WebAPI.Infrastructure.ExceptionHandling
 {
     public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
     {
