@@ -15,6 +15,7 @@ namespace Restaurants.Infrastructure
             services.AddDbContext<RestaurantDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IRestaurantRepository, EFRestaurantRepository>();
 
+            services.AddScoped<RegisterRestaurantUseCase>();
             return services;
         }
     }

@@ -41,6 +41,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orders.Application", "src\M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orders.Infrastructure", "src\Modules\Orders\Orders.Infrastructure\Orders.Infrastructure.csproj", "{F318F92A-A9CC-4079-949F-C3505A8A55B8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{51339787-D587-4509-B7A8-26A65E4A960A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,5 +127,6 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BC9A0B9B-AFEB-432F-9B4B-B54FBA3BEA71}
+		FileExplorer = 
 	EndGlobalSection
 EndGlobal
