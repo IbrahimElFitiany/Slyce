@@ -29,9 +29,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Modules\Customers\Customers.Application\Customers.Application.csproj" />
-    <ProjectReference Include="..\Modules\Customers\Customers.Domain\Customers.Domain.csproj" />
     <ProjectReference Include="..\Modules\Customers\Customers.Infrastructure\Customers.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Orders\Orders.Infrastructure\Orders.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Restaurants\Restaurants.Application\Restaurants.Application.csproj" />
+    <ProjectReference Include="..\Modules\Restaurants\Restaurants.Infrastructure\Restaurants.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
