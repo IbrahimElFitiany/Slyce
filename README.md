@@ -1,4 +1,4 @@
-![Sufra Logo](https://i.postimg.cc/wBXh5dnN/logo.png)
+![Sufra Logo](https://i.postimg.cc/3JjnkGrV/logo-light-green.png)
 # 🥗 Slyce — Smart Prepared Meals Ordering & Nutrition Platform
 
 Slyce is a modular, AI-powered food ordering platform that connects users with local chefs and restaurants to deliver meals tailored to their **fitness goals**, **dietary preferences**, and **macronutrient targets**.  
@@ -25,7 +25,7 @@ Slyce solves this by providing **ready-to-eat meals from local chefs and restaur
 
 Slyce follows a **Modular Monolith Architecture** — each domain encapsulated in its own module.
 
-[![Slyce Architecture Diagram](https://github.com/user-attachments/assets/629fdcd7-d53c-442d-87c9-87c885c7a7b8)](https://ibb.co/MxhY07fQ)
+![Slyce Architecture Diagram](https://i.postimg.cc/L6mj0bRq/Linked-In-Poster.png)
 
 ---
 
