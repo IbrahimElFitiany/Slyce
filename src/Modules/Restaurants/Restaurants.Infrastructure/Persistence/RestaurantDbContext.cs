@@ -8,6 +8,7 @@ namespace Restaurants.Infrastructure.Persistence
         public RestaurantDbContext(DbContextOptions<RestaurantDbContext> options): base(options) { }
 
         public DbSet<Restaurant> Restaurants { get; set; }
+        public DbSet<RestaurantApplication> RestaurantApplications { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasDefaultSchema("restaurants");
