@@ -30,6 +30,13 @@ namespace Restaurants.Application.UseCases.Commands.CreateRestaurantApplication
                 throw new DuplicateEmailException(dto.CompanyEmail);
             }
 
+            if (await _restaurantApplicationRepository.ExistsByMobileNumberAsync(dto.MobileNumber))
+            {
+                _logger.LogWarning("Duplicate mobile number attempted: {MobileNumber}", dto.MobileNumber);
+
+                throw new Exception ($"A restaurant application with mobile number '{dto.MobileNumber}' already exists.");
+            }
+
             var application = new RestaurantApplication(
                 dto.BrandName,
                 dto.OwnerFirstName,

@@ -8,6 +8,7 @@ namespace Restaurants.Application.Interfaces
         Task<RestaurantApplication?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<RestaurantApplication>> ListAsync(CancellationToken cancellationToken = default);
         Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default);
+        Task<bool> ExistsByMobileNumberAsync(string mobileNumber);
 
     }
 }
