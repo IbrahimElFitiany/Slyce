@@ -1,4 +1,5 @@
 ﻿using Restaurants.Domain.Enums;
+using Restaurants.Domain.Exceptions;
 
 namespace Restaurants.Domain.Entities
 {
@@ -30,6 +31,24 @@ namespace Restaurants.Domain.Entities
             int branches = 1,
             string? description = null)
         {
+            if (string.IsNullOrWhiteSpace(brandName))
+                throw new CantBeEmptyException(nameof(brandName));
+
+            if (string.IsNullOrWhiteSpace(ownerFirstName))
+                throw new CantBeEmptyException(nameof(ownerFirstName));
+
+            if (string.IsNullOrWhiteSpace(ownerLastName))
+                throw new CantBeEmptyException(nameof(ownerLastName));
+
+            if (string.IsNullOrWhiteSpace(companyEmail))
+                throw new CantBeEmptyException(nameof(companyEmail));
+
+            if (string.IsNullOrWhiteSpace(mobileNumber))
+                throw new CantBeEmptyException(nameof(mobileNumber));
+
+            if (branches < 1)
+                throw new InvalidBranchNumberException(branches);
+
             Id = Guid.NewGuid();
             BrandName = brandName;
             OwnerFirstName = ownerFirstName;

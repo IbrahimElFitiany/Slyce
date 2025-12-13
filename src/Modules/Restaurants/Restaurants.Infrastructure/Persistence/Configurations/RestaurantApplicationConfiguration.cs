@@ -11,7 +11,9 @@ namespace Restaurants.Infrastructure.Persistence.Configurations
             builder.Property(r => r.OwnerFirstName).IsRequired().HasMaxLength(100);
             builder.Property(r => r.OwnerLastName).IsRequired().HasMaxLength(100);
             builder.Property(r => r.CompanyEmail).IsRequired().HasMaxLength(200);
+            builder.HasIndex(r => r.CompanyEmail).IsUnique();
             builder.Property(r => r.MobileNumber).IsRequired().HasMaxLength(20);
+            builder.HasIndex(r => r.MobileNumber).IsUnique();
             builder.Property(r => r.Description).HasMaxLength(1000);
             builder.Property(r => r.Status).HasConversion<string>().IsRequired();
             builder.Property(r => r.RestaurantType).HasConversion<string>().IsRequired();
