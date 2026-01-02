@@ -2,7 +2,7 @@
 using Menus.Domain.Entities;
 using Menus.Application.Interfaces;
 using Microsoft.Extensions.Logging;
-using Restaurants.Api;
+using Restaurants.Contracts;
 
 
 namespace Menus.Application.UseCases.Commands.CreateMenuCategory
