@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Restaurants.Application.Interfaces;
 using Restaurants.Application.UseCases.Commands.CreateRestaurantApplication;
+using Restaurants.Contracts;
 using Restaurants.Infrastructure.Persistence;
 using Restaurants.Infrastructure.Repositories;
 
@@ -15,6 +16,7 @@ namespace Restaurants.Infrastructure
             services.AddDbContext<RestaurantDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IRestaurantRepository, EFRestaurantRepository>();
             services.AddScoped<IRestaurantApplicationRepository, EFRestaurantApplicationRepository>();
+            services.AddScoped<IRestaurantServices, RestaurantServices>();
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateRestaurantApplicationCommand>());
 
             return services;
