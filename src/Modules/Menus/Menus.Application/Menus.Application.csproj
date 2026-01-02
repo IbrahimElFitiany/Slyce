@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="13.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Restaurants\Restaurants.Api\Restaurants.Api.csproj" />
     <ProjectReference Include="..\Menus.Domain\Menus.Domain.csproj" />
   </ItemGroup>
 
