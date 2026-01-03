@@ -43,7 +43,7 @@ namespace Restaurants.Infrastructure.Repositories
 
         public async Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken = default)
         {
-            return await _db.Restaurants.AnyAsync(r => r.Name == name, cancellationToken);
+            return await _db.Restaurants.AnyAsync(r => r.BrandName == name, cancellationToken);
         }
     }
 }
