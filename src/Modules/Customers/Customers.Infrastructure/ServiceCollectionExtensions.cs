@@ -1,5 +1,5 @@
 ﻿using Customers.Application.Interfaces;
-using Customers.Application.UseCases;
+using Customers.Application.UseCases.Commands.RegisterCustomer;
 using Customers.Infrastructure.Persistence;
 using Customers.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -13,12 +13,10 @@ namespace Customers.Infrastructure
     {
         public static IServiceCollection AddCustomerModule(this IServiceCollection services ,IConfiguration configuration) {
 
-            services.AddScoped<RegisterCustomerUseCase>();
-            services.AddScoped<DeleteCustomerUseCase>();
-
             services.AddDbContext<CustomersDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<ICustomerRepository, EFCustomerRepository>();
 
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<RegisterCustomerCommandHandler>());
             return services;
         }
     }
