@@ -29,10 +29,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Modules\Auth\Auth.Application\Auth.Application\Auth.Application.csproj" />
-    <ProjectReference Include="..\Modules\Auth\Auth.Infrastructure\Auth.Infrastructure\Auth.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Customers\Customers.Application\Customers.Application.csproj" />
     <ProjectReference Include="..\Modules\Customers\Customers.Infrastructure\Customers.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Menus\Menus.Application\Menus.Application.csproj" />
+    <ProjectReference Include="..\Modules\Menus\Menus.Infrastructure\Menus.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Orders\Orders.Infrastructure\Orders.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Restaurants\Restaurants.Application\Restaurants.Application.csproj" />
     <ProjectReference Include="..\Modules\Restaurants\Restaurants.Infrastructure\Restaurants.Infrastructure.csproj" />

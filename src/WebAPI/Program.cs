@@ -7,6 +7,7 @@ using Restaurants.Infrastructure;
 using WebAPI.Extensions;
 using WebAPI.Hubs;
 using WebAPI.Notifications;
+using Menus.Infrastructure;
 
 
 namespace WebAPI
@@ -25,9 +26,11 @@ namespace WebAPI
                 .AddAPIVersioning()
                 .AddSignalR();
 
-            builder.Services.AddCustomerModule(builder.Configuration);
-            builder.Services.AddOrdersModule(builder.Configuration);
-            builder.Services.AddRestaurantModule(builder.Configuration);
+            builder.Services
+                .AddCustomerModule(builder.Configuration)
+                .AddOrdersModule(builder.Configuration)
+                .AddRestaurantModule(builder.Configuration)
+                .AddMenusModule(builder.Configuration);
 
             builder.Services.AddScoped<IOrderNotifier, SignalROrderNotifier>();
             builder.Services.AddControllers().AddJsonOptions(options =>
