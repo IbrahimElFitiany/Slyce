@@ -25,9 +25,9 @@ namespace Restaurants.Infrastructure.Repositories
             return await _db.RestaurantApplications.AnyAsync(a => a.CompanyEmail == email, cancellationToken);
         }
 
-        public async Task<bool> ExistsByMobileNumberAsync(string mobileNumber)
+        public async Task<bool> ExistsByMobileNumberAsync(string mobileNumber, CancellationToken cancellationToken = default)
         {
-            return await _db.RestaurantApplications.AnyAsync(a => a.MobileNumber == mobileNumber);
+            return await _db.RestaurantApplications.AnyAsync(a => a.MobileNumber == mobileNumber, cancellationToken);
         }
 
         public Task<RestaurantApplication?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
