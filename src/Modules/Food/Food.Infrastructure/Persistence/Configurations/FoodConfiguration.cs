@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using Menus.Domain.Entities;
+using FoodEntity = Food.Domain.Entities.Food;
 
-namespace Menus.Infrastructure.Persistence.Configurations
+namespace Food.Infrastructure.Persistence.Configurations
 {
-    public class FoodConfiguration : IEntityTypeConfiguration<Food>
+    public class FoodConfiguration : IEntityTypeConfiguration<FoodEntity>
     {
-        public void Configure(EntityTypeBuilder<Food> builder)
+        public void Configure(EntityTypeBuilder<FoodEntity> builder)
         {
             builder.HasKey(f => f.Id);
 

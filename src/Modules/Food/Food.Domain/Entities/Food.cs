@@ -1,6 +1,6 @@
-﻿using Menus.Domain.ValueObjects;
+﻿using Food.Domain.ValueObjects;
 
-namespace Menus.Domain.Entities
+namespace Food.Domain.Entities
 {
     public sealed class Food
     {
