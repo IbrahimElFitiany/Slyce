@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Menus.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Menus.Infrastructure.Migrations
 {
     [DbContext(typeof(MenusDbContext))]
-    partial class MenusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260117125416_RemoveFoodFromMenuModule")]
+    partial class RemoveFoodFromMenuModule
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,7 +36,7 @@ namespace Menus.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("MenuItemId")
+                    b.Property<Guid?>("MenuMealId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Name")
@@ -134,7 +137,7 @@ namespace Menus.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MenuItemId");
+                    b.HasIndex("MenuMealId");
 
                     b.ToTable("MealSizes", "menus");
                 });
@@ -210,10 +213,8 @@ namespace Menus.Infrastructure.Migrations
             modelBuilder.Entity("Menus.Domain.Entities.MealSize", b =>
                 {
                     b.HasOne("Menus.Domain.Entities.MenuMeal", null)
-                        .WithMany()
-                        .HasForeignKey("MenuItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Sizes")
+                        .HasForeignKey("MenuMealId");
                 });
 
             modelBuilder.Entity("Menus.Domain.Entities.MenuMeal", b =>
@@ -223,6 +224,11 @@ namespace Menus.Infrastructure.Migrations
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Menus.Domain.Entities.MenuMeal", b =>
+                {
+                    b.Navigation("Sizes");
                 });
 #pragma warning restore 612, 618
         }

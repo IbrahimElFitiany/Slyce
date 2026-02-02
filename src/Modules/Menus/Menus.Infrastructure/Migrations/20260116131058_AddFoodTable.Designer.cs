@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Menus.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Menus.Infrastructure.Migrations
 {
     [DbContext(typeof(MenusDbContext))]
-    partial class MenusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260116131058_AddFoodTable")]
+    partial class AddFoodTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -23,6 +26,107 @@ namespace Menus.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Menus.Domain.Entities.Food", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.ComplexProperty<Dictionary<string, object>>("NutritionPer100g", "Menus.Domain.Entities.Food.NutritionPer100g#Nutrition", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<decimal>("CalciumMg")
+                                .HasColumnType("numeric")
+                                .HasColumnName("CalciumMg");
+
+                            b1.Property<decimal>("Calories")
+                                .HasColumnType("numeric")
+                                .HasColumnName("Calories");
+
+                            b1.Property<decimal>("Cholesterol")
+                                .HasColumnType("numeric")
+                                .HasColumnName("Cholesterol");
+
+                            b1.Property<decimal>("DietaryFiber")
+                                .HasColumnType("numeric")
+                                .HasColumnName("DietaryFiber");
+
+                            b1.Property<decimal>("IronMg")
+                                .HasColumnType("numeric")
+                                .HasColumnName("IronMg");
+
+                            b1.Property<decimal>("PotassiumMg")
+                                .HasColumnType("numeric")
+                                .HasColumnName("PotassiumMg");
+
+                            b1.Property<decimal>("Protein")
+                                .HasColumnType("numeric")
+                                .HasColumnName("Protein");
+
+                            b1.Property<decimal>("SaturatedFat")
+                                .HasColumnType("numeric")
+                                .HasColumnName("SaturatedFat");
+
+                            b1.Property<decimal>("SodiumMg")
+                                .HasColumnType("numeric")
+                                .HasColumnName("SodiumMg");
+
+                            b1.Property<decimal>("SugarGrams")
+                                .HasColumnType("numeric")
+                                .HasColumnName("SugarGrams");
+
+                            b1.Property<decimal>("TotalCarbohydrate")
+                                .HasColumnType("numeric")
+                                .HasColumnName("TotalCarbohydrate");
+
+                            b1.Property<decimal>("TotalFat")
+                                .HasColumnType("numeric")
+                                .HasColumnName("TotalFat");
+
+                            b1.Property<decimal>("TransFat")
+                                .HasColumnType("numeric")
+                                .HasColumnName("TransFat");
+
+                            b1.Property<decimal>("VitaminAMcg")
+                                .HasColumnType("numeric")
+                                .HasColumnName("VitaminAMcg");
+
+                            b1.Property<decimal>("VitaminCMg")
+                                .HasColumnType("numeric")
+                                .HasColumnName("VitaminCMg");
+
+                            b1.Property<decimal>("VitaminD")
+                                .HasColumnType("numeric")
+                                .HasColumnName("VitaminD");
+                        });
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Foods", "menus");
+                });
 
             modelBuilder.Entity("Menus.Domain.Entities.MealSize", b =>
                 {
