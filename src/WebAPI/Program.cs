@@ -9,6 +9,7 @@ using WebAPI.Hubs;
 using WebAPI.Notifications;
 using Menus.Infrastructure;
 using Food.Infrastructure;
+using Menus.Presentation.Controllers;
 
 
 namespace WebAPI
@@ -33,6 +34,13 @@ namespace WebAPI
                 .AddRestaurantModule(builder.Configuration)
                 .AddMenusModule(builder.Configuration)
                 .AddFoodModule(builder.Configuration);
+
+
+            //will refactor later
+            builder.Services
+                .AddControllers()
+                .AddApplicationPart(typeof(CategoriesController).Assembly);
+
 
             builder.Services.AddScoped<IOrderNotifier, SignalROrderNotifier>();
             builder.Services.AddControllers().AddJsonOptions(options =>

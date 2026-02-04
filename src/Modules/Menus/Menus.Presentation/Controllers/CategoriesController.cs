@@ -1,11 +1,10 @@
 ﻿using MediatR;
 using Asp.Versioning;
-using Menus.Application.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Menus.Application.UseCases.Commands.CreateMenuCategory;
 
 
-namespace WebAPI.Controllers
+namespace Menus.Presentation.Controllers
 {
     [Route("api/v{version:apiVersion}/restaurants/{restaurantId}/categories")]
     [ApiVersion("1.0")]
@@ -20,9 +19,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromRoute] Guid restaurantId,[FromBody] DTO tO , CancellationToken ct)
         {
-            var dto = new CreateMenuCategoryReqDTO(tO.Name , restaurantId);
-
-            await _mediator.Send(new CreateMenuCategoryCommand(dto), ct);
+            await _mediator.Send(new CreateMenuCategoryCommand(tO.Name,restaurantId), ct);
             return Ok();
         }
 
