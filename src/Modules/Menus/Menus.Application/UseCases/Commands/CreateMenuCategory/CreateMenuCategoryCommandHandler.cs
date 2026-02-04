@@ -25,14 +25,13 @@ namespace Menus.Application.UseCases.Commands.CreateMenuCategory
 
         public async Task Handle(CreateMenuCategoryCommand request, CancellationToken cancellationToken)
         {
-            var dto = request.dto;
 
-            if (!await _restaurantServices.ExistsAsync(dto.restaurantId)) {
+            if (!await _restaurantServices.ExistsAsync(request.restaurantId)) {
 
                 throw new Exception("restaurant is not there");
             }
 
-            MenuCategory newCategory = new MenuCategory(dto.restaurantId, dto.name);
+            MenuCategory newCategory = new MenuCategory(request.restaurantId, request.name);
 
             await _repository.AddAsync(newCategory, cancellationToken);
 
