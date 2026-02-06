@@ -1,4 +1,4 @@
-﻿namespace Menus.Domain.ValueObjects
+﻿namespace Shared.Kernal.ValueObjects
 {
     public sealed class Price
     {
