@@ -1,4 +1,4 @@
-﻿using Food.Domain.ValueObjects;
+﻿using Shared.Kernal.ValueObjects;
 
 namespace Food.Domain.Entities
 {

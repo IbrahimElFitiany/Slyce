@@ -6,9 +6,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="ValueObjects\" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared.Kernal\Shared.Kernal.csproj" />
