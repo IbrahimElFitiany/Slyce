@@ -15,6 +15,7 @@ namespace Food.Infrastructure
 
             services.AddDbContext<FoodDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddScoped<IFoodServices, FoodContractServices>();
             services.AddScoped<IFoodRepository, EFFoodRepository>();
 
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<SearchFoodsQuery>());

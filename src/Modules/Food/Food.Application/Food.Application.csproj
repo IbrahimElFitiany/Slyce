@@ -6,4 +6,17 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="UseCases\Commands\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="13.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Food.Domain\Food.Domain.csproj" />
+    <ProjectReference Include="..\Food.Contracts\Food.Contracts.csproj" />
+  </ItemGroup>
+
 </Project>
