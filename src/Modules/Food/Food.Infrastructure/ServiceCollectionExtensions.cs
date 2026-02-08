@@ -1,4 +1,8 @@
-﻿using Food.Infrastructure.Persistence;
+﻿using Food.Application.Interfaces;
+using Food.Application.Services;
+using Food.Contracts;
+using Food.Infrastructure.Persistence;
+using Food.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +15,10 @@ namespace Food.Infrastructure
 
             services.AddDbContext<FoodDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddScoped<IFoodServices, FoodContractServices>();
+            services.AddScoped<IFoodRepository, EFFoodRepository>();
+
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<SearchFoodsQuery>());
             return services;
         }
     }
