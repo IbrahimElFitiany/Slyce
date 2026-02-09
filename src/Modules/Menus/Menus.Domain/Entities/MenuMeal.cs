@@ -8,6 +8,7 @@ namespace Menus.Domain.Entities
 
         public Guid Id { get; private init; }
         public Guid CategoryId { get; private init; }
+        public Guid RestaurantId { get; private init; }
         public string Name { get; private set; } = null!;
         public string Description { get; private set; } = null!;
         public string Image { get; private set; } = null!;
@@ -21,6 +22,7 @@ namespace Menus.Domain.Entities
         private MenuMeal() { }
         public MenuMeal(
             Guid categoryId,
+            Guid restaurantId,
             string name,
             string description,
             string image,
@@ -29,6 +31,9 @@ namespace Menus.Domain.Entities
         {
             if (categoryId == Guid.Empty)
                 throw new ArgumentException("CategoryId is required.", nameof(categoryId));
+
+            if (restaurantId == Guid.Empty)
+                throw new ArgumentException("Restaurant is required.", nameof(categoryId));
 
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Meal name cannot be empty.", nameof(name));
@@ -47,6 +52,7 @@ namespace Menus.Domain.Entities
 
             Id = Guid.NewGuid();
             CategoryId = categoryId;
+            RestaurantId = restaurantId;
             Name = name;
             Description = description;
             Image = image;
