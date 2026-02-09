@@ -1,31 +1,24 @@
-﻿using Menus.Domain.ValueObjects;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using Shared.Kernal.ValueObjects;
 
 namespace Menus.Domain.Entities
 {
     public sealed class MealSize
     {
         public Guid Id { get; private init; }
-        public Guid MenuItemId { get; private init; }
-        public string Name { get; private set; }
-        public Price Price { get; private set; }
+        public string Name { get; private set; } = null!;
+        public Price Price { get; private set; } = null!;
         public int SortOrder { get; private set; }
-        public Nutrition Nutrition { get; private set; }
-
+        public Nutrition Nutrition { get; private set; } = null!;
         public DateTime CreatedAt { get; private init; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; private set; } = DateTime.UtcNow;
 
         private MealSize() { }
-        public MealSize(Guid menuItemId, string name, Price price , int sortOrder , Nutrition nutrition)
+        public MealSize(string name, Price price , int sortOrder , Nutrition nutrition)
         {
-            if (menuItemId == Guid.Empty)
-                throw new ArgumentException("CategoryId is required.", nameof(menuItemId));
-
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Meal name cannot be empty.", nameof(name));
 
             Id = Guid.NewGuid();
-            MenuItemId = menuItemId;
             Name = name;
             Price = price;
             SortOrder = sortOrder;
