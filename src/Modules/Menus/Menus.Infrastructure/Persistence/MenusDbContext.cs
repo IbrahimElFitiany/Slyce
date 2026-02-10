@@ -9,7 +9,6 @@ namespace Menus.Infrastructure.Persistence
 
         public DbSet<MenuCategory> MenuCategories { get; set; }
         public DbSet<MenuMeal> MenuMeals { get; set; }
-        public DbSet<MealSize> MealSizes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
