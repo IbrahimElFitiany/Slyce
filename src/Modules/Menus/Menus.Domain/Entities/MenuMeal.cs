@@ -1,4 +1,5 @@
 ﻿using Menus.Domain.Exceptions;
+using Menus.Domain.ValueObjects;
 
 namespace Menus.Domain.Entities
 {
@@ -13,9 +14,14 @@ namespace Menus.Domain.Entities
         public string Description { get; private set; } = null!;
         public string Image { get; private set; } = null!;
         public bool Available { get; private set; } = true;
+        public bool Reviewed { get; private set; } = false;
+
+        private readonly List<MealIngredient> _ingredients = new();
+        public IReadOnlyCollection<MealIngredient> Ingredients => _ingredients;
 
         private readonly List<MealSize> _sizes = new();
         public IReadOnlyCollection<MealSize> Sizes => _sizes;
+
         public DateTime CreatedAt { get; private init; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; private set; } = DateTime.UtcNow;
 
@@ -26,29 +32,27 @@ namespace Menus.Domain.Entities
             string name,
             string description,
             string image,
+            List<MealIngredient> ingredients,
             List<MealSize> sizes,
             bool available = true)
         {
-            if (categoryId == Guid.Empty)
-                throw new ArgumentException("CategoryId is required.", nameof(categoryId));
+            ArgumentOutOfRangeException.ThrowIfEqual(categoryId, Guid.Empty);
+            ArgumentOutOfRangeException.ThrowIfEqual(restaurantId, Guid.Empty);
+            ArgumentException.ThrowIfNullOrWhiteSpace(name);
+            ArgumentException.ThrowIfNullOrWhiteSpace(description);
+            ArgumentException.ThrowIfNullOrWhiteSpace(image);
 
-            if (restaurantId == Guid.Empty)
-                throw new ArgumentException("Restaurant is required.", nameof(categoryId));
-
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Meal name cannot be empty.", nameof(name));
-
-            if (string.IsNullOrWhiteSpace(description))
-                throw new ArgumentException("Meal description cannot be empty.", nameof(description));
-
-            if (string.IsNullOrWhiteSpace(image))
-                throw new ArgumentException("Meal image cannot be empty.", nameof(image));
+            if (ingredients == null || !ingredients.Any())
+                throw new ArgumentException("Meal must have at least 1 ingredient.");
 
             if (sizes == null || !sizes.Any())
                 throw new ArgumentException("Meal must have at least one size.", nameof(sizes));
 
             if (sizes.GroupBy(s => s.Name).Any(g => g.Count() > 1))
                 throw new DuplicateMealSizeException();
+
+            if (sizes.Count > MealSizesLimit)
+                throw new MealSizesLimitExceededException(MealSizesLimit);
 
             Id = Guid.NewGuid();
             CategoryId = categoryId;
@@ -57,23 +61,31 @@ namespace Menus.Domain.Entities
             Description = description;
             Image = image;
             Available = available;
+            _ingredients.AddRange(ingredients);
 
-            if (sizes.Count > MealSizesLimit)
-                throw new MealSizesLimitExceededException(MealSizesLimit);
+            var validIngredientIds = _ingredients.Select(i => i.FoodId).ToHashSet();
+
+            foreach (var size in sizes)
+            {
+                ValidateSizeIngredients(size,validIngredientIds);
+            }
 
             _sizes.AddRange(sizes);
         }
 
         public void AddSize(MealSize size)
         {
-            if (size is null)
-                throw new ArgumentNullException(nameof(size));
+            ArgumentNullException.ThrowIfNull(size);
+
+            if (_sizes.Count >= MealSizesLimit)
+                throw new MealSizesLimitExceededException(MealSizesLimit);
 
             if (_sizes.Any(s => s.Name.Equals(size.Name, StringComparison.OrdinalIgnoreCase)))
                 throw new DuplicateMealSizeException();
 
-            if (_sizes.Count >= MealSizesLimit)
-                throw new MealSizesLimitExceededException(MealSizesLimit);
+            var validIngredientIds = _ingredients.Select(i => i.FoodId).ToHashSet();
+
+            ValidateSizeIngredients(size,validIngredientIds);
 
             _sizes.Add(size);
 
@@ -81,14 +93,22 @@ namespace Menus.Domain.Entities
         }
         public void RemoveSize(MealSize size)
         {
-            if (size is null)
-                throw new ArgumentNullException(nameof(size));
+            ArgumentNullException.ThrowIfNull(size);
 
             if (_sizes.Count <= 1)
                 throw new MinimumMealSizesRequiredException();
 
             _sizes.Remove(size);
             UpdatedAt = DateTime.UtcNow;
+        }
+
+
+        private void ValidateSizeIngredients(MealSize mealSize, HashSet<Guid> validIngredientIds)
+        {
+            var sizeIngredientIds = new HashSet<Guid>(mealSize.IngredientQuantities.Select(iq => iq.MealIngredientId));
+
+            if (!sizeIngredientIds.SetEquals(validIngredientIds))
+                throw new MealSizeIngredientMismatchException(mealSize.Name);
         }
     }
 }
