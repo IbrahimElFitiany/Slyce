@@ -3,6 +3,7 @@ using System;
 using Menus.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Menus.Infrastructure.Migrations
 {
     [DbContext(typeof(MenusDbContext))]
-    partial class MenusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260211000025_MenuMeal_AddIngredients")]
+    partial class MenuMeal_AddIngredients
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,9 +87,6 @@ namespace Menus.Infrastructure.Migrations
                     b.Property<Guid>("RestaurantId")
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("Reviewed")
-                        .HasColumnType("boolean");
-
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -133,37 +133,12 @@ namespace Menus.Infrastructure.Migrations
 
                             b1.HasKey("Id");
 
-                            b1.HasIndex("MealId", "Name")
-                                .IsUnique();
-
-                            b1.HasIndex("MealId", "SortOrder")
-                                .IsUnique();
+                            b1.HasIndex("MealId");
 
                             b1.ToTable("MealSizes", "menus");
 
                             b1.WithOwner()
                                 .HasForeignKey("MealId");
-
-                            b1.OwnsMany("Menus.Domain.ValueObjects.IngredientQuantity", "IngredientQuantities", b2 =>
-                                {
-                                    b2.Property<Guid>("MealSizeId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<Guid>("MealIngredientId")
-                                        .ValueGeneratedOnAdd()
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<decimal>("Quantity")
-                                        .HasPrecision(8, 2)
-                                        .HasColumnType("numeric(8,2)");
-
-                                    b2.HasKey("MealSizeId", "MealIngredientId");
-
-                                    b2.ToTable("IngredientQuantities", "menus");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("MealSizeId");
-                                });
 
                             b1.OwnsOne("Shared.Kernal.ValueObjects.Nutrition", "Nutrition", b2 =>
                                 {
@@ -266,8 +241,6 @@ namespace Menus.Infrastructure.Migrations
                                         .HasForeignKey("MealSizeId");
                                 });
 
-                            b1.Navigation("IngredientQuantities");
-
                             b1.Navigation("Nutrition")
                                 .IsRequired();
 
@@ -277,18 +250,25 @@ namespace Menus.Infrastructure.Migrations
 
                     b.OwnsMany("Menus.Domain.ValueObjects.MealIngredient", "Ingredients", b1 =>
                         {
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer");
+
+                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
+
                             b1.Property<Guid>("MealId")
                                 .HasColumnType("uuid");
 
-                            b1.Property<Guid>("FoodId")
-                                .ValueGeneratedOnAdd()
+                            b1.Property<Guid>("foodId")
                                 .HasColumnType("uuid");
 
-                            b1.Property<string>("Name")
+                            b1.Property<string>("name")
                                 .IsRequired()
                                 .HasColumnType("text");
 
-                            b1.HasKey("MealId", "FoodId");
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("MealId");
 
                             b1.ToTable("MealIngredient", "menus");
 
