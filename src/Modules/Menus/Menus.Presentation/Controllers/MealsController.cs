@@ -45,8 +45,20 @@ namespace Menus.Presentation.Controllers
                     )
                 ).ToList()
             );
-            await _mediator.Send(command, ct);
-            return Ok();
+
+            var mealId = await _mediator.Send(command, ct);
+
+            return CreatedAtAction(
+                actionName: nameof(GetById),
+                routeValues: new { id = mealId, version = "1.0" },
+                value: new { id = mealId }
+            );
+        }
+
+        [HttpGet("{id}")]
+        public Task<IActionResult> GetById(Guid id, CancellationToken ct)
+        {
+            throw new NotImplementedException();
         }
     }
 }
