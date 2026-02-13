@@ -1,4 +1,5 @@
-﻿namespace Shared.Kernal.ValueObjects
+﻿
+namespace Shared.Domain.ValueObjects
 {
     public sealed class Nutrition
     {
@@ -44,17 +45,22 @@
             decimal vitaminC_Mg = 0)
         {
 
-            if (calories < 0)
-                throw new ArgumentException("Calories cannot be negative");
-
-            if (protein < 0 || carb < 0 || fat < 0)
-                throw new ArgumentException("Macros cannot be negative");
-
-            if (saturatedFat < 0 || transFat < 0 || cholesterol < 0 || sodiumMg < 0 || dietaryFiber < 0 || sugarGrams < 0)
-                throw new ArgumentException("Subcomponents of fats, carbs, cholesterol, sodium, fiber, and sugars cannot be negative.");
-
-            if (vitaminD < 0 || calciumMg < 0 || ironMg < 0 || potassiumMg < 0 || vitaminA_Mcg < 0 || vitaminC_Mg < 0)
-                throw new ArgumentException("Micronutrients cannot be negative");
+            ArgumentOutOfRangeException.ThrowIfNegative(calories);
+            ArgumentOutOfRangeException.ThrowIfNegative(protein);
+            ArgumentOutOfRangeException.ThrowIfNegative(carb);
+            ArgumentOutOfRangeException.ThrowIfNegative(fat);
+            ArgumentOutOfRangeException.ThrowIfNegative(saturatedFat);
+            ArgumentOutOfRangeException.ThrowIfNegative(transFat);
+            ArgumentOutOfRangeException.ThrowIfNegative(cholesterol);
+            ArgumentOutOfRangeException.ThrowIfNegative(sodiumMg);
+            ArgumentOutOfRangeException.ThrowIfNegative(dietaryFiber);
+            ArgumentOutOfRangeException.ThrowIfNegative(sugarGrams);
+            ArgumentOutOfRangeException.ThrowIfNegative(vitaminD);
+            ArgumentOutOfRangeException.ThrowIfNegative(calciumMg);
+            ArgumentOutOfRangeException.ThrowIfNegative(ironMg);
+            ArgumentOutOfRangeException.ThrowIfNegative(potassiumMg);
+            ArgumentOutOfRangeException.ThrowIfNegative(vitaminA_Mcg);
+            ArgumentOutOfRangeException.ThrowIfNegative(vitaminC_Mg);
 
             Protein = protein;
             TotalCarbohydrate = carb;
@@ -107,6 +113,27 @@
                 potassiumMg: a.PotassiumMg + b.PotassiumMg,
                 vitaminA_Mcg: a.VitaminAMcg + b.VitaminAMcg,
                 vitaminC_Mg: a.VitaminCMg + b.VitaminCMg
+            );
+        }
+        public static Nutrition Zero() {
+
+            return new Nutrition(
+                protein: 0,
+                carb: 0,
+                fat: 0,
+                calories: 0,
+                saturatedFat: 0,
+                transFat: 0,
+                cholesterol: 0,
+                sodiumMg: 0,
+                dietaryFiber: 0,
+                sugarGrams: 0,
+                vitaminD: 0,
+                calciumMg: 0,
+                ironMg: 0,
+                potassiumMg: 0,
+                vitaminA_Mcg: 0,
+                vitaminC_Mg: 0
             );
         }
 
