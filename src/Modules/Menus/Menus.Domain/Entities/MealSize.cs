@@ -1,4 +1,6 @@
-﻿using Shared.Kernal.ValueObjects;
+﻿using Menus.Domain.Exceptions;
+using Menus.Domain.ValueObjects;
+using Shared.Domain.ValueObjects;
 
 namespace Menus.Domain.Entities
 {
@@ -8,21 +10,35 @@ namespace Menus.Domain.Entities
         public string Name { get; private set; } = null!;
         public Price Price { get; private set; } = null!;
         public int SortOrder { get; private set; }
+
+        private readonly List<IngredientQuantity> _ingredientQuantities = new();
+        public IReadOnlyCollection<IngredientQuantity> IngredientQuantities => _ingredientQuantities;
+
         public Nutrition Nutrition { get; private set; } = null!;
         public DateTime CreatedAt { get; private init; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; private set; } = DateTime.UtcNow;
 
         private MealSize() { }
-        public MealSize(string name, Price price , int sortOrder , Nutrition nutrition)
+        public MealSize(
+            string name,
+            Price price,
+            int sortOrder,
+            IEnumerable<IngredientQuantity> ingredientQuantities,
+            Nutrition nutrition)
         {
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Meal name cannot be empty.", nameof(name));
+            ArgumentException.ThrowIfNullOrWhiteSpace(name);
+            ArgumentOutOfRangeException.ThrowIfLessThan(sortOrder, 0);
+
+            if (ingredientQuantities == null || !ingredientQuantities.Any())
+                throw new MealSizeMustHaveIngredientsException();
 
             Id = Guid.NewGuid();
             Name = name;
             Price = price;
             SortOrder = sortOrder;
             Nutrition = nutrition;
+            _ingredientQuantities.AddRange(ingredientQuantities);
+
         }
 
     }
