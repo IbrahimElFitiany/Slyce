@@ -6,6 +6,7 @@ namespace Shared.Domain.ValueObjects
         private const decimal CaloriesPerGramOfFat = 9;
         private const decimal CaloriesPerGramOfProtein = 4;
         private const decimal CaloriesPerGramOfCarb = 4;
+        private const decimal CalorieTolerance = 1.15m;
 
         public decimal Calories { get; }
         public decimal TotalFat { get; }
@@ -90,7 +91,7 @@ namespace Shared.Domain.ValueObjects
 
             decimal totalMacroCalories = Protein * CaloriesPerGramOfProtein + TotalCarbohydrate * CaloriesPerGramOfCarb + TotalFat * CaloriesPerGramOfFat;
 
-            if (totalMacroCalories > Calories)
+            if (totalMacroCalories > Calories * CalorieTolerance)
                 throw new ArgumentException("Macros exceed total calories");
         }
 
