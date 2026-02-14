@@ -15,6 +15,7 @@ namespace Food.Infrastructure.Repositories
         public async Task<IEnumerable<FoodEntity>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default)
         {
             var foods = await _db.Foods
+                .AsNoTracking()
                 .Where(f => ids.Contains(f.Id))
                 .ToListAsync();
 
