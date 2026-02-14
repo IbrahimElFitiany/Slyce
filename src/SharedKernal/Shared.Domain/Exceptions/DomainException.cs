@@ -1,6 +1,6 @@
 ﻿namespace Shared.Domain.Exceptions
 {
-    public class DomainException : Exception
+    public abstract class DomainException : Exception
     {
         protected DomainException(string message) : base(message) { }
     }
