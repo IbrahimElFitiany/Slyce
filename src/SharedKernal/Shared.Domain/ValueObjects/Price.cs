@@ -1,4 +1,4 @@
-﻿namespace Shared.Kernal.ValueObjects
+﻿namespace Shared.Domain.ValueObjects
 {
     public sealed class Price
     {

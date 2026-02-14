@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using Menus.Domain.Entities;
+using Menus.Domain.ValueObjects;
 
 namespace Menus.Infrastructure.Persistence.Configurations
 {
@@ -36,32 +37,53 @@ namespace Menus.Infrastructure.Persistence.Configurations
             builder.Property(m => m.Available)
                 .IsRequired();
 
-            builder.OwnsMany(m => m.Sizes, b =>
+            builder.Property(m => m.Reviewed)
+                .IsRequired();
+
+            builder.OwnsMany(m => m.Ingredients, i => {
+
+                i.WithOwner().HasForeignKey("MealId");
+
+                i.Property(i => i.FoodId)
+                .IsRequired();
+
+                i.Property(i => i.Name)
+                .IsRequired();
+
+                i.HasKey("MealId", nameof(MealIngredient.FoodId));
+
+            });
+
+            builder.OwnsMany(m => m.Sizes, ms =>
             {
-                b.ToTable("MealSizes");
+                ms.ToTable("MealSizes");
 
-                b.HasKey(ms => ms.Id);
+                ms.HasKey(ms => ms.Id);
                 
-                b.WithOwner().HasForeignKey("MealId");
+                ms.WithOwner().HasForeignKey("MealId");
 
-                b.Property(ms => ms.Name)
+                ms.Property(ms => ms.Name)
                 .IsRequired()
                 .HasMaxLength(300);
 
                 // EF Core does not support using ComplexProperty inside owned collections yet,
                 // so OwnsOne is used for Price and Nutrition instead.
 
-                b.OwnsOne(ms => ms.Price, p =>
+                ms.OwnsOne(ms => ms.Price, p =>
                 {
                     p.Property(x => x.Amount)
                      .HasPrecision(10, 2)
                      .HasColumnName("price_amount");
+
                     p.Property(x => x.Currency)
                      .HasMaxLength(3)
                      .HasColumnName("price_currency");
                 });
 
-                b.OwnsOne(ms => ms.Nutrition, n =>
+                ms.Property(ms => ms.SortOrder)
+                .IsRequired();
+
+                ms.OwnsOne(ms => ms.Nutrition, n =>
                 {
                     n.Property(x => x.Calories).HasColumnName("Calories");
                     n.Property(x => x.TotalFat).HasColumnName("TotalFat");
@@ -81,10 +103,29 @@ namespace Menus.Infrastructure.Persistence.Configurations
                     n.Property(x => x.VitaminCMg).HasColumnName("VitaminCMg");
                 });
 
-                builder.HasIndex(m => new { m.RestaurantId, m.Name })
-                .IsUnique();
+                ms.OwnsMany(ms => ms.IngredientQuantities, iq =>
+                {
+                    iq.ToTable("IngredientQuantities");
+
+                    iq.WithOwner()
+                    .HasForeignKey("MealSizeId");
+
+                    iq.Property(mi => mi.MealIngredientId)
+                      .IsRequired();
+
+                    iq.Property(mi => mi.Quantity)
+                    .HasPrecision(8, 2)
+                    .IsRequired();
+
+                    iq.HasKey("MealSizeId", nameof(IngredientQuantity.MealIngredientId));
+                });
+
+                ms.HasIndex("MealId", nameof(MealSize.Name)).IsUnique();
+                ms.HasIndex("MealId", nameof(MealSize.SortOrder)).IsUnique();
             });
 
+            builder.HasIndex(m => new { m.RestaurantId, m.Name })
+                .IsUnique();
         }
     }
 }

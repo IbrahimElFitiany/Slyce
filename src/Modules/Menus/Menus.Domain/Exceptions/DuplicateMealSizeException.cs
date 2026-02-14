@@ -1,4 +1,4 @@
-﻿using Shared.Kernal.Exceptions;
+﻿using Shared.Domain.Exceptions;
 
 namespace Menus.Domain.Exceptions
 {

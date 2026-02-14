@@ -13,12 +13,11 @@ namespace Food.Application.Services
             _foodRepository = foodRepository;
         }
 
-        public async Task<IEnumerable<FoodNutritionDTO>> GetFoodNutritionsAsync(IEnumerable<Guid> foodIds, CancellationToken cancellationToken)
+        public async Task<Dictionary<Guid, FoodNutritionDTO>> GetFoodNutritionsAsync(IEnumerable<Guid> foodIds, CancellationToken cancellationToken)
         {
             var foods = await _foodRepository.GetByIdsAsync(foodIds,cancellationToken);
 
             var foodDTOs = foods.Select(f =>
-  
                  new FoodNutritionDTO(
                     Id: f.Id,
                     Name: f.Name,
@@ -41,7 +40,7 @@ namespace Food.Application.Services
                     )
             ).ToList();
 
-            return foodDTOs;
+            return foodDTOs.ToDictionary(f => f.Id);
         }
     }
 }
