@@ -1,5 +1,6 @@
 ﻿using Customers.Domain.Enums;
 using Customers.Domain.ValueObjects;
+using Shared.Domain.ValueObjects;
 
 namespace Customers.Domain.Entities
 {

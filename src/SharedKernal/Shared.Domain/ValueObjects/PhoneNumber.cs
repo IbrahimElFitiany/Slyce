@@ -1,4 +1,4 @@
-﻿namespace Customers.Domain.ValueObjects
+﻿namespace Shared.Domain.ValueObjects
 {
     public record PhoneNumber
     {
