@@ -12,8 +12,7 @@
 
             value = value.Trim();
 
-            if (string.IsNullOrWhiteSpace(value))
-                throw new ArgumentException("Phone number cannot be empty.");
+            ArgumentException.ThrowIfNullOrWhiteSpace(value);
 
             if (value.Length < 8 || value.Length > 15)
                 throw new ArgumentException("Phone number length is invalid.");

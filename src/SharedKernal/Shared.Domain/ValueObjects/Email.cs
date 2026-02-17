@@ -9,8 +9,7 @@
 
         public static Email Create(string value) {
 
-            if (string.IsNullOrWhiteSpace(value))
-                throw new ArgumentException("Email cannot be empty.");
+            ArgumentException.ThrowIfNullOrWhiteSpace(value);
 
             if (!value.Contains('@') || !value.Contains('.'))
                 throw new ArgumentException("Invalid email format.");

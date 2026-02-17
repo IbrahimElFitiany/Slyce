@@ -1,18 +1,20 @@
 ﻿using Restaurants.Domain.Enums;
-using Restaurants.Domain.Exceptions;
+using Shared.Domain.ValueObjects;
 
 namespace Restaurants.Domain.Entities
 {
     public sealed class RestaurantApplication
     {
         public Guid Id { get; private init; }
-        public string BrandName { get; private set; }
-        public string OwnerFirstName { get; private set; }
-        public string OwnerLastName { get; private set; }
-        public string CompanyEmail { get; private set; }
-        public string MobileNumber { get; private set; }
+        public string BrandName { get; private set; } = null!;
+        public string OwnerFirstName { get; private set; } = null!;
+        public string OwnerLastName { get; private set; } = null!;
+        public Email CompanyEmail { get; private set; } = null!;
+        public PhoneNumber OwnerMobileNumber { get; private set; } = null!;
+        public PhoneNumber CompanyMobileNumber { get; private set; } = null!;
         public RestaurantType RestaurantType { get; private set; }
-        public int Branches { get; private set; }
+        public int BranchCount { get; private set; }
+        public Address MainBranchLocation { get; private set; } = null!;
         public string? Description { get; private set; }
         public ApplicationStatus Status { get; private set; } = ApplicationStatus.Pending;
         public string? RejectionReason { get; private set; }
@@ -21,42 +23,34 @@ namespace Restaurants.Domain.Entities
         public DateTime? ReviewedAt { get; private set; }
         public Guid? ReviewedBy { get; private set; }
 
+        private RestaurantApplication () { }
         public RestaurantApplication(
             string brandName,
             string ownerFirstName,
             string ownerLastName,
-            string companyEmail,
-            string mobileNumber,
+            Email companyEmail,
+            PhoneNumber ownerMobileNumber,
+            PhoneNumber companyMobileNumber,
             RestaurantType restaurantType,
-            int branches = 1,
+            Address mainBranchLocation,
+            int brancheCount = 1,
             string? description = null)
         {
-            if (string.IsNullOrWhiteSpace(brandName))
-                throw new CantBeEmptyException(nameof(brandName));
-
-            if (string.IsNullOrWhiteSpace(ownerFirstName))
-                throw new CantBeEmptyException(nameof(ownerFirstName));
-
-            if (string.IsNullOrWhiteSpace(ownerLastName))
-                throw new CantBeEmptyException(nameof(ownerLastName));
-
-            if (string.IsNullOrWhiteSpace(companyEmail))
-                throw new CantBeEmptyException(nameof(companyEmail));
-
-            if (string.IsNullOrWhiteSpace(mobileNumber))
-                throw new CantBeEmptyException(nameof(mobileNumber));
-
-            if (branches < 1)
-                throw new InvalidBranchNumberException(branches);
+            ArgumentException.ThrowIfNullOrWhiteSpace(brandName);
+            ArgumentException.ThrowIfNullOrWhiteSpace(ownerFirstName);
+            ArgumentException.ThrowIfNullOrWhiteSpace(ownerLastName);
+            ArgumentOutOfRangeException.ThrowIfLessThan(brancheCount,1);
 
             Id = Guid.NewGuid();
             BrandName = brandName;
             OwnerFirstName = ownerFirstName;
             OwnerLastName = ownerLastName;
             CompanyEmail = companyEmail;
-            MobileNumber = mobileNumber;
+            OwnerMobileNumber = ownerMobileNumber;
+            CompanyMobileNumber = companyMobileNumber;
             RestaurantType = restaurantType;
-            Branches = branches;
+            BranchCount = brancheCount;
+            MainBranchLocation = mainBranchLocation;
             Description = description;
         }
 
@@ -67,7 +61,6 @@ namespace Restaurants.Domain.Entities
             ReviewedBy = adminId;
             RejectionReason = null;
         }
-
         public void Reject(Guid adminId, string reason)
         {
             Status = ApplicationStatus.Rejected;
