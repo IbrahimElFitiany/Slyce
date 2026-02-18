@@ -8,6 +8,7 @@ using Menus.Domain.ValueObjects;
 using Shared.Domain.ValueObjects;
 using Shared.Application.Exceptions;
 using Menus.Domain.Services;
+using Shared.Domain.Exceptions;
 
 namespace Menus.Application.UseCases.Commands.CreateMenuMeal
 {
