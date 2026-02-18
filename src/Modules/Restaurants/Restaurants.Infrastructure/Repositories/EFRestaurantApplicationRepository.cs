@@ -2,6 +2,7 @@
 using Restaurants.Application.Interfaces;
 using Restaurants.Domain.Entities;
 using Restaurants.Infrastructure.Persistence;
+using Shared.Domain.ValueObjects;
 
 namespace Restaurants.Infrastructure.Repositories
 {
@@ -20,14 +21,19 @@ namespace Restaurants.Infrastructure.Repositories
             return restaurantApplication;
         }
 
-        public async Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default)
+        public Task<bool> ExistsByBrandName(string brandName, CancellationToken cancellationToken = default)
         {
-            return await _db.RestaurantApplications.AnyAsync(a => a.CompanyEmail == email, cancellationToken);
+            return _db.RestaurantApplications.AnyAsync(ra => ra.BrandName == brandName, cancellationToken);
         }
 
-        public async Task<bool> ExistsByMobileNumberAsync(string mobileNumber, CancellationToken cancellationToken = default)
+        public async Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default)
         {
-            return await _db.RestaurantApplications.AnyAsync(a => a.MobileNumber == mobileNumber, cancellationToken);
+            return await _db.RestaurantApplications.AnyAsync(ra => ra.CompanyEmail == Email.Create(email), cancellationToken);
+        }
+
+        public async Task<bool> ExistsByMobileNumberAsync(string companyMobileNumber, CancellationToken cancellationToken = default)
+        {
+            return await _db.RestaurantApplications.AnyAsync(ra => ra.CompanyEmail.Value == companyMobileNumber, cancellationToken);
         }
 
         public Task<RestaurantApplication?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)

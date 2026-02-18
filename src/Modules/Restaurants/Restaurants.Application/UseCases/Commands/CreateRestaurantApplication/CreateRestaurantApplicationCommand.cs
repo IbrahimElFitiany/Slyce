@@ -1,7 +1,24 @@
 ﻿using MediatR;
-using Restaurants.Application.DTOs;
 
 namespace Restaurants.Application.UseCases.Commands.CreateRestaurantApplication
 {
-    public record CreateRestaurantApplicationCommand(CreateRestaurantApplicationReqDTO ApplicationReqDTO) : IRequest<CreateRestaurantApplicationResDTO>;
+    public sealed record CreateRestaurantApplicationCommand(
+        string BrandName,
+        string OwnerFirstName,
+        string OwnerLastName,
+        string CompanyEmail,
+        string OwnerMobileNumber,
+        string CompanyMobileNumber,
+        string RestaurantType,
+        MainBranchAddressInput MainBranchAddress,
+        int BranchCount = 1,
+        string? Description = null) : IRequest<Guid>;
+
+    public sealed record MainBranchAddressInput(
+        string City,
+        string Area,
+        string? StreetName,
+        int? StreetNumber,
+        double Latitude,
+        double Longitude);
 }
