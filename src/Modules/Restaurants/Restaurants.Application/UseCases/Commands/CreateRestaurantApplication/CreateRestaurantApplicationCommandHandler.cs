@@ -1,58 +1,70 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using Restaurants.Application.DTOs;
 using Restaurants.Application.Interfaces;
 using Restaurants.Domain.Entities;
-using Restaurants.Domain.Exceptions;
+using Restaurants.Domain.Enums;
+using Shared.Domain.Exceptions;
+using Shared.Domain.ValueObjects;
 
 namespace Restaurants.Application.UseCases.Commands.CreateRestaurantApplication
 {
-    public sealed class CreateRestaurantApplicationCommandHandler : IRequestHandler<CreateRestaurantApplicationCommand,CreateRestaurantApplicationResDTO>
+    public sealed class CreateRestaurantApplicationCommandHandler : IRequestHandler<CreateRestaurantApplicationCommand,Guid>
     {
         private readonly IRestaurantApplicationRepository _restaurantApplicationRepository;
         private readonly ILogger<CreateRestaurantApplicationCommandHandler> _logger;
 
         public CreateRestaurantApplicationCommandHandler(
-            IRestaurantApplicationRepository repository,
+            IRestaurantApplicationRepository restaurantApplicationRepository,
             ILogger<CreateRestaurantApplicationCommandHandler> logger)
         {
-            _restaurantApplicationRepository = repository;
+            _restaurantApplicationRepository = restaurantApplicationRepository;
             _logger = logger;
         }
 
-        public async Task<CreateRestaurantApplicationResDTO> Handle(CreateRestaurantApplicationCommand request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CreateRestaurantApplicationCommand request, CancellationToken cancellationToken)
         {
-            var dto = request.ApplicationReqDTO;
 
-            if (await _restaurantApplicationRepository.ExistsByEmailAsync(dto.CompanyEmail))
+            if (await _restaurantApplicationRepository.ExistsByEmailAsync(request.CompanyEmail,cancellationToken))
             {
-                _logger.LogWarning("Duplicate email attempted: {Email}", dto.CompanyEmail);
-                throw new DuplicateEmailException(dto.CompanyEmail);
+                _logger.LogWarning("Duplicate email attempted: {Email}", request.CompanyEmail);
+                throw new DuplicateException(request.CompanyEmail);
             }
 
-            if (await _restaurantApplicationRepository.ExistsByMobileNumberAsync(dto.MobileNumber))
+            if (await _restaurantApplicationRepository.ExistsByBrandNameAsync(request.BrandName, cancellationToken))
             {
-                _logger.LogWarning("Duplicate mobile number attempted: {MobileNumber}", dto.MobileNumber);
-
-                throw new Exception ($"A restaurant application with mobile number '{dto.MobileNumber}' already exists.");
+                _logger.LogWarning("Duplicate BrandName attempted: {BrandName}", request.BrandName);
+                throw new DuplicateException($"A restaurant application with brandName'{request.BrandName}' already exists.");
             }
 
-            var application = new RestaurantApplication(
-                dto.BrandName,
-                dto.OwnerFirstName,
-                dto.OwnerLastName,
-                dto.CompanyEmail,
-                dto.MobileNumber,
-                dto.RestaurantType,
-                dto.Branches,
-                dto.Description
+            if (!Enum.TryParse<RestaurantType>(request.RestaurantType, true, out var restaurantType))
+                throw new Exception($"Invalid restaurant type: '{request.RestaurantType}'.");
+
+            var restaurantApplication = new RestaurantApplication(
+                brandName: request.BrandName,
+                ownerFirstName: request.OwnerFirstName,
+                ownerLastName: request.OwnerLastName,
+                companyEmail: Email.Create(request.CompanyEmail),
+                ownerMobileNumber: PhoneNumber.Create(request.OwnerMobileNumber),
+                companyMobileNumber: PhoneNumber.Create(request.CompanyMobileNumber),
+                restaurantType: restaurantType,
+                brancheCount: request.BranchCount,
+                mainBranchLocation: new Address(
+                    request.MainBranchAddress.City,
+                    request.MainBranchAddress.Area,
+                    request.MainBranchAddress.StreetName,
+                    request.MainBranchAddress.StreetNumber,
+                    new Coordinates(
+                        request.MainBranchAddress.Latitude,
+                        request.MainBranchAddress.Longitude
+                        )
+                    ),
+                description: request.Description
             );
 
-            await _restaurantApplicationRepository.AddAsync(application, cancellationToken);
+            await _restaurantApplicationRepository.AddAsync(restaurantApplication, cancellationToken);
+            _logger.LogInformation("Restaurant application {ApplicationId} created for email {Email}", restaurantApplication.Id, restaurantApplication.CompanyEmail.Value);
 
-            _logger.LogInformation("Restaurant application {ApplicationId} created for email {Email}",application.Id, dto.CompanyEmail);
-
-            return new CreateRestaurantApplicationResDTO(application.Id);
+            return restaurantApplication.Id;
         }
     }
 }
