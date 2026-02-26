@@ -19,7 +19,7 @@ namespace Restaurants.Domain.Entities
         public ApplicationStatus Status { get; private set; } = ApplicationStatus.Pending;
         public string? RejectionReason { get; private set; }
 
-        public DateTime SubmittedAt { get; private init; } = DateTime.UtcNow;
+        public DateTime SubmittedAt { get; private init; }
         public DateTime? ReviewedAt { get; private set; }
         public Guid? ReviewedBy { get; private set; }
 
@@ -33,13 +33,13 @@ namespace Restaurants.Domain.Entities
             PhoneNumber companyMobileNumber,
             RestaurantType restaurantType,
             Address mainBranchLocation,
-            int brancheCount = 1,
+            int branchCount = 1,
             string? description = null)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(brandName);
             ArgumentException.ThrowIfNullOrWhiteSpace(ownerFirstName);
             ArgumentException.ThrowIfNullOrWhiteSpace(ownerLastName);
-            ArgumentOutOfRangeException.ThrowIfLessThan(brancheCount,1);
+            ArgumentOutOfRangeException.ThrowIfLessThan(branchCount, 1);
 
             Id = Guid.NewGuid();
             BrandName = brandName;
@@ -49,9 +49,11 @@ namespace Restaurants.Domain.Entities
             OwnerMobileNumber = ownerMobileNumber;
             CompanyMobileNumber = companyMobileNumber;
             RestaurantType = restaurantType;
-            BranchCount = brancheCount;
+            BranchCount = branchCount;
             MainBranchLocation = mainBranchLocation;
             Description = description;
+
+            SubmittedAt = DateTime.UtcNow;
         }
 
         public void Approve(Guid adminId)
