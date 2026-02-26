@@ -14,8 +14,13 @@ namespace Restaurants.Infrastructure
         public static IServiceCollection AddRestaurantModule(this IServiceCollection services ,IConfiguration configuration)
         {
             services.AddDbContext<RestaurantDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+
             services.AddScoped<IRestaurantRepository, EFRestaurantRepository>();
+            services.AddScoped<IRestaurantBranchRepository, EFRestaurantBranchRepository>();
             services.AddScoped<IRestaurantApplicationRepository, EFRestaurantApplicationRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
             services.AddScoped<IRestaurantServices, RestaurantServices>();
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateRestaurantApplicationCommand>());
 
