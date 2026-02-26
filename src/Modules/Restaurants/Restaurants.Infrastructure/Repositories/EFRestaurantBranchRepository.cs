@@ -1,4 +1,5 @@
-﻿using Restaurants.Application.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Restaurants.Application.Interfaces;
 using Restaurants.Domain.Entities;
 using Restaurants.Infrastructure.Persistence;
 
@@ -13,19 +14,15 @@ namespace Restaurants.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
-        public Task CreateAsync(RestaurantBranch branch, CancellationToken ct = default)
+        public void Add(RestaurantBranch branch)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<IReadOnlyList<RestaurantBranch?>> GetBranchesByRestaurantIdAsync(Guid RestaurantId, CancellationToken ct = default)
-        {
-            throw new NotImplementedException();
+            _dbContext.RestaurantBranches.Add(branch);
         }
 
         public async Task<RestaurantBranch?> GetByIdAsync(Guid Id, CancellationToken ct = default)
         {
-            return await _dbContext.RestaurantBranches.FindAsync(Id, ct);
+            return await _dbContext.RestaurantBranches
+                .FindAsync(Id, ct);
         }
     }
 }

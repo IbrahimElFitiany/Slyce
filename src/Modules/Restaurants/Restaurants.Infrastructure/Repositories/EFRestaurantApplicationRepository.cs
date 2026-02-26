@@ -8,42 +8,41 @@ namespace Restaurants.Infrastructure.Repositories
 {
     public sealed class EFRestaurantApplicationRepository : IRestaurantApplicationRepository
     {
-        private readonly RestaurantDbContext _db;
+        private readonly RestaurantDbContext _dbContext
+            ;
         public EFRestaurantApplicationRepository(RestaurantDbContext restaurantDbContext)
         {
-            _db = restaurantDbContext;
+            _dbContext = restaurantDbContext;
         }
 
-        public async Task<RestaurantApplication> AddAsync(RestaurantApplication restaurantApplication, CancellationToken cancellationToken = default)
+        public void Add(RestaurantApplication restaurantApplication)
         {
-            await _db.RestaurantApplications.AddAsync(restaurantApplication);
-            await _db.SaveChangesAsync(cancellationToken);
-            return restaurantApplication;
+            _dbContext.RestaurantApplications
+                .Add(restaurantApplication);
         }
 
-        public Task<bool> ExistsByBrandName(string brandName, CancellationToken cancellationToken = default)
+        public async Task<bool> ExistsByBrandNameAsync(string brandName, CancellationToken cancellationToken = default)
         {
-            return _db.RestaurantApplications.AnyAsync(ra => ra.BrandName == brandName, cancellationToken);
+             return await _dbContext.RestaurantApplications
+                .AnyAsync(ra => ra.BrandName == brandName, cancellationToken);
         }
 
         public async Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default)
         {
-            return await _db.RestaurantApplications.AnyAsync(ra => ra.CompanyEmail == Email.Create(email), cancellationToken);
+            return await _dbContext.RestaurantApplications
+                .AnyAsync(ra => ra.CompanyEmail == Email.Create(email), cancellationToken);
         }
 
         public async Task<bool> ExistsByMobileNumberAsync(string companyMobileNumber, CancellationToken cancellationToken = default)
         {
-            return await _db.RestaurantApplications.AnyAsync(ra => ra.CompanyEmail.Value == companyMobileNumber, cancellationToken);
+            return await _dbContext.RestaurantApplications
+                .AnyAsync(ra => ra.CompanyEmail.Value == companyMobileNumber, cancellationToken);
         }
 
-        public Task<RestaurantApplication?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<RestaurantApplication?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<IReadOnlyList<RestaurantApplication>> ListAsync(CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
+            return await _dbContext.RestaurantApplications
+                .FindAsync(id, cancellationToken);
         }
     }
 }
