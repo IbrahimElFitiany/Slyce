@@ -5,7 +5,7 @@
         public string City { get; } = null!;
         public string Area { get; } = null!;
         public string? StreetName { get; }
-        public int? StreetNumber { get; }
+        public string? StreetNumber { get; }
         public Coordinates Coordinates { get; } = null!;
 
         private Address(){ }
@@ -13,7 +13,7 @@
             string city,
             string area,
             string? street,
-            int? streetNumber,
+            string? streetNumber,
             Coordinates coordinates)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(city);
