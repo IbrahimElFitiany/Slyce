@@ -37,7 +37,7 @@
     <ProjectReference Include="..\Modules\Orders\Orders.Infrastructure\Orders.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Restaurants\Restaurants.Application\Restaurants.Application.csproj" />
     <ProjectReference Include="..\Modules\Restaurants\Restaurants.Infrastructure\Restaurants.Infrastructure.csproj" />
-    <ProjectReference Include="..\Modules\Restaurants\Restaurants.Presentation\Restaurants.Presentation\Restaurants.Presentation.csproj" />
+    <ProjectReference Include="..\Modules\Restaurants\Restaurants.Presentation\Restaurants.Presentation.csproj" />
   </ItemGroup>
 
 </Project>

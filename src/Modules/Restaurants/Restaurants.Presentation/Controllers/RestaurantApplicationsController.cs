@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Restaurants.Application.UseCases.Commands.ApproveRestaurantApplication;
 using Restaurants.Application.UseCases.Commands.CreateRestaurantApplication;
 using Restaurants.Presentation.DTOs;
 
@@ -45,10 +46,21 @@ namespace Restaurants.Presentation.Controllers
             return CreatedAtAction(nameof(GetById), new { id = result }, new { id = result });
         }
 
-        [HttpGet("{id}")]
-        public Task<IActionResult> GetById(Guid id, CancellationToken ct)
+        [HttpPost("approve/{applicationId}")]
+        public async Task<IActionResult> ApproveRestaurantApplication([FromRoute] Guid applicationId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            Guid dummyUserId = Guid.NewGuid();
+
+            var result = await _mediator.Send(new ApproveRestaurantApplicationCommand(dummyUserId, applicationId));
+
+            return CreatedAtAction(nameof(GetById),new { id = result, version = "1.0" },new { id = result });
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
+        {
+            await Task.Delay(19);
+            return Ok(new { });
         }
     }
 }

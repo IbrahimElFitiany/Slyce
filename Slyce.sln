@@ -68,7 +68,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Application", "src\S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Domain", "src\SharedKernal\Shared.Domain\Shared.Domain.csproj", "{A3E39B1F-2250-1695-3F5F-7DEF2323758B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Restaurants.Presentation", "src\Modules\Restaurants\Restaurants.Presentation\Restaurants.Presentation\Restaurants.Presentation.csproj", "{D43A3CB1-7F35-4451-AAAD-709A5A158E98}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Restaurants.Presentation", "src\Modules\Restaurants\Restaurants.Presentation\Restaurants.Presentation.csproj", "{D43A3CB1-7F35-4451-AAAD-709A5A158E98}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
