@@ -16,7 +16,7 @@
         string City,
         string Area,
         string? StreetName,
-        int? StreetNumber,
+        string? StreetNumber,
         double Latitude,
         double Longitude);
 }
