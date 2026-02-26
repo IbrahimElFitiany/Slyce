@@ -11,14 +11,17 @@ namespace Restaurants.Application.UseCases.Commands.CreateRestaurantApplication
     public sealed class CreateRestaurantApplicationCommandHandler : IRequestHandler<CreateRestaurantApplicationCommand,Guid>
     {
         private readonly IRestaurantApplicationRepository _restaurantApplicationRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<CreateRestaurantApplicationCommandHandler> _logger;
 
         public CreateRestaurantApplicationCommandHandler(
             IRestaurantApplicationRepository restaurantApplicationRepository,
-            ILogger<CreateRestaurantApplicationCommandHandler> logger)
+            ILogger<CreateRestaurantApplicationCommandHandler> logger,
+            IUnitOfWork unitOfWork)
         {
             _restaurantApplicationRepository = restaurantApplicationRepository;
             _logger = logger;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Guid> Handle(CreateRestaurantApplicationCommand request, CancellationToken cancellationToken)
@@ -47,7 +50,7 @@ namespace Restaurants.Application.UseCases.Commands.CreateRestaurantApplication
                 ownerMobileNumber: PhoneNumber.Create(request.OwnerMobileNumber),
                 companyMobileNumber: PhoneNumber.Create(request.CompanyMobileNumber),
                 restaurantType: restaurantType,
-                brancheCount: request.BranchCount,
+                branchCount: request.BranchCount,
                 mainBranchLocation: new Address(
                     request.MainBranchAddress.City,
                     request.MainBranchAddress.Area,
@@ -61,7 +64,10 @@ namespace Restaurants.Application.UseCases.Commands.CreateRestaurantApplication
                 description: request.Description
             );
 
-            await _restaurantApplicationRepository.AddAsync(restaurantApplication, cancellationToken);
+            _restaurantApplicationRepository.Add(restaurantApplication);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
             _logger.LogInformation("Restaurant application {ApplicationId} created for email {Email}", restaurantApplication.Id, restaurantApplication.CompanyEmail.Value);
 
             return restaurantApplication.Id;
