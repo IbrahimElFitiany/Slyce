@@ -4,8 +4,7 @@ namespace Restaurants.Application.Interfaces
 {
     public interface IRestaurantBranchRepository
     {
-        Task CreateAsync(RestaurantBranch branch, CancellationToken ct = default);
+        void Add(RestaurantBranch branch);
         Task<RestaurantBranch?> GetByIdAsync(Guid id, CancellationToken ct = default);
-        Task<IReadOnlyList<RestaurantBranch>> GetBranchesByRestaurantIdAsync(Guid restaurantId, CancellationToken ct = default);
     }
 }
