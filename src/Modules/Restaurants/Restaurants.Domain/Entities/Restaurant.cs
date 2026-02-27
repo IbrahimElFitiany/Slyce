@@ -7,22 +7,34 @@ namespace Restaurants.Domain.Entities
         public Guid Id { get; private init; }
         public string? Image { get; private set; }
         public string BrandName { get; private set; } = null!;
-        public string Description { get; private set; } = null!;
+        public string? Description { get; private set; }
         public RestaurantType Type { get; private set; }
-        public RestaurantStatus Status { get; private set; } = RestaurantStatus.Pending;
-        public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
-        public DateTime UpdatedAt { get; private set; } = DateTime.UtcNow;
+        public RestaurantStatus Status { get; private set; } = RestaurantStatus.Draft;
+        public DateTime CreatedAt { get; private set; }
+        public DateTime UpdatedAt { get; private set; }
 
         private Restaurant() { }
-        public Restaurant(string name, string description, RestaurantType restaurantType)
+        public Restaurant(
+            string brandName,
+            string? image,
+            string? description,
+            RestaurantType restaurantType)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(name);
-            ArgumentException.ThrowIfNullOrWhiteSpace(description);
+            ArgumentException.ThrowIfNullOrWhiteSpace(brandName);
+
+            if (description is not null)
+                ArgumentException.ThrowIfNullOrWhiteSpace(description);
+
+            if (image is not null)
+                ArgumentException.ThrowIfNullOrWhiteSpace(image);
 
             Id = Guid.NewGuid();
-            BrandName = name;
+            BrandName = brandName;
+            Image = image;
             Description = description;
             Type = restaurantType;
+
+            CreatedAt = UpdatedAt = DateTime.UtcNow;
         }
 
         public void UpdateStatus(RestaurantStatus status)
@@ -30,5 +42,6 @@ namespace Restaurants.Domain.Entities
             Status = status;
             UpdatedAt = DateTime.UtcNow;
         } 
+
     }
 }

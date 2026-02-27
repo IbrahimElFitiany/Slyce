@@ -2,8 +2,9 @@
 {
     public enum RestaurantStatus
     {
-        Pending,
-        Approved,
+        Draft,
+        UnderReview,
+        Active,
         Suspended
     }
 }
