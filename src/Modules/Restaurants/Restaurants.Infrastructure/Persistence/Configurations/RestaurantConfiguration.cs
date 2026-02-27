@@ -9,14 +9,36 @@ namespace Restaurants.Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<Restaurant> builder)
         {
             builder.HasKey(r => r.Id);
-            builder.Property(r => r.Id).ValueGeneratedNever();
-            builder.Property(r => r.Image).IsRequired(false).HasMaxLength(500);
-            builder.Property(r => r.BrandName).IsRequired().HasMaxLength(200);
-            builder.Property(r => r.Description).IsRequired().HasMaxLength(1000);
-            builder.Property(r => r.Type).HasConversion<string>().IsRequired();
-            builder.Property(r=> r.Status).HasConversion<string>().IsRequired();
-            builder.Property(r => r.CreatedAt).IsRequired();
-            builder.Property(r => r.UpdatedAt).IsRequired();
+
+            builder.Property(r => r.Id)
+                .ValueGeneratedNever();
+
+            builder.Property(r => r.Image)
+                .IsRequired(false)
+                .HasMaxLength(500);
+
+            builder.Property(r => r.BrandName)
+                .IsRequired()
+                .HasMaxLength(200);
+
+            builder
+                .Property(r => r.Description)
+                .IsRequired(false)
+                .HasMaxLength(1000);
+
+            builder.Property(r => r.Type)
+                .HasConversion<string>()
+                .IsRequired();
+
+            builder.Property(r=> r.Status)
+                .HasConversion<string>()
+                .IsRequired();
+
+            builder.Property(r => r.CreatedAt)
+                .IsRequired();
+
+            builder.Property(r => r.UpdatedAt)
+                .IsRequired();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Restaurants.Domain.Enums;
+using Shared.Domain.Exceptions;
 using Shared.Domain.ValueObjects;
 
 namespace Restaurants.Domain.Entities
@@ -58,6 +59,11 @@ namespace Restaurants.Domain.Entities
 
         public void Approve(Guid adminId)
         {
+            ArgumentOutOfRangeException.ThrowIfEqual(adminId,Guid.Empty);
+
+            if (Status != ApplicationStatus.Pending)
+                throw new InvalidDomainOperationException("Only pending applications can be approved");
+
             Status = ApplicationStatus.Approved;
             ReviewedAt = DateTime.UtcNow;
             ReviewedBy = adminId;
@@ -65,6 +71,12 @@ namespace Restaurants.Domain.Entities
         }
         public void Reject(Guid adminId, string reason)
         {
+            ArgumentOutOfRangeException.ThrowIfEqual(adminId, Guid.Empty);
+            ArgumentException.ThrowIfNullOrWhiteSpace(reason);
+
+            if (Status != ApplicationStatus.Pending)
+                throw new InvalidDomainOperationException("Only pending applications can be rejected");
+
             Status = ApplicationStatus.Rejected;
             ReviewedAt = DateTime.UtcNow;
             ReviewedBy = adminId;

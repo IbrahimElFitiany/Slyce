@@ -46,18 +46,18 @@ namespace Restaurants.Presentation.Controllers
             return CreatedAtAction(nameof(GetById), new { id = result }, new { id = result });
         }
 
-        [HttpPost("approve/{applicationId}")]
+        [HttpPost("{applicationId}/approve")]
         public async Task<IActionResult> ApproveRestaurantApplication([FromRoute] Guid applicationId, CancellationToken cancellationToken)
         {
             Guid dummyUserId = Guid.NewGuid();
 
-            var result = await _mediator.Send(new ApproveRestaurantApplicationCommand(dummyUserId, applicationId));
+            await _mediator.Send(new ApproveRestaurantApplicationCommand(dummyUserId, applicationId));
 
-            return CreatedAtAction(nameof(GetById),new { id = result, version = "1.0" },new { id = result });
+            return Ok();
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
+        public async Task<IActionResult> GetById([FromRoute] Guid id, CancellationToken ct)
         {
             await Task.Delay(19);
             return Ok(new { });
