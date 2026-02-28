@@ -3,6 +3,7 @@ using System;
 using Customers.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Customers.Infrastructure.Migrations
 {
     [DbContext(typeof(CustomersDbContext))]
-    partial class CustomersDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260228054503_Customer_configCustomerAddress")]
+    partial class Customer_configCustomerAddress
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -88,9 +91,6 @@ namespace Customers.Infrastructure.Migrations
 
                             b1.Property<Guid>("CustomerId")
                                 .HasColumnType("uuid");
-
-                            b1.Property<bool>("IsPrimary")
-                                .HasColumnType("boolean");
 
                             b1.Property<string>("Label")
                                 .IsRequired()
