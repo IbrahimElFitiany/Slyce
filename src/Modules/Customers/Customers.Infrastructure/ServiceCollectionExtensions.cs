@@ -14,6 +14,7 @@ namespace Customers.Infrastructure
         public static IServiceCollection AddCustomerModule(this IServiceCollection services ,IConfiguration configuration) {
 
             services.AddDbContext<CustomersDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICustomerRepository, EFCustomerRepository>();
 
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<RegisterCustomerCommandHandler>());
