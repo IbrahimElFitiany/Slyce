@@ -11,6 +11,7 @@ using Menus.Infrastructure;
 using Food.Infrastructure;
 using Menus.Presentation.Controllers;
 using Restaurants.Presentation.Controllers;
+using Customers.Presentation.Controllers;
 
 
 namespace WebAPI
@@ -45,6 +46,12 @@ namespace WebAPI
             builder.Services
                 .AddControllers()
                 .AddApplicationPart(typeof(RestaurantApplicationsController).Assembly);
+
+
+
+            builder.Services
+                .AddControllers()
+                .AddApplicationPart(typeof(AddressesController).Assembly);
 
 
             builder.Services.AddScoped<IOrderNotifier, SignalROrderNotifier>();

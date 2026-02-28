@@ -70,6 +70,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Domain", "src\Shared
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Restaurants.Presentation", "src\Modules\Restaurants\Restaurants.Presentation\Restaurants.Presentation.csproj", "{D43A3CB1-7F35-4451-AAAD-709A5A158E98}"
 EndProject
+<<<<<<< Updated upstream
+=======
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Customers.Presentation", "src\Modules\Customers\Customers.Presentation\Customers.Presentation.csproj", "{9FA09DA7-F660-45E9-9B0E-EF43ABB86F33}"
+EndProject
+>>>>>>> Stashed changes
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
