@@ -31,6 +31,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Modules\Customers\Customers.Application\Customers.Application.csproj" />
     <ProjectReference Include="..\Modules\Customers\Customers.Infrastructure\Customers.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Customers\Customers.Presentation\Customers.Presentation.csproj" />
     <ProjectReference Include="..\Modules\Food\Food.Infrastructure\Food.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Menus\Menus.Infrastructure\Menus.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Menus\Menus.Presentation\Menus.Presentation.csproj" />

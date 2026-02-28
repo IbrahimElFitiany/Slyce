@@ -7,39 +7,26 @@ namespace Customers.Infrastructure.Repositories
 {
     public class EFCustomerRepository : ICustomerRepository
     {
-        private readonly CustomersDbContext _db;
-        public EFCustomerRepository (CustomersDbContext db)
-        {
-            _db = db;
-        }
+        private readonly CustomersDbContext _dbContext;
 
-        public async Task AddAsync(Customer customer , CancellationToken ct)
+        public EFCustomerRepository (CustomersDbContext customersDbContext)
         {
-            await _db.Customers.AddAsync(customer, ct);
-            await _db.SaveChangesAsync();
+            _dbContext = customersDbContext;
         }
 
         public async Task<Customer?> GetByIdAsync(Guid id, CancellationToken ct)
         {
-            return await _db.Customers.FindAsync(id,ct);
-        }
-        public async Task<IEnumerable<Customer>> ListAsync(CancellationToken ct)
-        {
-            return await _db.Customers.ToListAsync(ct);
+            return await _dbContext.Customers.FindAsync(id, ct);
         }
 
-        public async Task DeleteAsync(Guid id,CancellationToken ct)
+        public void Add(Customer customer)
         {
-            var customer = await _db.Customers.FindAsync(id,ct);
-            if (customer != null)    
-            {
-                _db.Customers.Remove(customer);
-                await _db.SaveChangesAsync(ct);
-            }
+            _dbContext.Customers.Add(customer);
         }
-        public async Task SaveChangesAsync(CancellationToken ct)
+
+        public void Delete(Customer customer)
         {
-            await _db.SaveChangesAsync(ct);
+            _dbContext.Customers.Remove(customer);
         }
     }
 }
