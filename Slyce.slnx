@@ -1,0 +1,43 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/WebAPI/WebAPI.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Customers/">
+    <Project Path="src/Modules/Customers/Customers.Application/Customers.Application.csproj" />
+    <Project Path="src/Modules/Customers/Customers.Domain/Customers.Domain.csproj" />
+    <Project Path="src/Modules/Customers/Customers.Infrastructure/Customers.Infrastructure.csproj" />
+    <Project Path="src/Modules/Customers/Customers.Presentation/Customers.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Food/">
+    <Project Path="src/Modules/Food/Food.Application/Food.Application.csproj" />
+    <Project Path="src/Modules/Food/Food.Contracts/Food.Contracts.csproj" />
+    <Project Path="src/Modules/Food/Food.Domain/Food.Domain.csproj" />
+    <Project Path="src/Modules/Food/Food.Infrastructure/Food.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Menus/">
+    <Project Path="src/Modules/Menus/Menus.Application/Menus.Application.csproj" />
+    <Project Path="src/Modules/Menus/Menus.Domain/Menus.Domain.csproj" />
+    <Project Path="src/Modules/Menus/Menus.Infrastructure/Menus.Infrastructure.csproj" />
+    <Project Path="src/Modules/Menus/Menus.Presentation/Menus.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Orders/">
+    <Project Path="src/Modules/Orders/Orders.Application/Orders.Application.csproj" />
+    <Project Path="src/Modules/Orders/Orders.Domain/Orders.Domain.csproj" />
+    <Project Path="src/Modules/Orders/Orders.Infrastructure/Orders.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Restaurants/">
+    <Project Path="src/Modules/Restaurants/Restaurants.Application/Restaurants.Application.csproj" />
+    <Project Path="src/Modules/Restaurants/Restaurants.Contracts/Restaurants.Contracts.csproj" />
+    <Project Path="src/Modules/Restaurants/Restaurants.Domain/Restaurants.Domain.csproj" />
+    <Project Path="src/Modules/Restaurants/Restaurants.Infrastructure/Restaurants.Infrastructure.csproj" />
+    <Project Path="src/Modules/Restaurants/Restaurants.Presentation/Restaurants.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/src/SharedKernal/">
+    <Project Path="src/SharedKernal/Shared.Application/Shared.Application.csproj" />
+    <Project Path="src/SharedKernal/Shared.Domain/Shared.Domain.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <File Path=".gitkeep" />
+  </Folder>
+</Solution>
