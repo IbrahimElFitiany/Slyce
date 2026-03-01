@@ -5,14 +5,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="MediatR" Version="13.1.0" />
+    <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.9" />
   </ItemGroup>
-
+  
   <ItemGroup>
-    <ProjectReference Include="..\..\..\SharedKernal\Shared.Application\Shared.Application.csproj" />
-    <ProjectReference Include="..\Customers.Domain\Customers.Domain.csproj" />
+    <ProjectReference Include="..\Customers.Application\Customers.Application.csproj" />
   </ItemGroup>
-
+  
 </Project>
