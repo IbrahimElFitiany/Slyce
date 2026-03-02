@@ -33,6 +33,12 @@
     <Project Path="src/Modules/Restaurants/Restaurants.Infrastructure/Restaurants.Infrastructure.csproj" />
     <Project Path="src/Modules/Restaurants/Restaurants.Presentation/Restaurants.Presentation.csproj" />
   </Folder>
+    <Folder Name="/src/Modules/Subscriptions/">
+    <Project Path="src/Modules/Subscriptions/Subscriptions.Application/Subscriptions.Application.csproj" />
+    <Project Path="src/Modules/Subscriptions/Subscriptions.Domain/Subscriptions.Domain.csproj" />
+    <Project Path="src/Modules/Subscriptions/Subscriptions.Infrastructure/Subscriptions.Infrastructure.csproj" />
+    <Project Path="src/Modules/Subscriptions/Subscriptions.Presentation/Subscriptions.Presentation.csproj" />
+  </Folder>
   <Folder Name="/src/SharedKernal/">
     <Project Path="src/SharedKernal/Shared.Application/Shared.Application.csproj" />
     <Project Path="src/SharedKernal/Shared.Domain/Shared.Domain.csproj" />
