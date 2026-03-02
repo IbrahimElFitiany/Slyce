@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using WebAPI.Exceptions;
+using Shared.Application.Exceptions;
+using Shared.Domain.Exceptions;
 
 namespace WebAPI.Infrastructure.ExceptionHandling
 {
@@ -11,14 +12,25 @@ namespace WebAPI.Infrastructure.ExceptionHandling
             var problemDetails = new ProblemDetails();
             problemDetails.Instance = httpContext.Request.Path;
 
-            if (exception is DomainException e)
+            if (exception is NotFoundException nf)
             {
-                httpContext.Response.StatusCode = (int)e.StatusCode;
-                problemDetails.Title = e.Message;
+                httpContext.Response.StatusCode = 404;
+                problemDetails.Title = nf.Message;
+            }
+            else if (exception is DuplicateException due)
+            {
+                httpContext.Response.StatusCode = 409;
+                problemDetails.Title = due.Message;
+            }
+            else if (exception is DomainException de)
+            {
+                httpContext.Response.StatusCode = 400;
+                problemDetails.Title = de.Message;
             }
             else
             {
-                problemDetails.Title = exception.Message;
+                httpContext.Response.StatusCode = 500;
+                problemDetails.Title = "Internal Server Error";
             }
             logger.LogError("{ProblemDetailsTitle}", problemDetails.Title);
 

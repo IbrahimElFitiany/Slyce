@@ -12,6 +12,8 @@ using Food.Infrastructure;
 using Menus.Presentation.Controllers;
 using Restaurants.Presentation.Controllers;
 using Customers.Presentation.Controllers;
+using Subscriptions.Presentation.Controllers;
+using Subscriptions.Infrastructure;
 
 
 namespace WebAPI
@@ -35,7 +37,8 @@ namespace WebAPI
                 .AddOrdersModule(builder.Configuration)
                 .AddRestaurantModule(builder.Configuration)
                 .AddMenusModule(builder.Configuration)
-                .AddFoodModule(builder.Configuration);
+                .AddFoodModule(builder.Configuration)
+                .AddSubcriptionsModule(builder.Configuration);
 
 
             //will refactor later
