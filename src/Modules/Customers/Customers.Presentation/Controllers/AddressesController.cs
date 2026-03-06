@@ -3,7 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Customers.Application.UseCases.Commands.CreateAddress;
 using Customers.Presentation.DTOs;
-
+using Customers.Application.UseCases.Queries.GetCustomerAddress;
 
 
 namespace Customers.Presentation.Controllers
@@ -11,8 +11,14 @@ namespace Customers.Presentation.Controllers
     [Route("api/v{version:apiVersion}/addresses")]
     [ApiVersion("1.0")]
     [ApiController]
-    public class AddressesController(IMediator _mediator) : ControllerBase
+    public class AddressesController : ControllerBase
     {
+        private readonly IMediator _mediator;
+
+        public AddressesController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
         
         [HttpPost]
         public async Task<IActionResult> CreateAddress([FromBody] CreateAddressRequest request, CancellationToken cancellationToken)
@@ -40,11 +46,18 @@ namespace Customers.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
-        public Task<IActionResult> GetAddress([FromRoute] Guid id, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAddress(
+            [FromHeader(Name = "Customer-Id")] Guid customerId,
+            [FromRoute] Guid id,
+            CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            //TODO Customer-Id is Used For mocking rn
+
+            var query = new GetCustomerAddressQuery(customerId, id); 
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
         }
-
-
     }
 }
