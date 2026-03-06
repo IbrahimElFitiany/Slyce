@@ -8,6 +8,7 @@
     <Project Path="src/Modules/Customers/Customers.Domain/Customers.Domain.csproj" />
     <Project Path="src/Modules/Customers/Customers.Infrastructure/Customers.Infrastructure.csproj" />
     <Project Path="src/Modules/Customers/Customers.Presentation/Customers.Presentation.csproj" />
+    <Project Path="src/Modules/Customers/Customers.Contracts/Customers.Contracts.csproj" />
   </Folder>
   <Folder Name="/src/Modules/Food/">
     <Project Path="src/Modules/Food/Food.Application/Food.Application.csproj" />

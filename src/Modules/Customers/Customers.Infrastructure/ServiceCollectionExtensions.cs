@@ -17,7 +17,12 @@ namespace Customers.Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICustomerRepository, EFCustomerRepository>();
 
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<RegisterCustomerCommandHandler>());
+            services.AddMediatR(cfg => 
+            cfg.RegisterServicesFromAssemblies(
+                typeof(RegisterCustomerCommandHandler).Assembly,
+                typeof(CustomersDbContext).Assembly));
+
+
             return services;
         }
     }
