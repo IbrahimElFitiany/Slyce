@@ -2,7 +2,7 @@
 using Menus.Domain.Entities;
 using Menus.Application.Interfaces;
 using Microsoft.Extensions.Logging;
-using Restaurants.Contracts;
+using Restaurants.Contracts.Interfaces;
 
 
 namespace Menus.Application.UseCases.Commands.CreateMenuCategory
@@ -26,7 +26,7 @@ namespace Menus.Application.UseCases.Commands.CreateMenuCategory
         public async Task Handle(CreateMenuCategoryCommand request, CancellationToken cancellationToken)
         {
 
-            if (!await _restaurantServices.ExistsAsync(request.restaurantId)) {
+            if (!await _restaurantServices.ExistsAsync(request.restaurantId,cancellationToken)) {
 
                 throw new Exception("restaurant is not there");
             }
