@@ -2,8 +2,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Restaurants.Application.Interfaces;
+using Restaurants.Application.Services;
 using Restaurants.Application.UseCases.Commands.CreateRestaurantApplication;
-using Restaurants.Contracts;
+using Restaurants.Contracts.Interfaces;
 using Restaurants.Infrastructure.Persistence;
 using Restaurants.Infrastructure.Repositories;
 
