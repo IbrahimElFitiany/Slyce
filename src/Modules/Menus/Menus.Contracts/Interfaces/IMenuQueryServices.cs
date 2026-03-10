@@ -6,11 +6,11 @@ namespace Menus.Contracts.Interfaces
     {
         /// <summary>
         /// Validates that the provided meal size IDs exist and belong to the specified restaurant,
-        /// then resolves and returns their prices.
+        /// then returns the corresponding meal size data.
         /// </summary>
         /// <returns>
-        /// A read-only collection containing the resolved meal size data and prices.
+        /// A read-only collection of <see cref="MealSizeDTO"/> with size and pricing details.
         /// </returns>
-        Task<IReadOnlyCollection<MealSizeDTO>> ValidateMealSizesAndGetPricesAsync(IEnumerable<Guid> sizeIds, Guid restaurantId, CancellationToken cancellationToken);
+        Task<IReadOnlyCollection<MealSizeDTO>> GetMealSizesAsync(IEnumerable<Guid> sizeIds, Guid restaurantId, CancellationToken cancellationToken);
     }
 }

@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Menus.Application\Menus.Application.csproj" />
+    <ProjectReference Include="..\Menus.Contracts\Menus.Contracts.csproj" />
     <ProjectReference Include="..\Menus.Domain\Menus.Domain.csproj" />
   </ItemGroup>
 

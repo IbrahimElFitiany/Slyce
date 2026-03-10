@@ -2,6 +2,10 @@
 {
     public sealed record MealSizeDTO(
         Guid MealId,
+        string MealName,
         Guid MealSizeId,
-        decimal PriceAtSubscription);
+        string SizeName,
+        decimal PriceAmountAtSubscription,
+        string PriceCurrency
+        );
 }
