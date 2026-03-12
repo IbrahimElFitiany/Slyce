@@ -35,9 +35,6 @@ namespace Menus.Infrastructure.Services
                      and ms."Id" = any ({sizesIdList})
                      """).ToListAsync(cancellationToken);
 
-            if (sizes.Count != sizesIdList.Count)
-                throw new NotFoundException ("One or more meal sizes do not exist or do not belong to the restaurant");
-
             return sizes;
         }
     }

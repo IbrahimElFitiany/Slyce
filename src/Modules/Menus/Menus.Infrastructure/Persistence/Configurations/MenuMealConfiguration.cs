@@ -67,6 +67,7 @@ namespace Menus.Infrastructure.Persistence.Configurations
                 .HasMaxLength(300);
 
                 // EF Core does not support using ComplexProperty inside owned collections yet,
+                //https://github.com/dotnet/efcore/issues/33170
                 // so OwnsOne is used for Price and Nutrition instead.
 
                 ms.OwnsOne(ms => ms.Price, p =>
