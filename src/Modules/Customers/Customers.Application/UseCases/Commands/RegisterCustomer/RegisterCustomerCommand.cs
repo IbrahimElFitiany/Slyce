@@ -1,7 +1,11 @@
-﻿using Customers.Application.DTOs;
-using MediatR;
+﻿using MediatR;
 
 namespace Customers.Application.UseCases.Commands.RegisterCustomer
 {
-    public record RegisterCustomerCommand(CreateCustomerReqDTO dto) : IRequest;
+    public sealed record RegisterCustomerCommand(
+        string Fname,
+        string Lname,
+        string Email,
+        string PhoneNumber,
+        DateOnly BirthDay) : IRequest<Guid>;
 }

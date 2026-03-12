@@ -10,14 +10,11 @@ namespace WebAPI.Controllers
     public class KeycloakWebhookController : ControllerBase
     {
         private readonly ILogger<KeycloakWebhookController> _logger;
-        private readonly DeleteCustomerUseCase _deleteCustomerUseCase;
 
         public KeycloakWebhookController(
-            ILogger<KeycloakWebhookController> logger,
-            DeleteCustomerUseCase deleteCustomerUseCase)
+            ILogger<KeycloakWebhookController> logger)
         {
             _logger = logger;
-            _deleteCustomerUseCase = deleteCustomerUseCase;
         }
 
         [HttpPost]
