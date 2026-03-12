@@ -30,6 +30,11 @@ namespace Shared.Domain.ValueObjects
             return new Price(a.Amount + b.Amount, a.Currency);
         }
 
+        public static Price operator *(Price price, int multiplier)
+        {
+            return new Price(price.Amount * multiplier, price.Currency);
+        }
+
         public override string ToString() => $"{Amount:0.00} {Currency}";
 
     }

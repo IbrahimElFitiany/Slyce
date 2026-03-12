@@ -2,6 +2,7 @@
 using Subscriptions.Domain.Enums;
 using Subscriptions.Domain.Exceptions;
 using Subscriptions.Domain.ValueObjects;
+using System.Linq;
 
 namespace Subscriptions.Domain.Entities
 {
@@ -11,31 +12,37 @@ namespace Subscriptions.Domain.Entities
         public Guid CustomerId { get; private init; }
         public Guid BranchId { get; private init; }
         public Guid DeliveryAddressId{ get; private init; }
+        public Address DeliveryAddress { get; private set; } = null!;
         public DeliveryTimeFrame TimeFrame { get; private set; } = null!;
 
         private List<SubscriptionDeliveryDay> _deliveryDays = new();
         public IReadOnlyCollection<SubscriptionDeliveryDay> DeliveryDays { get; private set; } = null!;
+        
         public DateOnly StartDate { get; private set; }
         public DateOnly EndDate { get; private set; }
 
         private List<SubscriptionMeal> _subscriptionMeals = new();
         public IReadOnlyCollection<SubscriptionMeal> SubscriptionMeals => _subscriptionMeals;
+        
         public Price TotalPrice { get; private set; } = null!;
         public BillingCycle BillingCycle { get; private set; }
         public SubscriptionStatus Status { get; private set; }
         public DateTime CreatedAt { get; private init; }
         public DateTime UpdatedAt { get; private set; }
+
         private Subscription() { }
 
         public Subscription (
             Guid customerId,
             Guid branchId,
             Guid deliveryAddressId,
-            IEnumerable<SubscriptionDeliveryDay> deliveryDays,
+            Address deliveryAddress,
             DeliveryTimeFrame timeFrame,
+            IEnumerable<SubscriptionDeliveryDay> deliveryDays,
+            DateOnly startDate,
             IEnumerable<SubscriptionMeal> subscriptionMeals,
-            BillingCycle billingCycle,
-            DateOnly startDate)
+            BillingCycle billingCycle
+)
         {
             ArgumentOutOfRangeException.ThrowIfEqual(customerId, Guid.Empty);
             ArgumentOutOfRangeException.ThrowIfEqual(branchId, Guid.Empty);
@@ -46,47 +53,62 @@ namespace Subscriptions.Domain.Entities
             CustomerId = customerId;
             BranchId = branchId;
             DeliveryAddressId = deliveryAddressId;
-
+            DeliveryAddress = deliveryAddress;
+            
             ValidateDeliveryDaysCount(deliveryDays);
             _deliveryDays.AddRange(deliveryDays);
 
+            TimeFrame = timeFrame;
+
             ValidateSubscriptionMealsCount(subscriptionMeals);
             _subscriptionMeals.AddRange(subscriptionMeals);
+
+            if (startDate < DateOnly.FromDateTime(DateTime.UtcNow))
+                throw new InvalidSubscriptionDateException(startDate);
 
             StartDate = startDate;
             EndDate = billingCycle switch
             {
                 BillingCycle.Weekly => startDate.AddDays(7),
-                BillingCycle.Monthly => startDate.AddMonths(1),
+                BillingCycle.Monthly => startDate.AddDays(30),
                 _ => throw new ArgumentOutOfRangeException(nameof(billingCycle))
             };
-            TotalPrice = CalculatePriceFromSubscriptionMeals(SubscriptionMeals);
+
+            TotalPrice = CalculatePriceFromSubscriptionMeals(StartDate,EndDate,DeliveryDays,SubscriptionMeals);
             Status = SubscriptionStatus.Active;
             CreatedAt = UpdatedAt = DateTime.UtcNow;
         }
 
 
+        private static void ValidateDeliveryDaysCount(IEnumerable<SubscriptionDeliveryDay> deliveryDays)
+        {
+            if (!deliveryDays.Any())
+                throw new SubscriptionHasNoDeliveryDaysException();
+        }
         private static void ValidateSubscriptionMealsCount(IEnumerable<SubscriptionMeal> subscriptionMeals)
         {
             if (!subscriptionMeals.Any())
                 throw new EmptySubscriptionMealsException();
         }
-        private static void ValidateDeliveryDaysCount(IEnumerable<SubscriptionDeliveryDay> deliveryDays)
+        private static Price CalculatePriceFromSubscriptionMeals(DateOnly startDate, DateOnly endDate,IEnumerable<SubscriptionDeliveryDay> deliveryDays, IEnumerable<SubscriptionMeal> subscriptionMeals)
         {
-            if (!deliveryDays.Any())
-                throw new EmptySubscriptionMealsException();
-        }
-        private static Price CalculatePriceFromSubscriptionMeals(IEnumerable<SubscriptionMeal> subscriptionMeals)
-        {
-            Price price = Price.EGP(0);
+            var dailyPrice = subscriptionMeals.Aggregate(Price.EGP(0), (total, meal) => total + meal.PriceAtSubscription);
+            var totalDeliveries = CountDeliveries(startDate, endDate, deliveryDays);
 
-            foreach (var meal in subscriptionMeals)
+            return dailyPrice * totalDeliveries;
+        }
+        private static int CountDeliveries(DateOnly startDate, DateOnly endDate, IEnumerable<SubscriptionDeliveryDay> deliveryDays)
+        {
+            var days = deliveryDays.Select(d => d.Day).ToHashSet();
+            int counter = 0;
+
+            for (var date = startDate; date <= endDate; date = date.AddDays(1))
             {
-                price = price + meal.PriceAtSubscription;
+                if (days.Contains(date.DayOfWeek))
+                    counter++;
             }
 
-            return price;
+            return counter;
         }
-
     }
 }
