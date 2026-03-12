@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Application.Exceptions;
 using Shared.Domain.Exceptions;
@@ -26,6 +27,17 @@ namespace WebAPI.Infrastructure.ExceptionHandling
             {
                 httpContext.Response.StatusCode = 400;
                 problemDetails.Title = de.Message;
+            }
+            else if (exception is ValidationException ve)
+            {
+                httpContext.Response.StatusCode = 400;
+                problemDetails.Title = "Validation Failed";
+                problemDetails.Extensions["errors"] = ve.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.ErrorMessage).ToArray()
+                    );
             }
             else
             {

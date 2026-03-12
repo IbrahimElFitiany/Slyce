@@ -10,16 +10,13 @@ namespace WebAPI.Controllers
     public class KeycloakWebhookController : ControllerBase
     {
         private readonly ILogger<KeycloakWebhookController> _logger;
-        private readonly RegisterCustomerUseCase _registerCustomerUseCase;
         private readonly DeleteCustomerUseCase _deleteCustomerUseCase;
 
         public KeycloakWebhookController(
             ILogger<KeycloakWebhookController> logger,
-            RegisterCustomerUseCase registerCustomerUseCase,
             DeleteCustomerUseCase deleteCustomerUseCase)
         {
             _logger = logger;
-            _registerCustomerUseCase = registerCustomerUseCase;
             _deleteCustomerUseCase = deleteCustomerUseCase;
         }
 
@@ -38,9 +35,9 @@ namespace WebAPI.Controllers
                     await HandleUserRegistration(keycloakEvent);
                     break;
 
-                case "delete":
-                    await HandleUserDeletion(keycloakEvent.UserId);
-                    break;
+                //case "delete":
+                //    await HandleUserDeletion(keycloakEvent.UserId);
+                //    break;
 
                 default:
                     return BadRequest($"Unknown event type: {keycloakEvent.Type}");
@@ -53,11 +50,11 @@ namespace WebAPI.Controllers
         private async Task HandleUserRegistration(KeycloakEventRequest keycloakEvent)
         {
             if (keycloakEvent.Fname == null || keycloakEvent.Lname == null || keycloakEvent.Email == null) throw new Exception("Info is missing");
-            await _registerCustomerUseCase.Execute(keycloakEvent.UserId, keycloakEvent.Fname, keycloakEvent.Lname, keycloakEvent.Email); 
+            //await _registerCustomerUseCase.Execute(keycloakEvent.UserId, keycloakEvent.Fname, keycloakEvent.Lname, keycloakEvent.Email); 
         }
-        private async Task HandleUserDeletion(string userId)
-        {
-            await _deleteCustomerUseCase.Execute(userId);
-        }
+        //private async Task HandleUserDeletion(string userId)
+        //{
+        //    await _deleteCustomerUseCase.Execute(userId);
+        //}
     }
 }
