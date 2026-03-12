@@ -24,11 +24,11 @@ namespace Restaurants.Application.Services
             return await _restaurantRepository.ExistsAsync(restaurantId, ct);
         }
 
-        public async Task<BranchForSubscription> GetBranchForSubscriptionAsync(Guid branchId, CancellationToken ct)
+        public async Task<BranchForSubscription?> GetBranchForSubscriptionAsync(Guid branchId, CancellationToken ct)
         {
             var branch = await _restaurantBranchRepository.GetByIdAsync(branchId, ct);
             if (branch is null)
-                throw new NotFoundException(nameof(RestaurantBranch), branchId);
+                return null;
 
             return new BranchForSubscription(
                 RestaurantId: branch.RestaurantId,
