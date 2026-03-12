@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Subscriptions.Domain.Entities;
 using Subscriptions.Domain.ValueObjects;
+using Shared.Domain.ValueObjects;
 
 namespace Subscriptions.Infrastructure.Persistence.Configurations
 {
@@ -22,6 +23,32 @@ namespace Subscriptions.Infrastructure.Persistence.Configurations
 
             builder.Property(s => s.DeliveryAddressId)
                 .IsRequired();
+
+            builder.ComplexProperty(s => s.DeliveryAddress, da =>
+            {
+                da.Property(da => da.City)
+                .IsRequired();
+                
+                da.Property(da => da.Area)
+                .IsRequired();
+                
+                da.Property(da => da.StreetName)
+                .IsRequired(false);
+
+                da.Property(da => da.StreetNumber)
+                .IsRequired(false);
+
+                da.ComplexProperty(da => da.Coordinates, c =>
+                {
+                    c.Property(c => c.Latitude)
+                    .HasColumnName(nameof(Coordinates.Latitude))
+                    .IsRequired();
+                    
+                    c.Property(c => c.Longitude)
+                    .HasColumnName(nameof(Coordinates.Longitude))
+                    .IsRequired();
+                });
+            });
 
             builder.ComplexProperty(s => s.TimeFrame, dt =>
             {
