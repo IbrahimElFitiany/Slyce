@@ -28,6 +28,8 @@ namespace Subscriptions.Application.UseCases.Commands.CreateSubscription
 
             RuleFor(x => x.SubscriptionDays)
                 .NotNull()
+                .Must(days => days.Count() == days.ToHashSet().Count)
+                .WithMessage("Subscription days must not contain duplicates.")
                 .NotEmpty();
 
             RuleFor(x => x.StartDate)
@@ -35,7 +37,9 @@ namespace Subscriptions.Application.UseCases.Commands.CreateSubscription
 
             RuleFor(x => x.SubscriptionMeals)
                 .NotNull()
-                .NotEmpty();
+                .NotEmpty()
+                .Must(meals => meals.Count() == meals.ToHashSet().Count)
+                .WithMessage("Subscription meals must not contain duplicates.");
 
             RuleForEach(x => x.SubscriptionMeals)
                 .SetValidator(new SubscriptionMealInputValidator());
