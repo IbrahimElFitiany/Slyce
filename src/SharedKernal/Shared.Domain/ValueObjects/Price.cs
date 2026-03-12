@@ -1,4 +1,6 @@
-﻿namespace Shared.Domain.ValueObjects
+﻿using Shared.Domain.Exceptions;
+
+namespace Shared.Domain.ValueObjects
 {
     public sealed class Price
     {
@@ -19,6 +21,20 @@
         }
 
         public static Price EGP(decimal amount) => new Price(amount, "EGP");
+
+        public static Price operator +(Price a, Price b)
+        {
+            if (a.Currency != b.Currency)
+                throw new CurrencyMismatchException();
+
+            return new Price(a.Amount + b.Amount, a.Currency);
+        }
+
+        public static Price operator *(Price price, int multiplier)
+        {
+            return new Price(price.Amount * multiplier, price.Currency);
+        }
+
         public override string ToString() => $"{Amount:0.00} {Currency}";
 
     }
