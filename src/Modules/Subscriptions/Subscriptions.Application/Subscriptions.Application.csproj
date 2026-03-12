@@ -7,10 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageReference Include="MediatR" Version="13.1.0" />
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\..\..\SharedKernal\Shared.Application\Shared.Application.csproj" />
+    <ProjectReference Include="..\..\Customers\Customers.Contracts\Customers.Contracts.csproj" />
+    <ProjectReference Include="..\..\Menus\Menus.Contracts\Menus.Contracts.csproj" />
+    <ProjectReference Include="..\..\Restaurants\Restaurants.Contracts\Restaurants.Contracts.csproj" />
     <ProjectReference Include="..\Subscriptions.Domain\Subscriptions.Domain.csproj" />
   </ItemGroup>
   

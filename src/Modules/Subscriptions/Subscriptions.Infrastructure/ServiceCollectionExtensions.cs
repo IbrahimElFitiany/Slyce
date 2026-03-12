@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Application.Behaviors;
 using Subscriptions.Application.Interfaces;
 using Subscriptions.Application.UseCases.Commands.CreateSubscription;
 using Subscriptions.Infrastructure.Persistence;
@@ -16,7 +19,11 @@ namespace Subscriptions.Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ISubscriptionRepository, EFSubscriptionRepository>();
 
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateSubscriptionCommand>());
+            services.AddMediatR(cfg => {
+                cfg.RegisterServicesFromAssemblyContaining<CreateSubscriptionCommand>();
+                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            });
+            services.AddValidatorsFromAssembly(typeof(CreateSubscriptionCommandValidator).Assembly);
             return services;
         }
     }
