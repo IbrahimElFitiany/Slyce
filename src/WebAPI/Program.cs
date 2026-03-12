@@ -50,7 +50,9 @@ namespace WebAPI
                 .AddControllers()
                 .AddApplicationPart(typeof(RestaurantApplicationsController).Assembly);
 
-
+            builder.Services
+                .AddControllers()
+                .AddApplicationPart(typeof(SubscriptionsController).Assembly);
 
             builder.Services
                 .AddControllers()
