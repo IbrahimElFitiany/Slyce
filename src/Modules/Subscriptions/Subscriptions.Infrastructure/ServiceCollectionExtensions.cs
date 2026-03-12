@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Shared.Application.Behaviors;
 using Subscriptions.Application.Interfaces;
 using Subscriptions.Application.UseCases.Commands.CreateSubscription;
+using Subscriptions.Domain.Interfaces;
+using Subscriptions.Domain.Services;
 using Subscriptions.Infrastructure.Persistence;
 using Subscriptions.Infrastructure.Repositories;
 
@@ -14,6 +16,9 @@ namespace Subscriptions.Infrastructure
     public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddSubcriptionsModule(this IServiceCollection services ,IConfiguration configuration) {
+
+            services.AddScoped<SubscriptionEligibilityService>();
+            services.AddScoped<IDistanceCalculator, PostGISDistanceCalculator>();
 
             services.AddDbContext<SubscriptionsDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
