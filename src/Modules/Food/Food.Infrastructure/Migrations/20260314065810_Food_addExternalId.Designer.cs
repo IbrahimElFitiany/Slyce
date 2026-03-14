@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Food.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Food.Infrastructure.Migrations
 {
     [DbContext(typeof(FoodDbContext))]
-    partial class FoodDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260314065810_Food_addExternalId")]
+    partial class Food_addExternalId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,6 +42,7 @@ namespace Food.Infrastructure.Migrations
                         .HasColumnType("character varying(50)");
 
                     b.Property<string>("Image")
+                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
@@ -125,9 +129,6 @@ namespace Food.Infrastructure.Migrations
                         });
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Source", "ExternalId")
-                        .IsUnique();
 
                     b.ToTable("Foods", "Food");
                 });
