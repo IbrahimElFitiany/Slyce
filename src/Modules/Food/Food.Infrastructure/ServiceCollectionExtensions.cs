@@ -1,6 +1,7 @@
 ﻿using Food.Application.Interfaces;
 using Food.Application.Services;
 using Food.Contracts;
+using Food.Infrastructure.ExternalServices.FatSecretService;
 using Food.Infrastructure.Persistence;
 using Food.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,13 @@ namespace Food.Infrastructure
         public static IServiceCollection AddFoodModule(this IServiceCollection services ,IConfiguration configuration) {
 
             services.AddDbContext<FoodDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            
+            services.Configure<FatSecretSettings>(configuration.GetSection("FatSecretSettings"));
+            services.AddHttpClient("FatSecret");
+
+            services.AddScoped<IExternalFoodService, FatSecretFoodService>();
+            services.AddSingleton<FatSecretTokenService>();
 
             services.AddScoped<IFoodServices, FoodContractServices>();
             services.AddScoped<IFoodRepository, EFFoodRepository>();
