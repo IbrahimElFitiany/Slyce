@@ -15,17 +15,20 @@ namespace Menus.Application.UseCases.Commands.CreateMenuMeal
     public class CreateMenuMealCommandHandler : IRequestHandler<CreateMenuMealCommand,Guid>
     {
         private readonly IMenuMealRepository _mealRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IFoodServices _foodService;
         private readonly ILogger<CreateMenuMealCommandHandler> _logger;
 
         public CreateMenuMealCommandHandler(
             IMenuMealRepository repository,
             IFoodServices foodService,
-            ILogger<CreateMenuMealCommandHandler> logger)
+            ILogger<CreateMenuMealCommandHandler> logger,
+            IUnitOfWork unitOfWork)
         {
             _mealRepository = repository;
             _foodService = foodService;
             _logger = logger;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Guid> Handle(CreateMenuMealCommand request, CancellationToken ct)
@@ -52,9 +55,11 @@ namespace Menus.Application.UseCases.Commands.CreateMenuMeal
                 sizes
             );
 
-            await _mealRepository.AddAsync(meal, ct);
+            _mealRepository.Add(meal);
+            await _unitOfWork.SaveChangesAsync(ct);
 
             _logger.LogInformation("Meal created successfully. MealId={MealId}, Name={Name}, RestaurantId={RestaurantId}", meal.Id, meal.Name, meal.RestaurantId);
+
             return meal.Id;
         }
 
