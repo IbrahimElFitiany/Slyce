@@ -17,6 +17,8 @@ namespace Menus.Infrastructure
             services.AddDbContext<MenusDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IMenuCategoryRepository, EFMenuCategoryRepository>();
             services.AddScoped<IMenuMealRepository, EFMenuMealRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            
             services.AddScoped<IMenuQueryServices, MenuQueryServices>();
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<AddNewMealSizeCommand>());
             return services;
