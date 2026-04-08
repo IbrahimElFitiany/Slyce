@@ -13,15 +13,14 @@ namespace Menus.Infrastructure.Repositories
             _dbContext = db;
         }
 
-        public async Task AddAsync(MenuMeal menuMeal, CancellationToken ct)
+        public void Add(MenuMeal menuMeal)
         {
-            await _dbContext.MenuMeals.AddAsync(menuMeal, ct);
-            await _dbContext.SaveChangesAsync();
+            _dbContext.MenuMeals.Add(menuMeal);
         }
 
-        public Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+        public void Delete(Guid id)
         {
-            throw new NotImplementedException();
+            _dbContext.Remove(id);
         }
 
         public async Task<bool> ExistsByNameInRestaurantAsync(string name, Guid restaurantId, CancellationToken ct = default)
@@ -30,19 +29,14 @@ namespace Menus.Infrastructure.Repositories
                 .AnyAsync(m => m.Name == name && m.RestaurantId == restaurantId, ct);
         }
 
-        public Task<MenuMeal?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<MenuMeal?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await _dbContext.MenuMeals.FindAsync(id, cancellationToken);
         }
 
         public Task<IEnumerable<MenuMeal>> ListAsync(CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
-        }
-
-        public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
-        {
-            await _dbContext.SaveChangesAsync();
         }
     }
 }

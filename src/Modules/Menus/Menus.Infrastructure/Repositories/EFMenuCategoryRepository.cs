@@ -6,19 +6,18 @@ namespace Menus.Infrastructure.Repositories
 {
     public class EFMenuCategoryRepository : IMenuCategoryRepository
     {
-        private readonly MenusDbContext _db;
-        public EFMenuCategoryRepository (MenusDbContext db)
+        private readonly MenusDbContext _dbContext;
+        public EFMenuCategoryRepository (MenusDbContext dbContext)
         {
-            _db = db;
+            _dbContext = dbContext;
         }
 
-        public async Task AddAsync(MenuCategory menuCategory, CancellationToken ct)
+        public void Add(MenuCategory menuCategory)
         {
-            await _db.MenuCategories.AddAsync(menuCategory, ct);
-            await _db.SaveChangesAsync();
+            _dbContext.MenuCategories.AddAsync(menuCategory);
         }
 
-        public Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+        public void Delete(Guid id)
         {
             throw new NotImplementedException();
         }
@@ -29,11 +28,6 @@ namespace Menus.Infrastructure.Repositories
         }
 
         public Task<IEnumerable<MenuCategory>> ListAsync(CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
