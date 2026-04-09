@@ -19,7 +19,7 @@ namespace Menus.Domain.Entities
         public DateTime UpdatedAt { get; private set; } = DateTime.UtcNow;
 
         private MealSize() { }
-        public MealSize(
+        static internal MealSize Create(
             string name,
             Price price,
             int sortOrder,
@@ -32,14 +32,17 @@ namespace Menus.Domain.Entities
             if (ingredientQuantities == null || !ingredientQuantities.Any())
                 throw new MealSizeMustHaveIngredientsException();
 
-            Id = Guid.NewGuid();
-            Name = name;
-            Price = price;
-            SortOrder = sortOrder;
-            Nutrition = nutrition;
-            _ingredientQuantities.AddRange(ingredientQuantities);
+            var size = new MealSize
+            {
+                Id = Guid.NewGuid(),
+                Name = name,
+                Price = price,
+                SortOrder = sortOrder,
+                Nutrition = nutrition,
+            };
+            size._ingredientQuantities.AddRange(ingredientQuantities);
 
+            return size;
         }
-
     }
 }

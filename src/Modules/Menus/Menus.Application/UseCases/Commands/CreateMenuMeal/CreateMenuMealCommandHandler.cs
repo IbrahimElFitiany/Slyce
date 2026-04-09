@@ -9,6 +9,7 @@ using Shared.Domain.ValueObjects;
 using Shared.Application.Exceptions;
 using Menus.Domain.Services;
 using Shared.Domain.Exceptions;
+using Menus.Domain;
 
 namespace Menus.Application.UseCases.Commands.CreateMenuMeal
 {
@@ -37,7 +38,7 @@ namespace Menus.Application.UseCases.Commands.CreateMenuMeal
 
             await EnsureUniqueMealName(request.Name, request.RestaurantId, ct);
 
-            var nutritionByIngredient = await _foodService.GetFoodNutritionsAsync(request.Ingredients.ToList(), ct);
+            var nutritionByIngredient = await _foodService.GetFoodNutritionsAsync(request.Ingredients, ct);
 
             ValidateAllIngredientsFound(request.Ingredients.ToList(), nutritionByIngredient);
 
@@ -52,8 +53,7 @@ namespace Menus.Application.UseCases.Commands.CreateMenuMeal
                 request.Description,
                 request.ImgUrl,
                 mealIngredients,
-                sizes
-            );
+                sizes);
 
             _mealRepository.Add(meal);
             await _unitOfWork.SaveChangesAsync(ct);
@@ -68,15 +68,19 @@ namespace Menus.Application.UseCases.Commands.CreateMenuMeal
             if (await _mealRepository.ExistsByNameInRestaurantAsync(mealName, restaurantId, ct))
                 throw new DuplicateException("Meal",mealName);
         }
-        private void ValidateAllIngredientsFound(IReadOnlyList<Guid> requestIds, Dictionary<Guid,FoodNutritionDTO> ingredientsRetrived)
+        private void ValidateAllIngredientsFound(IReadOnlyList<Guid> requestFoodIds, Dictionary<Guid,FoodNutritionDTO> ingredientsRetrived)
         {
-            var missingIngredients = requestIds.Except(ingredientsRetrived.Keys);
+            var missingIngredients = requestFoodIds.Except(ingredientsRetrived.Keys);
 
             if (missingIngredients.Any())
             {
                 _logger.LogWarning("Ingredients missing in food service. Missing ={list}", missingIngredients);
                 throw new NotFoundException("ingredients not found");
             }
+        }
+        private List<MealIngredient> BuildMealIngredients(Dictionary<Guid, FoodNutritionDTO> map)
+        {
+            return map.Select(ig => new MealIngredient(ig.Key, ig.Value.Name)).ToList();
         }
         private Dictionary<Guid, Nutrition> BuildNutritionMap(Dictionary<Guid, FoodNutritionDTO> nutritionData)
         {
@@ -102,11 +106,7 @@ namespace Menus.Application.UseCases.Commands.CreateMenuMeal
                 )
             );
         }
-        private List<MealIngredient> BuildMealIngredients(Dictionary<Guid, FoodNutritionDTO> map)
-        {
-            return map.Select(ig => new MealIngredient(ig.Key, ig.Value.Name)).ToList();
-        }
-        private List<MealSize> BuildMealSizes(IEnumerable<MealSizeInput> mealSizeInputs, Dictionary<Guid, Nutrition> nutritionMap)
+        private List<MealSizeCreationInput> BuildMealSizes(IEnumerable<MealSizeInput> mealSizeInputs, Dictionary<Guid, Nutrition> nutritionMap)
         {
             return mealSizeInputs.Select(mealSize =>
             {
@@ -116,13 +116,13 @@ namespace Menus.Application.UseCases.Commands.CreateMenuMeal
 
                 var nutrition = NutritionCalculator.CalculateForSize(quantities, nutritionMap);
 
-                return new MealSize(
-                    mealSize.Name,
-                    Price.EGP(mealSize.Price),
-                    mealSize.SortOrder,
-                    quantities,
-                    nutrition
-                );
+                return new MealSizeCreationInput(
+                    Name: mealSize.Name,
+                    Price: Price.EGP(mealSize.Price),
+                    SortOrder: mealSize.SortOrder,
+                    Quantities: quantities,
+                    SizeNutrition: nutrition
+                    );
             }).ToList();
         }
 
