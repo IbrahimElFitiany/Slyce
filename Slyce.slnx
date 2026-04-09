@@ -46,7 +46,8 @@
     <Project Path="src/SharedKernal/Shared.Application/Shared.Application.csproj" />
     <Project Path="src/SharedKernal/Shared.Domain/Shared.Domain.csproj" />
   </Folder>
-  <Folder Name="/tests/">
-    <File Path=".gitkeep" />
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/Menus/" >
+    <Project Path="tests/Menus/Menus.Domain.Tests/Menus.Domain.Tests.csproj" />
   </Folder>
 </Solution>

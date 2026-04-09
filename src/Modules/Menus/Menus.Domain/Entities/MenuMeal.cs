@@ -1,5 +1,6 @@
 ﻿using Menus.Domain.Exceptions;
 using Menus.Domain.ValueObjects;
+using Shared.Domain.ValueObjects;
 
 namespace Menus.Domain.Entities
 {
@@ -32,8 +33,8 @@ namespace Menus.Domain.Entities
             string name,
             string description,
             string image,
-            List<MealIngredient> ingredients,
-            List<MealSize> sizes,
+            IEnumerable<MealIngredient> ingredients,
+            IEnumerable<MealSizeCreationInput> sizes,
             bool available = true)
         {
             ArgumentOutOfRangeException.ThrowIfEqual(categoryId, Guid.Empty);
@@ -48,10 +49,7 @@ namespace Menus.Domain.Entities
             if (sizes == null || !sizes.Any())
                 throw new ArgumentException("Meal must have at least one size.", nameof(sizes));
 
-            if (sizes.GroupBy(s => s.Name).Any(g => g.Count() > 1))
-                throw new DuplicateMealSizeException();
-
-            if (sizes.Count > MealSizesLimit)
+            if (sizes.Count() > MealSizesLimit)
                 throw new MealSizesLimitExceededException(MealSizesLimit);
 
             Id = Guid.NewGuid();
@@ -63,52 +61,69 @@ namespace Menus.Domain.Entities
             Available = available;
             _ingredients.AddRange(ingredients);
 
-            var validIngredientIds = _ingredients.Select(i => i.FoodId).ToHashSet();
+            var mealIngredientIds = _ingredients.Select(i => i.FoodId).ToHashSet();
 
             foreach (var size in sizes)
             {
-                ValidateSizeIngredients(size,validIngredientIds);
+                AddSize(
+                    size.Name,
+                    size.Price,
+                    size.SortOrder,
+                    size.Quantities,
+                    size.SizeNutrition,
+                    mealIngredientIds);
             }
-
-            _sizes.AddRange(sizes);
         }
 
-        public void AddSize(MealSize size)
+        public void AddSize(
+            string name,
+            Price price,
+            int sortOrder,
+            IEnumerable<IngredientQuantity> ingredientQuantities,
+            Nutrition sizeNutrition,
+            HashSet<Guid>? mealIngredientIds = null)
         {
-            ArgumentNullException.ThrowIfNull(size);
+            ArgumentException.ThrowIfNullOrWhiteSpace(name);
+            ArgumentOutOfRangeException.ThrowIfLessThan(sortOrder, 0);
 
             if (_sizes.Count >= MealSizesLimit)
                 throw new MealSizesLimitExceededException(MealSizesLimit);
 
-            if (_sizes.Any(s => s.Name.Equals(size.Name, StringComparison.OrdinalIgnoreCase)))
+            if (_sizes.Any(s => s.Name.Equals(name, StringComparison.OrdinalIgnoreCase) || s.SortOrder == sortOrder))
                 throw new DuplicateMealSizeException();
 
-            var validIngredientIds = _ingredients.Select(i => i.FoodId).ToHashSet();
+            var ingredientIds = mealIngredientIds ?? _ingredients.Select(i => i.FoodId).ToHashSet();
+            var sizeIngredientIds = new HashSet<Guid>(ingredientQuantities.Select(iq => iq.MealIngredientId).ToHashSet());
 
-            ValidateSizeIngredients(size,validIngredientIds);
+            if (!sizeIngredientIds.SetEquals(ingredientIds))
+                throw new MealSizeIngredientMismatchException(name);
 
-            _sizes.Add(size);
+            var mealSize = MealSize.Create(
+                name: name,
+                price: price,
+                sortOrder: sortOrder,
+                ingredientQuantities: ingredientQuantities,
+                nutrition: sizeNutrition);
+
+            _sizes.Add(mealSize);
 
             UpdatedAt = DateTime.UtcNow;
         }
-        public void RemoveSize(MealSize size)
+
+        public void RemoveSize(Guid sizeId)
         {
-            ArgumentNullException.ThrowIfNull(size);
 
             if (_sizes.Count <= 1)
                 throw new MinimumMealSizesRequiredException();
+
+            var size = _sizes.FirstOrDefault(s => s.Id == sizeId);
+
+            if (size is null)
+                throw new Exception("not Found");
 
             _sizes.Remove(size);
             UpdatedAt = DateTime.UtcNow;
         }
 
-
-        private void ValidateSizeIngredients(MealSize mealSize, HashSet<Guid> validIngredientIds)
-        {
-            var sizeIngredientIds = new HashSet<Guid>(mealSize.IngredientQuantities.Select(iq => iq.MealIngredientId));
-
-            if (!sizeIngredientIds.SetEquals(validIngredientIds))
-                throw new MealSizeIngredientMismatchException(mealSize.Name);
-        }
     }
 }
