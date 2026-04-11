@@ -1,6 +1,7 @@
 ﻿using Menus.Domain.Exceptions;
 using Menus.Domain.ValueObjects;
 using Shared.Domain.ValueObjects;
+using System.Linq;
 
 namespace Menus.Domain.Entities
 {
@@ -25,6 +26,15 @@ namespace Menus.Domain.Entities
 
         public DateTime CreatedAt { get; private init; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; private set; } = DateTime.UtcNow;
+
+
+        private HashSet<Guid>? _ingredientIdsCache;
+        private HashSet<Guid> GetIngredientIds()
+        {
+            return _ingredientIdsCache ??= _ingredients
+                .Select(i => i.FoodId)
+                .ToHashSet();
+        }
 
         private MenuMeal() { }
         public MenuMeal(
@@ -61,8 +71,6 @@ namespace Menus.Domain.Entities
             Available = available;
             _ingredients.AddRange(ingredients);
 
-            var mealIngredientIds = _ingredients.Select(i => i.FoodId).ToHashSet();
-
             foreach (var size in sizes)
             {
                 AddSize(
@@ -70,18 +78,16 @@ namespace Menus.Domain.Entities
                     size.Price,
                     size.SortOrder,
                     size.Quantities,
-                    size.SizeNutrition,
-                    mealIngredientIds);
+                    size.SizeNutrition);
             }
         }
 
-        public void AddSize(
+        public Guid AddSize(
             string name,
             Price price,
             int sortOrder,
             IEnumerable<IngredientQuantity> ingredientQuantities,
-            Nutrition sizeNutrition,
-            HashSet<Guid>? mealIngredientIds = null)
+            Nutrition sizeNutrition)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(name);
             ArgumentOutOfRangeException.ThrowIfLessThan(sortOrder, 0);
@@ -92,7 +98,7 @@ namespace Menus.Domain.Entities
             if (_sizes.Any(s => s.Name.Equals(name, StringComparison.OrdinalIgnoreCase) || s.SortOrder == sortOrder))
                 throw new DuplicateMealSizeException();
 
-            var ingredientIds = mealIngredientIds ?? _ingredients.Select(i => i.FoodId).ToHashSet();
+            var ingredientIds = GetIngredientIds();
             var sizeIngredientIds = new HashSet<Guid>(ingredientQuantities.Select(iq => iq.MealIngredientId).ToHashSet());
 
             if (!sizeIngredientIds.SetEquals(ingredientIds))
@@ -108,6 +114,8 @@ namespace Menus.Domain.Entities
             _sizes.Add(mealSize);
 
             UpdatedAt = DateTime.UtcNow;
+
+            return mealSize.Id;
         }
 
         public void RemoveSize(Guid sizeId)
@@ -123,6 +131,14 @@ namespace Menus.Domain.Entities
 
             _sizes.Remove(size);
             UpdatedAt = DateTime.UtcNow;
+        }
+
+        public bool HasExactIngredients(IEnumerable<Guid> foodIds)
+        {
+            var input = foodIds.ToHashSet();
+            var current = GetIngredientIds();
+
+            return input.SetEquals(current);
         }
 
     }
