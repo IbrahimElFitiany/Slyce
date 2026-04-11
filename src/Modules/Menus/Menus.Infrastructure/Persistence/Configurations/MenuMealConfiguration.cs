@@ -59,6 +59,9 @@ namespace Menus.Infrastructure.Persistence.Configurations
                 ms.ToTable("MealSizes");
 
                 ms.HasKey(ms => ms.Id);
+
+                ms.Property(ms => ms.Id)
+                .ValueGeneratedNever();
                 
                 ms.WithOwner().HasForeignKey("MealId");
 
@@ -111,8 +114,10 @@ namespace Menus.Infrastructure.Persistence.Configurations
                     iq.WithOwner()
                     .HasForeignKey("MealSizeId");
 
+
                     iq.Property(mi => mi.MealIngredientId)
-                      .IsRequired();
+                      .IsRequired()
+                      .ValueGeneratedNever();
 
                     iq.Property(mi => mi.Quantity)
                     .HasPrecision(8, 2)
