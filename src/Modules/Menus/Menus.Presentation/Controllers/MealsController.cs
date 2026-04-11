@@ -18,7 +18,7 @@ namespace Menus.Presentation.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateMenuMealReqDTO dto, CancellationToken ct)
+        public async Task<IActionResult> CreateMenuMeal([FromBody] CreateMenuMealReqDTO dto, CancellationToken ct)
         {
             Guid dummyUserId = Guid.NewGuid();
             Guid mockUpRestaurant = Guid.Parse("ee7a56b2-eded-4745-9f7f-b13a02dce23f");
@@ -36,7 +36,7 @@ namespace Menus.Presentation.Controllers
                         size.Name,
                         size.Price,
                         size.SortOrder,
-                        size.IngredientQuantity.Select(iq =>
+                        size.IngredientQuantities.Select(iq =>
                             new IngredientQuantityInput(
                                 iq.IngredientId,
                                 iq.Quantity
