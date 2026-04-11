@@ -10,6 +10,7 @@ using Shared.Application.Exceptions;
 using Menus.Domain.Services;
 using Shared.Domain.Exceptions;
 using Menus.Domain;
+using Menus.Application.Mappers;
 
 namespace Menus.Application.UseCases.Commands.CreateMenuMeal
 {
@@ -43,7 +44,7 @@ namespace Menus.Application.UseCases.Commands.CreateMenuMeal
             ValidateAllIngredientsFound(request.Ingredients.ToList(), nutritionByIngredient);
 
             var mealIngredients = BuildMealIngredients(nutritionByIngredient);
-            var nutritionMap = BuildNutritionMap(nutritionByIngredient);
+            var nutritionMap = NutritionMapper.ToNutrition(nutritionByIngredient);
             var sizes = BuildMealSizes(request.Sizes, nutritionMap);
 
             var meal = new MenuMeal(
@@ -81,30 +82,6 @@ namespace Menus.Application.UseCases.Commands.CreateMenuMeal
         private List<MealIngredient> BuildMealIngredients(Dictionary<Guid, FoodNutritionDTO> map)
         {
             return map.Select(ig => new MealIngredient(ig.Key, ig.Value.Name)).ToList();
-        }
-        private Dictionary<Guid, Nutrition> BuildNutritionMap(Dictionary<Guid, FoodNutritionDTO> nutritionData)
-        {
-            return nutritionData.ToDictionary(
-                kvp => kvp.Key,
-                kvp => new Nutrition(
-                    protein: kvp.Value.Protein,
-                    carb: kvp.Value.TotalCarbohydrate,
-                    fat: kvp.Value.TotalFat,
-                    calories: kvp.Value.Calories,
-                    saturatedFat: kvp.Value.SaturatedFat,
-                    transFat: kvp.Value.TransFat,
-                    cholesterol: kvp.Value.Cholesterol,
-                    sodiumMg: kvp.Value.SodiumMg,
-                    dietaryFiber: kvp.Value.DietaryFiber,
-                    sugarGrams: kvp.Value.SugarGrams,
-                    vitaminD: kvp.Value.VitaminD,
-                    calciumMg: kvp.Value.CalciumMg,
-                    ironMg: kvp.Value.IronMg,
-                    potassiumMg: kvp.Value.PotassiumMg,
-                    vitaminA_Mcg: kvp.Value.VitaminAMcg,
-                    vitaminC_Mg: kvp.Value.VitaminCMg
-                )
-            );
         }
         private List<MealSizeCreationInput> BuildMealSizes(IEnumerable<MealSizeInput> mealSizeInputs, Dictionary<Guid, Nutrition> nutritionMap)
         {
