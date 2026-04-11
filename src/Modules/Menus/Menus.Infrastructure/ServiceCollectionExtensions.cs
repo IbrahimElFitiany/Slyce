@@ -1,4 +1,7 @@
-﻿using Menus.Application.Interfaces;
+﻿using FluentValidation;
+using MediatR;
+using Menus.Application.Interfaces;
+using Menus.Application.UseCases.Commands.AddMealSize;
 using Menus.Application.UseCases.Commands.CreateMenuCategory;
 using Menus.Contracts.Interfaces;
 using Menus.Infrastructure.Persistence;
@@ -7,6 +10,7 @@ using Menus.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Application.Behaviors;
 
 namespace Menus.Infrastructure
 {
@@ -20,7 +24,14 @@ namespace Menus.Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             
             services.AddScoped<IMenuQueryServices, MenuQueryServices>();
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<AddNewMealSizeCommand>());
+            
+            services.AddValidatorsFromAssemblyContaining<AddMealSizeCommandValidator>();
+
+            services.AddMediatR(cfg => {
+                cfg.RegisterServicesFromAssemblyContaining<CreateMenuCategoryCommand>();
+                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            });
+
             return services;
         }
     }
