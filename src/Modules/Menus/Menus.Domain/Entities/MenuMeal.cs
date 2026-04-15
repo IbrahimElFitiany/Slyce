@@ -1,7 +1,6 @@
 ﻿using Menus.Domain.Exceptions;
 using Menus.Domain.ValueObjects;
 using Shared.Domain.ValueObjects;
-using System.Linq;
 
 namespace Menus.Domain.Entities
 {
@@ -120,14 +119,11 @@ namespace Menus.Domain.Entities
 
         public void RemoveSize(Guid sizeId)
         {
-
             if (_sizes.Count <= 1)
                 throw new MinimumMealSizesRequiredException();
 
-            var size = _sizes.FirstOrDefault(s => s.Id == sizeId);
-
-            if (size is null)
-                throw new Exception("not Found");
+            var size = _sizes.FirstOrDefault(s => s.Id == sizeId) 
+                ?? throw new MealSizeNotFoundException(sizeId);
 
             _sizes.Remove(size);
             UpdatedAt = DateTime.UtcNow;
