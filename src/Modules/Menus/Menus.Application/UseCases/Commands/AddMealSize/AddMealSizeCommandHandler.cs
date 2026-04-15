@@ -57,7 +57,7 @@ namespace Menus.Application.UseCases.Commands.AddMealSize
                 sizeNutrition: sizeNutrition);
             
             await _unitOfWork.SaveChangesAsync(ct);
-            _logger.LogInformation("Size {SizeId} added to meal {MealId}", sizeId, meal.Id);
+            _logger.LogInformation("Size {MealSizeId} added to meal {MealId}", sizeId, meal.Id);
 
             return sizeId;
         }

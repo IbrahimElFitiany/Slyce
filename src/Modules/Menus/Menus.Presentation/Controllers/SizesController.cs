@@ -32,5 +32,12 @@ namespace Menus.Presentation.Controllers
             var sizeId = await _mediator.Send(command, ct);
             return Ok(new { id = sizeId });
         }
+
+        [HttpDelete("{mealId}/sizes/{sizeId}")]
+        public async Task<IActionResult> RemoveSize([FromRoute] Guid mealId, [FromRoute] Guid sizeId, CancellationToken ct)
+        {
+            await _mediator.Send(new RemoveMealSizeCommand(mealId,sizeId), ct);
+            return Ok();
+        }
     }
 }
