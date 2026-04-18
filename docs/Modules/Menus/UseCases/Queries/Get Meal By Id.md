@@ -1,55 +1,67 @@
-# Use Case: Get Meal By Id 
+# Use Case: Get Meal By ID
 
 ## Purpose
 
-Returns full meal details (sizes, ingredients per size) by id.
+Retrieves a single reviewed meal with its full details — sizes, ingredients per size, and nutrition — by meal ID. Results are cached in Redis to minimize database load, and the cache is automatically invalidated when the meal's size composition changes.
 
 ---
 
 ## Flow
 
-1. f
-2. Validate that the requested ingredient set exactly matches the meal's declared ingredients.
-3. Fetch nutrition data for all requested ingredients from the external Food Service.
-4. Build the domain objects: `IngredientQuantity` list, with nutrition calculated via `NutritionCalculator`.
-5. Call `meal.AddSize(...)` — domain invariants (duplicate name/sort order, ingredient mismatch, size limit) are enforced inside the aggregate.
-6. Persist and commit the unit of work.
+1. Construct the cache key as `meal:{MealId}`.
+2. Attempt to read the meal from the distributed cache.
+3. **Cache hit:** Deserialize the cached JSON and return it.
+4. **Cache miss:**
+    - Query the database for a meal matching the given ID where `Reviewed = true`.
+    - Project directly into the response shape — sizes ordered by `SortOrder`, ingredients joined to their names, and full nutrition data per size.
+    - If no matching meal is found, throw `NotFoundException`.
+    - Serialize the result and write it to the cache with a 2-hour absolute expiration.
+    - Return the result.
+
+---
+
+## Cache Invalidation
+
+Cache entries are invalidated by domain events raised from the `MenuMeal` aggregate. The `ClearCacheDomainEventHandler` listens for the following events and clears the corresponding `meal:{MealId}` key:
+
+|Domain Event|Trigger|
+|---|---|
+|`MealSizeAddedDomainEvent`|A new size is added via `AddSize()`|
+|`MealSizeRemovedDomainEvent`|A size is removed via `RemoveSize()`|
 
 ---
 
 ## External Dependencies
 
-| Dependency   | Interface       | Purpose                                                                                                                                                                                         |
-| ------------ | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Food Service | `IFoodServices` | Fetches nutrition data (protein, fat, carbs, etc.) for each ingredient by `FoodId`. Returns whatever it finds — the handler is responsible for validating that all requested IDs were returned. |
+|Dependency|Interface|Purpose|
+|---|---|---|
+|Database|`MenusDbContext`|Source of truth for meal data on cache miss|
+|Distributed Cache|`IDistributedCache`|Redis-backed cache for served responses|
+|Cache Service|`ICacheService`|Abstraction used by the domain event handler to clear specific cache keys|
 
 ---
 
 ## Business Rules
 
-- The target meal must exist.
-- The new size's ingredient set must exactly match the meal's declared ingredients — no more, no less.
-- Size name and sort order must be unique within the meal.
-- Total number of sizes on a meal cannot exceed `MealSizesLimit`.
-- Nutrition for the size is calculated automatically from ingredient quantities and their per-unit nutrition data — it is not accepted from the caller.
+- Only meals with `Reviewed = true` are returned. Unreviewed meals are invisible to this query.
+- Sizes are returned ordered by `SortOrder` ascending.
+- Ingredient names are resolved by joining `IngredientQuantities` against the meal's `Ingredients` collection — the Menus BC does not store food names independently.
+- Nutrition data is read directly from the persisted `MealSize.Nutrition` value object — it is not recalculated at query time.
+- Cache entries expire after 2 hours regardless of write activity.
 
 ---
 
 ## Errors
 
-|Exception|Condition|
-|---|---|
-|`NotFoundException`|No meal found with the given `MealId`|
-|`MealSizeIngredientMismatchException`|The requested ingredient set doesn't exactly match the meal's ingredients|
-|`MealSizesLimitExceededException`|Adding this size would exceed the allowed size limit|
-|`DuplicateMealSizeException`|A size with the same name or sort order already exists on this meal|
-|`ArgumentException`|Any required field is null, empty, or out of range|
+| Exception                     | Condition                                                                                                   |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `NotFoundException`           | No reviewed meal with the given ID exists                                                                   |
+| `Exception` (deserialization) | Cache contained a value that could not be deserialized — indicates a cache poisoning or schema mismatch bug |
 
 ---
 
 ## Notes
 
-- Permission check is not yet implemented
-- Ingredient mismatch is validated twice: once in the handler via `meal.HasExactIngredients(...)` before the external call, and again inside `meal.AddSize(...)` at the domain level. The handler-level check is an early exit to avoid an unnecessary Food Service round-trip. (may change in the future to a single policy inside the domain e.g. (canAddSize() )
-- Nutrition is sourced entirely from the Food BC via `Food.Contracts`. The Menus BC does not store or manage raw food data.
-- The `NutritionCalculator` is a domain service responsible for aggregating per-ingredient nutrition weighted by quantity.
+- The query handler lives in the Infrastructure layer and accesses `MenusDbContext` directly, bypassing the repository. This is intentional — the read side projects into response records and does not need aggregate loading.
+-  `AsSplitQuery()` is called explicitly on the query to avoid the cartesian explosion from joining Sizes, IngredientQuantities, and Ingredients in a single query.
+- The `ICacheService` abstraction wraps `IDistributedCache` for the domain event handler to remain infrastructure-agnostic. The query handler uses `IDistributedCache` directly since it lives in Infrastructure already.
