@@ -28,6 +28,7 @@ namespace Menus.Infrastructure.Queries
             if (string.IsNullOrEmpty(cachedMeal))
             {
                 var meal = await _menusDbContext.MenuMeals
+                .AsSplitQuery()
                 .Where(m => m.Id == query.MealId && m.Reviewed == true)
                 .Select(m => new GetMealByIdQueryResponse(
                     m.Id,
