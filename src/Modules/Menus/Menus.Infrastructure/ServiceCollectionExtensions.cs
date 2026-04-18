@@ -5,6 +5,7 @@ using Menus.Application.UseCases.Commands.AddMealSize;
 using Menus.Application.UseCases.Commands.CreateMenuCategory;
 using Menus.Contracts.Interfaces;
 using Menus.Infrastructure.Persistence;
+using Menus.Infrastructure.Queries;
 using Menus.Infrastructure.Repositories;
 using Menus.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
@@ -24,11 +25,17 @@ namespace Menus.Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             
             services.AddScoped<IMenuQueryServices, MenuQueryServices>();
-            
+
+            services.AddStackExchangeRedisCache(op =>
+            {
+                op.Configuration = configuration.GetConnectionString("RedisConnection");
+            });
+
             services.AddValidatorsFromAssemblyContaining<AddMealSizeCommandValidator>();
 
             services.AddMediatR(cfg => {
                 cfg.RegisterServicesFromAssemblyContaining<CreateMenuCategoryCommand>();
+                cfg.RegisterServicesFromAssemblyContaining<GetMealByIdQueryHandler>();
                 cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             });
 
