@@ -3,6 +3,7 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Menus.Application.UseCases.Commands.CreateMenuMeal;
 using Menus.Presentation.DTOs;
+using Menus.Application.UseCases.Queries.GetMealByID;
 
 namespace Menus.Presentation.Controllers
 {
@@ -56,9 +57,10 @@ namespace Menus.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
-        public Task<IActionResult> GetById(Guid id, CancellationToken ct)
+        public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
         {
-            throw new NotImplementedException();
+            var result = await _mediator.Send(new GetMealByIdQuery(id), ct); 
+            return Ok(result);
         }
     }
 }

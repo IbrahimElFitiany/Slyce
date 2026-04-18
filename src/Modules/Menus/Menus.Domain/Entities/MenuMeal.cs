@@ -1,10 +1,12 @@
-﻿using Menus.Domain.Exceptions;
+﻿using Menus.Domain.DomainEvents;
+using Menus.Domain.Exceptions;
 using Menus.Domain.ValueObjects;
+using Shared.Domain.Common;
 using Shared.Domain.ValueObjects;
 
 namespace Menus.Domain.Entities
 {
-    public sealed class MenuMeal
+    public sealed class MenuMeal : AggregateRoot
     {
         private const int MealSizesLimit = 5;
 
@@ -114,6 +116,7 @@ namespace Menus.Domain.Entities
 
             UpdatedAt = DateTime.UtcNow;
 
+            RaiseDomainEvent(new MealSizeAddedDomainEvent(Id, mealSize.Id));
             return mealSize.Id;
         }
 
@@ -127,6 +130,8 @@ namespace Menus.Domain.Entities
 
             _sizes.Remove(size);
             UpdatedAt = DateTime.UtcNow;
+
+            RaiseDomainEvent(new MealSizeRemovedDomainEvent(Id, sizeId));
         }
 
         public bool HasExactIngredients(IEnumerable<Guid> foodIds)
