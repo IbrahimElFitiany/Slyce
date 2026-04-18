@@ -4,6 +4,7 @@ using Menus.Application.Interfaces;
 using Menus.Application.UseCases.Commands.AddMealSize;
 using Menus.Application.UseCases.Commands.CreateMenuCategory;
 using Menus.Contracts.Interfaces;
+using Menus.Infrastructure.Caching;
 using Menus.Infrastructure.Persistence;
 using Menus.Infrastructure.Queries;
 using Menus.Infrastructure.Repositories;
@@ -38,6 +39,8 @@ namespace Menus.Infrastructure
                 cfg.RegisterServicesFromAssemblyContaining<GetMealByIdQueryHandler>();
                 cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             });
+
+            services.AddScoped<ICacheService, RedisCacheService>();
 
             return services;
         }
