@@ -2,6 +2,7 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Menus.Application.UseCases.Commands.CreateMenuCategory;
+using Menus.Presentation.DTOs;
 
 
 namespace Menus.Presentation.Controllers
@@ -17,13 +18,13 @@ namespace Menus.Presentation.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromRoute] Guid restaurantId,[FromBody] DTO tO , CancellationToken ct)
+        public async Task<IActionResult> Create(
+            [FromRoute] Guid restaurantId,
+            [FromBody] CreateCategoryReq createCategoryReq,
+            CancellationToken ct)
         {
-            await _mediator.Send(new CreateMenuCategoryCommand(tO.Name,restaurantId), ct);
-            return Ok();
+            var categoryId = await _mediator.Send(new CreateMenuCategoryCommand(createCategoryReq.Name,restaurantId), ct);
+            return Created(string.Empty, new { categoryId });
         }
-
-        public record DTO (string Name);
-
     }
 }
