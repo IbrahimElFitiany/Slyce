@@ -1,4 +1,4 @@
-﻿using Orders.Domain.Entities;
+﻿using Orders.Domain.Aggregates.Order;
 
 namespace Orders.Application.Interfaces
 {
