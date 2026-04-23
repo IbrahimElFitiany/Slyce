@@ -23,7 +23,6 @@ namespace Orders.Presentation.Controllers
         {
             var command = new AddToCartCommand(
                 customerId,
-                request.RestaurantId,
                 request.MealId,
                 request.SizeId,
                 request.Quantity);
