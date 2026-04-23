@@ -2,18 +2,13 @@
 using Menus.Contracts.Interfaces;
 using Menus.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using Shared.Application.Exceptions;
 
 namespace Menus.Infrastructure.Services
 {
-    public sealed class MenuQueryServices : IMenuQueryServices
+    internal sealed class MenuQueryServices(MenusDbContext context) : IMenuQueryServices
     {
-        private readonly MenusDbContext _context;
+        private readonly MenusDbContext _context = context;
 
-        public MenuQueryServices(MenusDbContext context)
-        {
-            _context = context;
-        }
         public async Task<IReadOnlyCollection<MealSizeDTO>> GetMealSizesAsync(IEnumerable<Guid> sizeIds, Guid restaurantId, CancellationToken cancellationToken)
         {
             var sizesIdList = sizeIds.Distinct().ToList();
@@ -36,6 +31,20 @@ namespace Menus.Infrastructure.Services
                      """).ToListAsync(cancellationToken);
 
             return sizes;
+        }
+
+        public async Task<MealSummaryDTO?> GetMealSummaryAsync(Guid mealId, CancellationToken cancellationToken)
+        {
+            var mealSummary = await _context.MenuMeals
+                .Where(m => m.Id == mealId)
+                .Select(m => new MealSummaryDTO(
+                    m.RestaurantId,
+                    m.Id,
+                    m.Sizes.Select(s => s.Id).ToList()
+                ))
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return mealSummary;
         }
     }
 }

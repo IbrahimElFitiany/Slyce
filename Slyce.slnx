@@ -15,7 +15,7 @@
     <Project Path="src/Modules/Food/Food.Contracts/Food.Contracts.csproj" />
     <Project Path="src/Modules/Food/Food.Domain/Food.Domain.csproj" />
     <Project Path="src/Modules/Food/Food.Infrastructure/Food.Infrastructure.csproj" />
-    <Project Path="src/Modules/Food/Food.Presentation/Food.Presentation.csproj"/>
+    <Project Path="src/Modules/Food/Food.Presentation/Food.Presentation.csproj" />
   </Folder>
   <Folder Name="/src/Modules/Menus/">
     <Project Path="src/Modules/Menus/Menus.Application/Menus.Application.csproj" />
@@ -28,6 +28,7 @@
     <Project Path="src/Modules/Orders/Orders.Application/Orders.Application.csproj" />
     <Project Path="src/Modules/Orders/Orders.Domain/Orders.Domain.csproj" />
     <Project Path="src/Modules/Orders/Orders.Infrastructure/Orders.Infrastructure.csproj" />
+    <Project Path="src/Modules/Orders/Orders.Presentation/Orders.Presentation.csproj" />
   </Folder>
   <Folder Name="/src/Modules/Restaurants/">
     <Project Path="src/Modules/Restaurants/Restaurants.Application/Restaurants.Application.csproj" />

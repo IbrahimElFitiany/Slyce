@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Orders.Application.Interfaces;
+using Orders.Application.UseCases.Commands.AddToCart;
 using Orders.Infrastructure.Persistence;
 using Orders.Infrastructure.Repositores;
 
@@ -12,11 +13,13 @@ namespace Orders.Infrastructure
     {
         public static IServiceCollection AddOrdersModule(this IServiceCollection services ,IConfiguration configuration) {
 
-            services.AddScoped<CreateOrder>();
-            services.AddScoped<UpdateOrderStatus>();
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<AddToCartCommand>());
 
             services.AddDbContext<OrdersDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+
             services.AddScoped<IOrderRepository, EFOrderRepository>();
+            services.AddScoped<ICartRepository, EFCartRepository>();
+            services.AddScoped<IUnitOfWork,UnitOfWork>();
 
             return services;
         }

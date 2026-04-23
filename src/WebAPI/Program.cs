@@ -15,6 +15,7 @@ using Customers.Presentation.Controllers;
 using Subscriptions.Presentation.Controllers;
 using Subscriptions.Infrastructure;
 using Food.Presentation.Controllers;
+using Orders.Presentation.Controllers;
 
 
 namespace WebAPI
@@ -62,6 +63,10 @@ namespace WebAPI
             builder.Services
                 .AddControllers()
                 .AddApplicationPart(typeof(FoodController).Assembly);
+
+            builder.Services
+                .AddControllers()
+                .AddApplicationPart(typeof(OrdersController).Assembly);
 
             builder.Services.AddScoped<IOrderNotifier, SignalROrderNotifier>();
             builder.Services.AddControllers().AddJsonOptions(options =>

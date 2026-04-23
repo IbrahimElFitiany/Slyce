@@ -12,5 +12,10 @@ namespace Menus.Contracts.Interfaces
         /// A read-only collection of <see cref="MealSizeDTO"/> with size and pricing details.
         /// </returns>
         Task<IReadOnlyCollection<MealSizeDTO>> GetMealSizesAsync(IEnumerable<Guid> sizeIds, Guid restaurantId, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Returns a summary of the specified meal, or <see langword="null"/> if no meal with the given ID exists.
+        /// </summary>
+        Task<MealSummaryDTO?> GetMealSummaryAsync(Guid mealId, CancellationToken cancellationToken);
     }
 }
