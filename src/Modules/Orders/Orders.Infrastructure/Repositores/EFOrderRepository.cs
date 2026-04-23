@@ -1,5 +1,5 @@
 ﻿using Orders.Application.Interfaces;
-using Orders.Domain.Entities;
+using Orders.Domain.Aggregates.Order;
 using Orders.Infrastructure.Persistence;
 
 namespace Orders.Infrastructure.Repositores
