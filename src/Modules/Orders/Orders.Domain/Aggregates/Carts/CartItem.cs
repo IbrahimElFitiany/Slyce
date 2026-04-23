@@ -21,6 +21,7 @@ namespace Orders.Domain.Aggregates.Carts
             MealId = mealId;
             SizeId = sizeId;
             Quantity = quantity;
+            CreatedAt = UpdatedAt = DateTime.UtcNow;
         }
 
         internal void IncreaseQuantity(int by = 1)
