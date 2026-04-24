@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Orders.Application.UseCases.Commands.AddToCart;
 using Orders.Application.UseCases.Commands.CheckoutCart;
+using Orders.Application.UseCases.Queries.ViewCart;
 using Orders.Presentation.DTOs;
 
 
@@ -29,6 +30,13 @@ namespace Orders.Presentation.Controllers
 
             await _mediator.Send(command, ct);
             return Ok();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ViewCart([FromHeader(Name = "X-CustomerId")] Guid customerId, CancellationToken ct)
+        {
+            var result = await _mediator.Send(new ViewCartQuery(customerId), ct);
+            return Ok(result);
         }
 
     }

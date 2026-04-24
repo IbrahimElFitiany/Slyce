@@ -5,7 +5,6 @@
         string MealName,
         Guid MealSizeId,
         string SizeName,
-        decimal PriceAmountAtSubscription,
-        string PriceCurrency
-        );
+        decimal Price,
+        string Currency);
 }
