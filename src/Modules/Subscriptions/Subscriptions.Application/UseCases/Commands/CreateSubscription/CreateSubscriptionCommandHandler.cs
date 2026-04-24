@@ -82,7 +82,7 @@ namespace Subscriptions.Application.UseCases.Commands.CreateSubscription
                         mealId: meal.MealId,
                         sizeId: meal.MealSizeId,
                         quantity: submeal.Quantity,
-                        priceAtSubscription: Price.EGP(meal.PriceAmountAtSubscription)); //TODO figure out how to handle multiple currency 
+                        priceAtSubscription: Price.EGP(meal.Price)); //TODO figure out how to handle multiple currency 
                 }),
                 billingCycle: Enum.Parse<BillingCycle>(command.BillingCycle),
                 startDate: command.StartDate);
@@ -111,7 +111,7 @@ namespace Subscriptions.Application.UseCases.Commands.CreateSubscription
         private async Task<IReadOnlyCollection<MealSizeDTO>> GetMealSizesAsync(CreateSubscriptionCommand command, Guid restaurantId, CancellationToken ct)
         {
             var sizeIds = command.SubscriptionMeals.Select(sm => sm.SizeId).Distinct().ToList();
-            var sizes = await _menuQueryServices.GetMealSizesAsync(sizeIds, restaurantId, ct);
+            var sizes = await _menuQueryServices.GetMealSizesByRestaurantAsync(sizeIds, restaurantId, ct);
 
             if (sizes.Count != sizeIds.Count)
                 throw new NotFoundException("One or more meal sizes do not exist or do not belong to the restaurant");
