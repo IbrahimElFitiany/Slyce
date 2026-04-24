@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Orders.Application.UseCases.Commands.AddToCart;
 using Orders.Application.UseCases.Commands.CheckoutCart;
+using Orders.Application.UseCases.Commands.ClearCart;
 using Orders.Application.UseCases.Queries.ViewCart;
 using Orders.Presentation.DTOs;
 
@@ -39,6 +40,12 @@ namespace Orders.Presentation.Controllers
             return Ok(result);
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> ClearCart([FromHeader(Name = "X-CustomerId")] Guid customerId, CancellationToken ct)
+        {
+            await _mediator.Send(new ClearCartCommand(customerId), ct);
+            return Ok();
+        }
     }
 
 }
