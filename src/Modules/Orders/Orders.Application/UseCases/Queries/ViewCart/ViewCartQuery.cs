@@ -2,15 +2,18 @@
 
 namespace Orders.Application.UseCases.Queries.ViewCart
 {
-    public sealed record ViewCartQuery(Guid CustomerId) : IRequest<ViewCartQueryResponse>;
+    public sealed record ViewCartQuery(Guid CustomerId) : IRequest<ViewCartQueryResult>;
 
-    public sealed record ViewCartQueryResponse(IReadOnlyCollection<CartItemResponse> CartItems);
-    public sealed record CartItemResponse(
-        string Id,
+    public sealed record ViewCartQueryResult(IReadOnlyCollection<CartItemResult> CartItems);
+    public sealed record CartItemResult(
+        Guid MealId,
+        string MealName,
         string ImgUrl,
-        string Name,
         string Description,
+        Guid SizeId,
+        string SizeName,
         int Quantity,
         decimal OriginalPrice,
-        decimal? DiscountedPrice);
+        string Currency,
+        decimal Calories);
 }
