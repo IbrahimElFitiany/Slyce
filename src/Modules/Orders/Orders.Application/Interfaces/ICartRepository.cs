@@ -6,6 +6,7 @@ namespace Orders.Application.Interfaces
     {
         Task<Cart?> GetCartByCustomerIdAsync(Guid CustomerId, CancellationToken ct);
         void Add(Cart cart);
+        void Remove(Cart cart);
 
     }
 }

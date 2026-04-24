@@ -18,5 +18,10 @@ namespace Orders.Infrastructure.Repositores
         {
             return await _dbContext.Carts.FirstOrDefaultAsync(c => c.CustomerId == CustomerId, ct);
         }
+
+        public void Remove(Cart cart)
+        {
+            _dbContext.Carts.Remove(cart);
+        }
     }
 }
