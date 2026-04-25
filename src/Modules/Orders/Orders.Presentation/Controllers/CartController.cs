@@ -46,6 +46,14 @@ namespace Orders.Presentation.Controllers
             await _mediator.Send(new ClearCartCommand(customerId), ct);
             return Ok();
         }
+
+        [HttpPost("/checkout")]
+        public async Task<IActionResult> Checkout([FromHeader(Name = "X-CustomerId")] Guid customerId, CancellationToken ct)
+        {
+            await _mediator.Send(new CheckoutCartCommand(customerId), ct);
+            return Ok();
+        }
+
     }
 
 }
