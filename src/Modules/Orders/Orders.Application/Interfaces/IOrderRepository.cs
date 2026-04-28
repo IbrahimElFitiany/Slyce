@@ -4,8 +4,8 @@ namespace Orders.Application.Interfaces
 {
     public interface IOrderRepository
     {
-        Task AddAsync(Order order);
+        void Add(Order order);
+        void UpdateStatus(Order order);
         Task<Order?> GetByIdAsync(Guid id);
-        Task UpdateStatusAsync(Order order);
     }
 }
