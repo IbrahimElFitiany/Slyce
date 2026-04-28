@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Customers.Application.UseCases.Commands.CreateAddress;
 using Customers.Presentation.DTOs;
 using Customers.Application.UseCases.Queries.GetCustomerAddress;
+using Customers.Application.UseCases.Queries.ListCustomerAddresses;
 
 
 namespace Customers.Presentation.Controllers
@@ -11,15 +12,10 @@ namespace Customers.Presentation.Controllers
     [Route("api/v{version:apiVersion}/addresses")]
     [ApiVersion("1.0")]
     [ApiController]
-    public class AddressesController : ControllerBase
+    public class AddressesController(IMediator mediator) : ControllerBase
     {
-        private readonly IMediator _mediator;
+        private readonly IMediator _mediator = mediator;
 
-        public AddressesController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
-        
         [HttpPost]
         public async Task<IActionResult> CreateAddress([FromBody] CreateAddressRequest request, CancellationToken cancellationToken)
         {
@@ -54,6 +50,20 @@ namespace Customers.Presentation.Controllers
             //TODO Customer-Id is Used For mocking rn
 
             var query = new GetCustomerAddressQuery(customerId, id); 
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ListCustomerAddresses(
+            [FromHeader(Name = "Customer-Id")] Guid customerId,
+            CancellationToken cancellationToken)
+        {
+            //TODO Customer-Id is Used For mocking rn
+
+            var query = new ListCustomerAddressesQuery(customerId);
 
             var result = await _mediator.Send(query, cancellationToken);
 
