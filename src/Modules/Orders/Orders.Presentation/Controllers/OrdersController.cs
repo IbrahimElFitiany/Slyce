@@ -17,7 +17,7 @@ namespace Orders.Presentation.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateOrderRequest createOrderRequest, CancellationToken ct)
         {
-            var orderId = await _mediator.Send(new CreateOrderCommand(createOrderRequest.CustomerId, Guid.NewGuid(), new List<OrderItemRequest> {}), ct);
+            var orderId = await _mediator.Send(new CreateOrderCommand(createOrderRequest.CustomerId, Guid.NewGuid(), new List<OrderItemRequest> { }), ct);
             return Created(string.Empty, orderId);
         }
 
@@ -25,6 +25,12 @@ namespace Orders.Presentation.Controllers
         public async Task<IActionResult> UpdateStatus([FromRoute] Guid id, [FromBody] UpdateOrderStatusRequest updateOrder)
         {
             await _mediator.Send(new UpdateOrderStatusCommand(id, updateOrder.Status));
+            return Ok();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetOrder ([FromRoute] Guid id)
+        {
             return Ok();
         }
     }
