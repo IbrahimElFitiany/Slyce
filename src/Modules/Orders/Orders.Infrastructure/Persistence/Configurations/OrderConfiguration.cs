@@ -5,7 +5,7 @@ using Orders.Domain.Aggregates.Order;
 namespace Orders.Infrastructure.Persistence.Configurations
 {
 
-    public class OrderConfiguration : IEntityTypeConfiguration<Order>
+    public sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
@@ -18,19 +18,60 @@ namespace Orders.Infrastructure.Persistence.Configurations
             builder.Property(o => o.RestaurantId)
                 .IsRequired();
 
+            builder.OwnsMany(o => o.OrderItems, oi =>
+            {
+                oi.ToTable(nameof(Order.OrderItems));
+
+                oi.WithOwner().HasForeignKey("OrderId");
+
+                oi.HasKey(x => x.Id);
+
+                oi.Property(oi => oi.MealId)
+                .IsRequired();
+
+                oi.Property(oi => oi.SizeId)
+                .IsRequired();
+
+                oi.Property(oi => oi.Quantity)
+                .IsRequired();
+
+                oi.OwnsOne(oi => oi.UnitPrice, p =>
+                {
+                    p.Property(x => x.Amount)
+                     .HasPrecision(10, 2)
+                     .HasColumnName("unit_price_amount");
+
+                    p.Property(x => x.Currency)
+                     .HasMaxLength(3)
+                     .HasColumnName("unit_price_currency");
+                });
+
+                oi.OwnsOne(oi => oi.TotalPrice, p =>
+                {
+                    p.Property(x => x.Amount)
+                     .HasPrecision(10, 2)
+                     .HasColumnName("total_price_amount");
+
+                    p.Property(x => x.Currency)
+                     .HasMaxLength(3)
+                     .HasColumnName("total_price_currency");
+                });
+
+                oi.Property(oi => oi.CreatedAt)
+                .IsRequired();
+
+                oi.Property(oi => oi.UpdatedAt)
+                .IsRequired();
+
+                oi.HasIndex("OrderId", nameof(OrderItem.MealId), nameof(OrderItem.SizeId))
+                .IsUnique();
+            });
+
             builder.Property(o => o.Status)
                 .IsRequired()
                 .HasConversion<string>();
 
-            builder.Property(o => o.PaymentStatus)
-                .IsRequired()
-                .HasConversion<string>();
-
-            builder.Property(o => o.PaymentMethod)
-                .IsRequired()
-                .HasConversion<string>();
-
-            builder.OwnsOne(o => o.TotalPrice, p =>
+            builder.ComplexProperty(o => o.TotalPrice, p =>
             {
                 p.Property(x => x.Amount)
                  .HasPrecision(10, 2)
@@ -41,11 +82,37 @@ namespace Orders.Infrastructure.Persistence.Configurations
                  .HasColumnName("price_currency");
             });
 
-            builder.Property(o => o.CreatedAt)
+            builder.Property(o => o.PaymentStatus)
+                .IsRequired()
+                .HasConversion<string>();
+
+            builder.Property(o => o.PaymentMethod)
+                .IsRequired()
+                .HasConversion<string>();
+
+            builder.ComplexProperty(o => o.DeliveryAddress, a =>
+            {
+                a.Property(a => a.City)
                 .IsRequired();
 
-            builder.Property(o => o.DeliveryAddressId)
+                a.Property(a => a.Area)
                 .IsRequired();
+
+                a.Property(a => a.StreetName)
+                .IsRequired();
+
+                a.Property(a => a.StreetNumber)
+                .IsRequired();
+
+                a.ComplexProperty(a => a.Coordinates, c =>
+                {
+                    c.Property(c => c.Latitude)
+                    .IsRequired();
+
+                    c.Property(c => c.Longitude)
+                    .IsRequired();
+                });
+            });
 
             builder.Property(o => o.EstimatedDeliveryTime)
                 .IsRequired(false);
@@ -55,6 +122,12 @@ namespace Orders.Infrastructure.Persistence.Configurations
 
             builder.Property(o => o.AssignedDriverId)
                 .IsRequired(false);
+
+            builder.Property(o => o.CreatedAt)
+                .IsRequired();
+
+            builder.Property(o => o.UpdatedAt)
+                .IsRequired();
 
             builder.Ignore(o => o.DomainEvents);
         }

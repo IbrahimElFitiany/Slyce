@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Orders.Infrastructure.Persistence;
@@ -12,9 +13,11 @@ using Orders.Infrastructure.Persistence;
 namespace Orders.Infrastructure.Migrations
 {
     [DbContext(typeof(OrdersDbContext))]
-    partial class OrdersDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260426005232_Order_OrderItem_config")]
+    partial class Order_OrderItem_config
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,6 +71,9 @@ namespace Orders.Infrastructure.Migrations
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("DeliveryAddressId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime?>("EstimatedDeliveryTime")
                         .HasColumnType("timestamp with time zone");
 
@@ -88,38 +94,6 @@ namespace Orders.Infrastructure.Migrations
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
-
-                    b.ComplexProperty<Dictionary<string, object>>("DeliveryAddress", "Orders.Domain.Aggregates.Order.Order.DeliveryAddress#Address", b1 =>
-                        {
-                            b1.IsRequired();
-
-                            b1.Property<string>("Area")
-                                .IsRequired()
-                                .HasColumnType("text");
-
-                            b1.Property<string>("City")
-                                .IsRequired()
-                                .HasColumnType("text");
-
-                            b1.Property<string>("StreetName")
-                                .IsRequired()
-                                .HasColumnType("text");
-
-                            b1.Property<string>("StreetNumber")
-                                .IsRequired()
-                                .HasColumnType("text");
-
-                            b1.ComplexProperty<Dictionary<string, object>>("Coordinates", "Orders.Domain.Aggregates.Order.Order.DeliveryAddress#Address.Coordinates#Coordinates", b2 =>
-                                {
-                                    b2.IsRequired();
-
-                                    b2.Property<double>("Latitude")
-                                        .HasColumnType("double precision");
-
-                                    b2.Property<double>("Longitude")
-                                        .HasColumnType("double precision");
-                                });
-                        });
 
                     b.ComplexProperty<Dictionary<string, object>>("TotalPrice", "Orders.Domain.Aggregates.Order.Order.TotalPrice#Price", b1 =>
                         {
