@@ -4,8 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Orders.Application.Interfaces;
+using Orders.Application.Interfaces.Payment;
 using Orders.Application.UseCases.Commands.AddToCart;
 using Orders.Application.UseCases.Commands.CheckoutCart;
+using Orders.Infrastructure.Payment;
 using Orders.Infrastructure.Persistence;
 using Orders.Infrastructure.Repositores;
 using Shared.Application.Behaviors;
@@ -29,6 +31,7 @@ namespace Orders.Infrastructure
             services.AddScoped<IOrderRepository, EFOrderRepository>();
             services.AddScoped<ICartRepository, EFCartRepository>();
             services.AddScoped<IUnitOfWork,UnitOfWork>();
+            services.AddScoped<IPaymentService, FakePaymentService>();
 
             return services;
         }
