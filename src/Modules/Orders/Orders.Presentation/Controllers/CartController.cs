@@ -46,6 +46,19 @@ namespace Orders.Presentation.Controllers
             await _mediator.Send(new ClearCartCommand(customerId), ct);
             return Ok();
         }
+
+        [HttpPost("checkout")]
+        public async Task<IActionResult> Checkout(
+            [FromHeader(Name = "X-CustomerId")] Guid customerId,
+            CheckoutReq request,
+            CancellationToken ct)
+        {
+            var command = new CheckoutCartCommand(customerId, request.DeliveryAddressId, request.PaymentMethod);
+            var OrderId = await _mediator.Send(command, ct);
+
+            return CreatedAtAction(nameof(OrdersController.GetOrder), "Orders", new { id = OrderId }, new { orderId = OrderId });
+        }
+
     }
 
 }

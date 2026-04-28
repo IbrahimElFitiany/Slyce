@@ -1,5 +1,6 @@
 ﻿using Orders.Domain.DomainEvents;
 using Orders.Domain.Enums;
+using Orders.Domain.Exceptions;
 using Shared.Domain.Common;
 using Shared.Domain.ValueObjects;
 
@@ -14,30 +15,63 @@ namespace Orders.Domain.Aggregates.Order
         public IReadOnlyCollection<OrderItem> OrderItems => _orderItems.AsReadOnly();
         public OrderStatus Status { get; private set; } = OrderStatus.Pending;
         public Price TotalPrice { get; private set; } = null!;
-        public PaymentStatus PaymentStatus { get; private set; } = PaymentStatus.Pending;
-        public PaymentMethod PaymentMethod { get; private set; }
-        public Guid DeliveryAddressId { get; private set; }
+        public OrderPaymentStatus PaymentStatus { get; private set; } = OrderPaymentStatus.Pending;
+        public OrderPaymentMethod PaymentMethod { get; private set; }
+        public Address DeliveryAddress { get; private set; } = null!;
         public DateTime? EstimatedDeliveryTime { get; private set; }
         public DateTime? ActualDeliveryTime { get; private set; }
         public Guid? AssignedDriverId { get; private set; }
 
-        public static Order Create(
+        private static readonly Dictionary<OrderPaymentStatus, HashSet<OrderPaymentStatus>> _validPaymentTransitions = new()
+        {
+            [OrderPaymentStatus.Pending] = [OrderPaymentStatus.Paid, OrderPaymentStatus.Failed],
+            [OrderPaymentStatus.Paid] = [OrderPaymentStatus.Refunded],
+            [OrderPaymentStatus.Failed] = [OrderPaymentStatus.Pending],
+            [OrderPaymentStatus.Refunded] = [],
+        };
+
+        private Order() { }
+
+        private Order(
             Guid customerId,
             Guid restaurantId,
-            Price totalPrice,
-            PaymentMethod paymentMethod,
-            Guid deliveryAddressId)
+            OrderPaymentMethod paymentMethod,
+            Address deliveryAddress,
+            IEnumerable<OrderItem> orderItems) 
         {
-            return new Order
-            {
-                Id = Guid.NewGuid(),
-                CustomerId = customerId,
-                RestaurantId = restaurantId,
-                TotalPrice = totalPrice,
-            };
+            ArgumentOutOfRangeException.ThrowIfEqual(customerId, Guid.Empty);
+            ArgumentOutOfRangeException.ThrowIfEqual(restaurantId, Guid.Empty);
+
+            if (!orderItems.Any())
+                throw new OrderRequiresAtLeastOneItemException();
+
+            Id = Guid.NewGuid();
+            CustomerId = customerId;
+            RestaurantId = restaurantId;
+            PaymentMethod = paymentMethod;
+            DeliveryAddress = deliveryAddress;
+            _orderItems.AddRange(orderItems);
+            TotalPrice = orderItems.Aggregate(
+                Price.EGP(0),
+                (total, item) => total + (item.UnitPrice * item.Quantity)
+            );
+            CreatedAt = UpdatedAt = DateTime.UtcNow;
         }
 
+        public static Order CreateFromCart(
+            Guid customerId,
+            Guid restaurantId,
+            IEnumerable<OrderItemCreationInput> cartItems,
+            OrderPaymentMethod paymentMethod,
+            Address deliveryAddress)
+        {
 
+            var orderItems = cartItems
+                .Select(ci => new OrderItem(ci.MealId, ci.SizeId, ci.Quantity, ci.Price))
+                .ToList();
+
+            return new Order(customerId, restaurantId, paymentMethod, deliveryAddress, orderItems);
+        }
 
 
         public void AssignDriver(Guid driverId)
@@ -60,9 +94,13 @@ namespace Orders.Domain.Aggregates.Order
             EstimatedDeliveryTime = estimatedTime;
         }
 
-        public void UpdatePaymentStatus(PaymentStatus status)
+        public void UpdatePaymentStatus(OrderPaymentStatus newStatus)
         {
-            PaymentStatus = status;
+            if (!_validPaymentTransitions[PaymentStatus].Contains(newStatus))
+                throw new InvalidPaymentStatusTransitionException(PaymentStatus, newStatus);
+
+            PaymentStatus = newStatus;
+            UpdatedAt = DateTime.UtcNow;
         }
     }
 }
