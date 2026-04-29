@@ -1,0 +1,26 @@
+services: 
+  cache:
+    container_name: slyce-cache
+    image: redis:trixie
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
+    volumes:
+    - redis:/data
+    ports:  
+    - 6379:6379
+
+  database:
+    container_name: slyceDb
+    image: postgis/postgis:17-master
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    ports:
+      - 5432:5432
+    volumes:
+     - slyce-db:/var/lib/postgresql/data
+
+
+volumes:
+  slyce-db:
+  redis:
