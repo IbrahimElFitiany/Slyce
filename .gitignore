@@ -489,3 +489,6 @@ $RECYCLE.BIN/
 
 # Ignore all appsettings.*.json files
 appsettings.*.json
+
+# the preDockerBuild Folder
+preDockerBuild/
