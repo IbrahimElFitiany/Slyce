@@ -20,7 +20,7 @@ namespace Orders.Application.UseCases.Commands.UpdateOrderStatus
 
             order.UpdateStatus(orderStatus);
 
-            await _orderRepository.UpdateStatusAsync(order);
+            _orderRepository.UpdateStatus(order);
 
             await _notifier.NotifyOrderStatusChanged(order.Id, Guid.Parse("e4ad1378-d90a-4d28-97cc-535adb69419a"), orderStatus);
         }
