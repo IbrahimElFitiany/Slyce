@@ -1,12 +1,17 @@
-﻿using Food.Application.Interfaces;
+﻿using MediatR;
+using FluentValidation;
+using Food.Application.Interfaces;
 using Food.Application.Services;
+using Food.Application.UseCases.Queries;
 using Food.Contracts;
 using Food.Infrastructure.ExternalServices.FatSecretService;
 using Food.Infrastructure.Persistence;
+using Food.Infrastructure.Queries;
 using Food.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Application.Behaviors;
 
 namespace Food.Infrastructure
 {
@@ -26,7 +31,14 @@ namespace Food.Infrastructure
             services.AddScoped<IFoodServices, FoodContractServices>();
             services.AddScoped<IFoodRepository, EFFoodRepository>();
 
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<SearchFoodsQuery>());
+            services.AddValidatorsFromAssemblyContaining<SearchFoodSummaryValidator>();
+
+            services.AddMediatR(cfg => {
+                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+                cfg.RegisterServicesFromAssemblyContaining<SearchFoodSummaryQuery>();
+                cfg.RegisterServicesFromAssemblyContaining<SearchFoodSummaryQueryHandler>();
+            });
+            
             return services;
         }
     }
