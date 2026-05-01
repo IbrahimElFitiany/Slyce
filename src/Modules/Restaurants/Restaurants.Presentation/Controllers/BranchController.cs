@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Restaurants.Application.UseCases.Commands.ActivateBranch;
 using Restaurants.Application.UseCases.Commands.AddBranch;
 using Restaurants.Application.UseCases.Commands.CreateBranchSchedule;
 using Restaurants.Presentation.DTOs;
@@ -32,6 +33,15 @@ namespace Restaurants.Presentation.Controllers
             var result = await _mediator.Send(command, ct);
 
             return Created(string.Empty ,new { branchId = result });
+        }
+
+        [HttpPatch("{id}/activate")]
+        public async Task<IActionResult> ActivateBranch([FromRoute] Guid id, CancellationToken ct)
+        {
+            //TODO AuthR and 
+            await _mediator.Send(new ActivateBranchCommand(id), ct);
+
+            return NoContent();
         }
 
         [HttpPost("{id}/working-hours")]
