@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Restaurants.Application.UseCases.Commands.AddBranch;
 using Restaurants.Application.UseCases.Commands.CreateBranchSchedule;
 using Restaurants.Presentation.DTOs;
 
@@ -10,12 +11,27 @@ namespace Restaurants.Presentation.Controllers
     [Route("api/v{version:apiVersion}/branches")]
     [ApiVersion("1.0")]
     [ApiController]
-    public class BranchController : ControllerBase
+    public sealed class BranchController(IMediator mediator) : ControllerBase
     {
-        private readonly IMediator _mediator;
-        public BranchController(IMediator mediator)
+        private readonly IMediator _mediator = mediator;
+
+        [HttpPost]
+        public async Task<IActionResult> AddBranch([FromBody] AddBranchRequest request, CancellationToken ct)
         {
-            _mediator = mediator;
+            var command = new AddBranchCommand(
+                RestaurantId: request.RestaurantId,
+                BranchName: request.BranchName,
+                BranchContactNumber: request.BranchContactNumber,
+                Address: new BranchAddressInput(
+                    City: request.City,
+                    Area: request.Area,
+                    StreetNumber: request.StreetNumber,
+                    StreetName: request.StreetName,
+                    Latitude: request.Latitude,
+                    Longitude: request.Longitude));
+            var result = await _mediator.Send(command, ct);
+
+            return Created(string.Empty ,new { branchId = result });
         }
 
         [HttpPost("{id}/working-hours")]
