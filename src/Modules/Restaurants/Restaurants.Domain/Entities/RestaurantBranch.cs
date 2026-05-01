@@ -1,22 +1,20 @@
 ﻿using Restaurants.Domain.ValueObjects;
+using Shared.Domain.Common;
 using Shared.Domain.Exceptions;
 using Shared.Domain.ValueObjects;
 
 namespace Restaurants.Domain.Entities
 {
-    public sealed class RestaurantBranch
+    public sealed class RestaurantBranch : AggregateRoot
     {
-        public Guid Id { get; private init; }
         public Guid RestaurantId { get; private init; }
         public string? Name { get; private set; }
         public Address Address { get; private set; } = null!;
         public PhoneNumber PhoneNumber { get; private set; } = null!;
 
-        private readonly List<DailySchedule> _schedule = new ();
+        private readonly List<DailySchedule> _schedule = [];
         public IReadOnlyCollection<DailySchedule> Schedule => _schedule;
         public bool IsActive { get; private set; } = false;
-        public DateTime CreatedAt { get; private set; }
-        public DateTime UpdatedAt { get; private set; }
 
         private RestaurantBranch() {}
 
@@ -55,6 +53,18 @@ namespace Restaurants.Domain.Entities
             
             _schedule.AddRange(newSchedule);
 
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void Activate()
+        {
+            if (IsActive)
+                throw new InvalidDomainOperationException("Already Activated");
+
+            if (Schedule.Count == 0)
+                throw new InvalidDomainOperationException("Branch must have a schedule before it can be activated.");
+
+            IsActive = true;
             UpdatedAt = DateTime.UtcNow;
         }
 
