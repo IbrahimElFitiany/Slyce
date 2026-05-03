@@ -1,6 +1,6 @@
 ﻿using Customers.Application.Interfaces;
 using Customers.Application.Services;
-using Customers.Application.UseCases.Commands.RegisterCustomer;
+using Customers.Application.UseCases.Queries.ListCustomerAddresses;
 using Customers.Contracts.Interfaces;
 using Customers.Infrastructure.Persistence;
 using Customers.Infrastructure.Repositories;
@@ -23,7 +23,6 @@ namespace Customers.Infrastructure
 
             services.AddMediatR(cfg => 
             cfg.RegisterServicesFromAssemblies(
-                typeof(RegisterCustomerCommandHandler).Assembly,
                 typeof(CustomersDbContext).Assembly));
 
 
