@@ -1,7 +1,9 @@
 ﻿using Identity.Application.Interfaces;
+using Identity.Application.Interfaces.EmailService;
 using Identity.Application.Services;
 using Identity.Application.UseCases.Commands.RegisterCustomer;
 using Identity.Contract.Interfaces;
+using Identity.Infrastructure.EmailService;
 using Identity.Infrastructure.Persistence;
 using Identity.Infrastructure.Repositories;
 using Identity.Infrastructure.TokenGeneration;
@@ -28,6 +30,14 @@ namespace Identity.Infrastructure
             services.AddScoped<ITokenGenerator, TokenService>();
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 
+            services.AddSingleton<IEmailSender, EmailQueueWriter>();
+            services.AddSingleton<EmailChannel>();
+            services.AddSingleton<SmtpEmailSender>();
+            services.AddHostedService<EmailWorker>();
+            services.Configure<SMTPSettings>(configuration.GetSection("EmailSettings"));
+
+
+            services.AddScoped<IIdentityServices, IdentityServices>();
 
             services.AddMediatR(cfg =>  cfg.RegisterServicesFromAssemblies(typeof(RegisterCustomerCommand).Assembly));
 
