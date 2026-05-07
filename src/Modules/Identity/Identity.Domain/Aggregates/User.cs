@@ -1,4 +1,5 @@
-﻿using Identity.Domain.Enums;
+﻿using Identity.Domain.DomainEvents;
+using Identity.Domain.Enums;
 using Shared.Domain.Common;
 using Shared.Domain.ValueObjects;
 
@@ -31,25 +32,18 @@ namespace Identity.Domain.Aggregates
         }
 
 
-        public static User Create(
+        public static User CreateCustomer(
             string firstName,
             string lastName,
             Email email,
-            string passwordHash,
-            UserType userType)
+            string passwordHash)
         {
-            var user = new User(firstName, lastName, email, userType);
-            user.PasswordHash = passwordHash;
+            var customer = new User(firstName, lastName, email, UserType.Customer);
+            customer.PasswordHash = passwordHash;
 
-            return user;
-        }
-        public static User CreateWithoutPassword(
-            string firstName,
-            string lastName,
-            Email email,
-            UserType userType)
-        {
-            return new User(firstName, lastName, email, userType);
+            customer.RaiseDomainEvent(new CustomerCreatedDomainEvent(customer.Id, customer.Email.Value));
+
+            return customer;
         }
 
     }
