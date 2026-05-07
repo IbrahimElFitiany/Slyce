@@ -15,9 +15,9 @@ namespace Identity.Infrastructure.Repositories
             _dbContext.Users.Add(user);
         }
 
-        public Task<User?> GetUserByEmailAsync(Email email, CancellationToken cancellationToken)
+        public async Task<User?> GetUserByEmailAsync(Email email, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
         }
 
         public async Task<User?> GetUserByIdAsync(Guid id, CancellationToken cancellationToken)

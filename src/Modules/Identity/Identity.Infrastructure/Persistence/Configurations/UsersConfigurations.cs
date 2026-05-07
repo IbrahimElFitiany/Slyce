@@ -29,6 +29,9 @@ namespace Identity.Infrastructure.Persistence.Configurations
             builder.Property(u => u.UserType)
                 .IsRequired()
                 .HasConversion<string>();
+
+            builder.HasIndex(u => u.Email)
+                .IsUnique();
         }
     }
 }
