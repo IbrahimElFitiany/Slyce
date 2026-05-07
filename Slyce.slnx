@@ -24,6 +24,13 @@
     <Project Path="src/Modules/Menus/Menus.Infrastructure/Menus.Infrastructure.csproj" />
     <Project Path="src/Modules/Menus/Menus.Presentation/Menus.Presentation.csproj" />
   </Folder>
+    <Folder Name="/src/Modules/Identity/">
+    <Project Path="src/Modules/Identity/Identity.Application/Identity.Application.csproj" />
+    <Project Path="src/Modules/Identity/Identity.Domain/Identity.Domain.csproj" />
+    <Project Path="src/Modules/Identity/Identity.Infrastructure/Identity.Infrastructure.csproj" />
+    <Project Path="src/Modules/Identity/Identity.Presentation/Identity.Presentation.csproj" />
+    <Project Path="src/Modules/Identity/Identity.Contract/Identity.Contract.csproj" />
+  </Folder>
   <Folder Name="/src/Modules/Orders/">
     <Project Path="src/Modules/Orders/Orders.Application/Orders.Application.csproj" />
     <Project Path="src/Modules/Orders/Orders.Domain/Orders.Domain.csproj" />
