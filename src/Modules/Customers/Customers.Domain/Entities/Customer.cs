@@ -22,32 +22,26 @@ namespace Customers.Domain.Entities
 
         private Customer() { }
 
-        private Customer(
-            Guid id,
-            PhoneNumber? phoneNumber,
-            Height? height,
-            DateOnly bday) 
+        private Customer(Guid id, Height? height, DateOnly bday) 
         {
-
             EnsureValidAge(bday);
 
             Id = id;
-            PhoneNumber = phoneNumber;
             Height = height;
             Bday = bday;
-
             CreatedAt = UpdatedAt =  DateTime.UtcNow;
         }
 
         public static Customer Create(
             Guid id,
-            Gender gender,
+            Gender? gender,
             DateOnly birthDay,
             Height? height,
             string? profilePic)
         {
-            var customer = new Customer(id, null, height, birthDay);
+            var customer = new Customer(id, height, birthDay);
             customer.ProfileImage = profilePic;
+            customer.Gender = gender;
 
             return customer;
         }

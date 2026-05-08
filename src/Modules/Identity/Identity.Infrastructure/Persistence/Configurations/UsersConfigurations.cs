@@ -23,6 +23,12 @@ namespace Identity.Infrastructure.Persistence.Configurations
                     v => v == null ? null : Email.Create(v))
                 .IsRequired();
 
+            builder.Property(u => u.PhoneNumber)
+                .HasConversion(
+                    v => v == null ? null : v.Value,
+                    v => v == null ? null : PhoneNumber.Create(v))
+                .IsRequired(false);
+
             builder.Property(u => u.PasswordHash)
                 .IsRequired(false);
 
@@ -31,6 +37,9 @@ namespace Identity.Infrastructure.Persistence.Configurations
                 .HasConversion<string>();
 
             builder.HasIndex(u => u.Email)
+                .IsUnique();
+
+            builder.HasIndex(c => c.PhoneNumber)
                 .IsUnique();
         }
     }

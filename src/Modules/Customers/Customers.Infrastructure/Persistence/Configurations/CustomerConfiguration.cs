@@ -22,17 +22,11 @@ namespace Customers.Infrastructure.Persistence.Configurations
             builder.Property(c=> c.Bday)
                 .IsRequired();
 
-            builder.Property(c => c.PhoneNumber)
-                .HasConversion(
-                    v => v == null ? null : v.Value,
-                    v => v == null ? null : PhoneNumber.Create(v))
-                .IsRequired(false);
-
             builder.Property(c => c.Height)
                 .HasConversion(
                     v => v.Centimeters,
                     v => Height.FromCm(v))
-                .IsRequired();
+                .IsRequired(false);
 
             builder.OwnsMany(c => c.CustomerAddresses, ca => {
 
@@ -94,8 +88,6 @@ namespace Customers.Infrastructure.Persistence.Configurations
 
                 ca.HasIndex(nameof(CustomerAddress.Label), "CustomerId").IsUnique();
             });
-
-            builder.HasIndex(c => c.PhoneNumber).IsUnique();
         }
     }
 }

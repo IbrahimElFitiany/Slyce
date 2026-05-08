@@ -4,8 +4,6 @@ using Customers.Application.UseCases.Queries.GetCustomerAddress;
 using Customers.Contracts.DTOs;
 using Customers.Contracts.Interfaces;
 using Customers.Domain.Entities;
-using Customers.Domain.Enums;
-using Customers.Domain.ValueObjects;
 using Microsoft.Extensions.Logging;
 
 
@@ -17,9 +15,9 @@ namespace Customers.Application.Services
         ICustomerRepository customerRepository,
         ILogger<CustomerServices> logger) : ICustomerServices
     {
-        public async Task CreateCustomerAsync(Guid Id, CancellationToken ct)
+        public async Task CreateCustomerAsync(Guid Id, DateOnly Birthday, CancellationToken ct)
         {
-            var customer = Customer.Create(Id, Gender.Male, DateOnly.FromDateTime(DateTime.Now.AddYears(-20)), Height.FromCm(165),null);
+            var customer = Customer.Create(Id, null, Birthday, null, null);
 
             customerRepository.Add(customer);
             await unitOfWork.SaveChangesAsync(ct);

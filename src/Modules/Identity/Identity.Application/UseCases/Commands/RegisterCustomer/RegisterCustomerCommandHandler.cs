@@ -26,13 +26,14 @@ namespace Identity.Application.UseCases.Commands.RegisterCustomer
                 command.FirstName,
                 command.LastName,
                 Email.Create(command.Email),
+                PhoneNumber.Create(command.PhoneNumber),
                 passwordHasher.Hash(command.Password));
 
             userRepository.Add(user);
             await unitOfWork.SaveChangesAsync(ct);
             logger.LogInformation("User registered: {UserId}", user.Id);
 
-            await customerServices.CreateCustomerAsync(user.Id, ct);
+            await customerServices.CreateCustomerAsync(user.Id, command.BirthDay, ct);
 
             return user.Id;
         }
