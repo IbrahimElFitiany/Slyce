@@ -4,6 +4,6 @@ namespace Identity.Application.Interfaces
 {
     public interface ITokenGenerator
     {
-        string GenerateToken(User user);
+        (string, DateTime) GenerateToken(User user);
     }
 }

@@ -23,6 +23,11 @@ namespace WebAPI.Infrastructure.ExceptionHandling
                 httpContext.Response.StatusCode = 409;
                 problemDetails.Title = due.Message;
             }
+            else if (exception is UnauthorizedException unauth)
+            {
+                httpContext.Response.StatusCode = 401;
+                problemDetails.Title = unauth.Message;
+            }
             else if (exception is DomainException de)
             {
                 httpContext.Response.StatusCode = 400;
