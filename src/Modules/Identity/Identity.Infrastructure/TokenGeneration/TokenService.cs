@@ -13,7 +13,7 @@ namespace Identity.Infrastructure.TokenGeneration
     {
         private readonly JwtSettings _settings = settings.Value;
 
-        public string GenerateToken(User user)
+        public (string, DateTime) GenerateToken(User user)
         {
             var claims = new[]
             {
@@ -24,15 +24,18 @@ namespace Identity.Infrastructure.TokenGeneration
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.Secret));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var expiry = DateTime.UtcNow.AddHours(_settings.ExpiryHours);
+
 
             var token = new JwtSecurityToken(
                 issuer: _settings.Issuer,
                 audience: _settings.Audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(_settings.ExpiryHours),
+                expires: expiry,
                 signingCredentials: creds);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return (new JwtSecurityTokenHandler().WriteToken(token), expiry);
+
         }
     }
 }
