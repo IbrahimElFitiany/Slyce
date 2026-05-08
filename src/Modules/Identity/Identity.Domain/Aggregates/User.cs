@@ -10,6 +10,7 @@ namespace Identity.Domain.Aggregates
         public string FirstName { get; private set; } = null!;
         public string LastName { get; private set; } = null!;
         public Email Email { get; private set; } = null!;
+        public PhoneNumber? PhoneNumber { get; private set; }
         public string? PasswordHash { get; private set; }
         public UserType UserType { get; private set; }
         
@@ -36,10 +37,12 @@ namespace Identity.Domain.Aggregates
             string firstName,
             string lastName,
             Email email,
+            PhoneNumber phoneNumber,
             string passwordHash)
         {
             var customer = new User(firstName, lastName, email, UserType.Customer);
             customer.PasswordHash = passwordHash;
+            customer.PhoneNumber = phoneNumber;
 
             customer.RaiseDomainEvent(new CustomerCreatedDomainEvent(customer.Id, customer.Email.Value));
 
