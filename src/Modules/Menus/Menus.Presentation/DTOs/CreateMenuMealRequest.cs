@@ -1,6 +1,6 @@
 ﻿namespace Menus.Presentation.DTOs
 {
-    public record CreateMenuMealReqDTO(
+    public record CreateMenuMealRequest(
         Guid CategoryId,
         string Name,
         string Description,

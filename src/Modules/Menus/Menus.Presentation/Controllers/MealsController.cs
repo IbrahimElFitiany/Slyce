@@ -4,35 +4,32 @@ using Microsoft.AspNetCore.Mvc;
 using Menus.Application.UseCases.Commands.CreateMenuMeal;
 using Menus.Presentation.DTOs;
 using Menus.Application.UseCases.Queries.GetMealByID;
+using Shared.Presentation;
 
 namespace Menus.Presentation.Controllers
 {
     [Route("api/v{version:apiVersion}/meals")]
     [ApiVersion("1.0")]
     [ApiController]
-    public class MealsController : ControllerBase
+    public sealed class MealsController(IMediator mediator) : BaseController
     {
-        private readonly IMediator _mediator;
-        public MealsController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
 
         [HttpPost]
-        public async Task<IActionResult> CreateMenuMeal([FromBody] CreateMenuMealReqDTO dto, CancellationToken ct)
+        public async Task<IActionResult> CreateMenuMeal(
+            [FromBody] CreateMenuMealRequest request,
+            [FromHeader(Name = "X-Restaurant-Id")] Guid mockUpRestaurant,
+            CancellationToken ct)
         {
-            Guid dummyUserId = Guid.NewGuid();
-            Guid mockUpRestaurant = Guid.Parse("ee7a56b2-eded-4745-9f7f-b13a02dce23f");
 
             var command = new CreateMenuMealCommand(
-                dummyUserId,
+                UserId,
                 mockUpRestaurant,
-                dto.CategoryId,
-                dto.Name,
-                dto.Description,
-                dto.ImgUrl,
-                dto.Ingredients,
-                dto.Sizes.Select(size =>
+                request.CategoryId,
+                request.Name,
+                request.Description,
+                request.ImgUrl,
+                request.Ingredients,
+                request.Sizes.Select(size =>
                     new MealSizeInput(
                         size.Name,
                         size.Price,
@@ -47,7 +44,7 @@ namespace Menus.Presentation.Controllers
                 ).ToList()
             );
 
-            var mealId = await _mediator.Send(command, ct);
+            var mealId = await mediator.Send(command, ct);
 
             return CreatedAtAction(
                 actionName: nameof(GetById),
@@ -59,7 +56,7 @@ namespace Menus.Presentation.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
         {
-            var result = await _mediator.Send(new GetMealByIdQuery(id), ct); 
+            var result = await mediator.Send(new GetMealByIdQuery(id), ct); 
             return Ok(result);
         }
     }
