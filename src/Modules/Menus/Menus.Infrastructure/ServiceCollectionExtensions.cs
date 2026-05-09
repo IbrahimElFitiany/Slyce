@@ -32,7 +32,7 @@ namespace Menus.Infrastructure
                 op.Configuration = configuration.GetConnectionString("RedisConnection");
             });
 
-            services.AddValidatorsFromAssemblyContaining<AddMealSizeCommandValidator>();
+            services.AddValidatorsFromAssemblyContaining<AddMealSizeCommandValidator>(includeInternalTypes: true);
 
             services.AddMediatR(cfg => {
                 cfg.RegisterServicesFromAssemblyContaining<CreateMenuCategoryCommand>();
