@@ -31,7 +31,7 @@ namespace WebAPI
             builder.Services
                 .AddExceptionHandling()
                 .AddCORS()
-                .AddAuth()
+                .AddAuth(builder.Configuration)
                 .AddAuthorization()
                 .AddAPIVersioning()
                 .AddSignalR();

@@ -1,6 +1,6 @@
 ﻿namespace Identity.Infrastructure.TokenGeneration
 {
-    internal sealed class JwtSettings
+    public sealed class JwtSettings
     {
         public string Secret { get; init; }
         public string Issuer { get; init; }
