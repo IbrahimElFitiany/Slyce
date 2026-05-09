@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\SharedKernal\Shared.Presentation\Shared.Presentation.csproj" />
     <ProjectReference Include="..\Orders.Application\Orders.Application.csproj" />
   </ItemGroup>
   

@@ -6,6 +6,7 @@ using Orders.Application.UseCases.Commands.CheckoutCart;
 using Orders.Application.UseCases.Commands.ClearCart;
 using Orders.Application.UseCases.Queries.ViewCart;
 using Orders.Presentation.DTOs;
+using Shared.Presentation;
 
 
 namespace Orders.Presentation.Controllers
@@ -13,48 +14,45 @@ namespace Orders.Presentation.Controllers
     [Route("api/v{version:apiVersion}/cart")]
     [ApiVersion("1.0")]
     [ApiController]
-    public sealed class CartController(IMediator mediator) : Controller
+    public sealed class CartController(IMediator mediator) : BaseController
     {
-        private readonly IMediator _mediator = mediator;
 
         [HttpPost]
         public async Task<IActionResult> AddToCart(
-            [FromHeader (Name = "X-CustomerId")] Guid customerId,
             [FromBody] AddToCartReq request,
             CancellationToken ct)
         {
             var command = new AddToCartCommand(
-                customerId,
+                UserId,
                 request.MealId,
                 request.SizeId,
                 request.Quantity);
 
-            await _mediator.Send(command, ct);
-            return Ok();
+            await mediator.Send(command, ct);
+            return NoContent();
         }
 
         [HttpGet]
-        public async Task<IActionResult> ViewCart([FromHeader(Name = "X-CustomerId")] Guid customerId, CancellationToken ct)
+        public async Task<IActionResult> ViewCart(CancellationToken ct)
         {
-            var result = await _mediator.Send(new ViewCartQuery(customerId), ct);
+            var result = await mediator.Send(new ViewCartQuery(UserId), ct);
             return Ok(result);
         }
 
         [HttpDelete]
-        public async Task<IActionResult> ClearCart([FromHeader(Name = "X-CustomerId")] Guid customerId, CancellationToken ct)
+        public async Task<IActionResult> ClearCart(CancellationToken ct)
         {
-            await _mediator.Send(new ClearCartCommand(customerId), ct);
-            return Ok();
+            await mediator.Send(new ClearCartCommand(UserId), ct);
+            return NoContent();
         }
 
         [HttpPost("checkout")]
         public async Task<IActionResult> Checkout(
-            [FromHeader(Name = "X-CustomerId")] Guid customerId,
             CheckoutReq request,
             CancellationToken ct)
         {
-            var command = new CheckoutCartCommand(customerId, request.DeliveryAddressId, request.PaymentMethod);
-            var OrderId = await _mediator.Send(command, ct);
+            var command = new CheckoutCartCommand(UserId, request.DeliveryAddressId, request.PaymentMethod);
+            var OrderId = await mediator.Send(command, ct);
 
             return CreatedAtAction(nameof(OrdersController.GetOrder), "Orders", new { id = OrderId }, new { orderId = OrderId });
         }

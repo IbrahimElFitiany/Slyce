@@ -14,7 +14,6 @@ namespace Restaurants.Presentation.Controllers
     [ApiController]
     public sealed class BranchController(IMediator mediator) : ControllerBase
     {
-        private readonly IMediator _mediator = mediator;
 
         [HttpPost]
         public async Task<IActionResult> AddBranch([FromBody] AddBranchRequest request, CancellationToken ct)
@@ -30,7 +29,8 @@ namespace Restaurants.Presentation.Controllers
                     StreetName: request.StreetName,
                     Latitude: request.Latitude,
                     Longitude: request.Longitude));
-            var result = await _mediator.Send(command, ct);
+
+            var result = await mediator.Send(command, ct);
 
             return Created(string.Empty ,new { branchId = result });
         }
@@ -39,7 +39,7 @@ namespace Restaurants.Presentation.Controllers
         public async Task<IActionResult> ActivateBranch([FromRoute] Guid id, CancellationToken ct)
         {
             //TODO AuthR and 
-            await _mediator.Send(new ActivateBranchCommand(id), ct);
+            await mediator.Send(new ActivateBranchCommand(id), ct);
 
             return NoContent();
         }
@@ -52,7 +52,7 @@ namespace Restaurants.Presentation.Controllers
                 request.Schedule
                 .Select(d => new DayWorkingHoursInput(d.Day, d.OpeningTime, d.ClosingTime)).ToList());
 
-            await _mediator.Send(command,ct);
+            await mediator.Send(command,ct);
 
             return CreatedAtAction(nameof(GetSchedule), new { id }, null);
         }

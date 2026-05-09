@@ -10,12 +10,8 @@ namespace Menus.Presentation.Controllers
     [Route("api/v{version:apiVersion}/restaurants/{restaurantId}/categories")]
     [ApiVersion("1.0")]
     [ApiController]
-    public class CategoriesController : ControllerBase
+    public sealed class CategoriesController(IMediator mediator) : ControllerBase
     {
-        private readonly IMediator _mediator;
-        public CategoriesController(IMediator mediator) {
-            _mediator = mediator;
-        }
 
         [HttpPost]
         public async Task<IActionResult> Create(
@@ -23,7 +19,7 @@ namespace Menus.Presentation.Controllers
             [FromBody] CreateCategoryReq createCategoryReq,
             CancellationToken ct)
         {
-            var categoryId = await _mediator.Send(new CreateMenuCategoryCommand(createCategoryReq.Name,restaurantId), ct);
+            var categoryId = await mediator.Send(new CreateMenuCategoryCommand(createCategoryReq.Name,restaurantId), ct);
             return Created(string.Empty, new { categoryId });
         }
     }
