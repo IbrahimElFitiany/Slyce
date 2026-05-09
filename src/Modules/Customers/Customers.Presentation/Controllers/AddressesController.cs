@@ -5,6 +5,7 @@ using Customers.Application.UseCases.Commands.CreateAddress;
 using Customers.Presentation.DTOs;
 using Customers.Application.UseCases.Queries.GetCustomerAddress;
 using Customers.Application.UseCases.Queries.ListCustomerAddresses;
+using Shared.Presentation;
 
 
 namespace Customers.Presentation.Controllers
@@ -12,21 +13,14 @@ namespace Customers.Presentation.Controllers
     [Route("api/v{version:apiVersion}/addresses")]
     [ApiVersion("1.0")]
     [ApiController]
-    public class AddressesController(IMediator mediator) : ControllerBase
+    public class AddressesController(IMediator mediator) : BaseController
     {
-        private readonly IMediator _mediator = mediator;
 
         [HttpPost]
         public async Task<IActionResult> CreateAddress([FromBody] CreateAddressRequest request, CancellationToken cancellationToken)
         {
-            // TODO: replace with authenticated user's ID once auth is implemented
-            var mockCustomer = Request.Headers["Customer-Id"].FirstOrDefault();
-
-            if (mockCustomer is null || !Guid.TryParse(mockCustomer, out var customerId))
-                return BadRequest("Customer-Id header is required");
-
             var command = new CreateAddressCommand(
-                CustomerId: customerId,
+                CustomerId: UserId,
                 Label: request.Label,
                 StreetName: request.StreetName,
                 StreetNumber: request.StreetNumber,
@@ -36,36 +30,23 @@ namespace Customers.Presentation.Controllers
                 Longitude: request.Longitude,
                 ContactNumber: request.ContactNumber);
 
-            var addressId = await _mediator.Send(command, cancellationToken);
+            var addressId = await mediator.Send(command, cancellationToken);
 
             return CreatedAtAction(nameof(GetAddress), new { id = addressId }, null);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAddress(
-            [FromHeader(Name = "Customer-Id")] Guid customerId,
-            [FromRoute] Guid id,
-            CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAddress( [FromRoute] Guid id,CancellationToken cancellationToken)
         {
-            //TODO Customer-Id is Used For mocking rn
-
-            var query = new GetCustomerAddressQuery(customerId, id); 
-
-            var result = await _mediator.Send(query, cancellationToken);
+            var result = await mediator.Send(new GetCustomerAddressQuery(UserId, id), cancellationToken);
 
             return Ok(result);
         }
 
         [HttpGet]
-        public async Task<IActionResult> ListCustomerAddresses(
-            [FromHeader(Name = "Customer-Id")] Guid customerId,
-            CancellationToken cancellationToken)
+        public async Task<IActionResult> ListCustomerAddresses(CancellationToken cancellationToken)
         {
-            //TODO Customer-Id is Used For mocking rn
-
-            var query = new ListCustomerAddressesQuery(customerId);
-
-            var result = await _mediator.Send(query, cancellationToken);
+            var result = await mediator.Send(new ListCustomerAddressesQuery(UserId), cancellationToken);
 
             return Ok(result);
         }

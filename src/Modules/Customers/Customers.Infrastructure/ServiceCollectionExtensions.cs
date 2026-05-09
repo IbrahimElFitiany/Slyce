@@ -1,4 +1,7 @@
-﻿using Customers.Application.Interfaces;
+﻿using MediatR;
+using FluentValidation;
+using Shared.Application.Behaviors;
+using Customers.Application.Interfaces;
 using Customers.Application.Services;
 using Customers.Application.UseCases.Commands.UpdateGender;
 using Customers.Contracts.Interfaces;
@@ -21,14 +24,13 @@ namespace Customers.Infrastructure
 
             services.AddScoped<ICustomerServices, CustomerServices>();
 
+            services.AddValidatorsFromAssemblyContaining<UpdateGenderCommand>(includeInternalTypes: true);
+
             services.AddMediatR(cfg =>
             {
-                cfg.RegisterServicesFromAssemblies(typeof(CustomersDbContext).Assembly);
-                cfg.RegisterServicesFromAssemblies(typeof(UpdateGenderCommand).Assembly);
+                cfg.RegisterServicesFromAssemblies(typeof(CustomersDbContext).Assembly, typeof(UpdateGenderCommand).Assembly);
+                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             });
-            
-
-
 
             return services;
         }

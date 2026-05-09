@@ -3,7 +3,6 @@ using Customers.Domain.Exceptions;
 using Customers.Domain.ValueObjects;
 using Shared.Domain.Common;
 using Shared.Domain.Exceptions;
-using Shared.Domain.ValueObjects;
 
 namespace Customers.Domain.Entities
 {
@@ -53,7 +52,7 @@ namespace Customers.Domain.Entities
             if (_customerAddresses.Count == 0)
                 newAddress.SetAsPrimary();
 
-            if (_customerAddresses.Any(a => a.Label == newAddress.Label))
+            if (_customerAddresses.Any(a => a.Label == newAddress.Label.ToLowerInvariant()))
                 throw new DuplicateException(nameof(CustomerAddress.Label), newAddress.Label);
 
             _customerAddresses.Add(newAddress);
