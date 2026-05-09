@@ -35,27 +35,11 @@ namespace Customers.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Email")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Fname")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
                     b.Property<string>("Gender")
                         .HasColumnType("text");
 
-                    b.Property<int>("Height")
+                    b.Property<int?>("Height")
                         .HasColumnType("integer");
-
-                    b.Property<string>("Lname")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("text");
 
                     b.Property<string>("ProfileImage")
                         .HasColumnType("text");
@@ -65,12 +49,6 @@ namespace Customers.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.HasIndex("PhoneNumber")
-                        .IsUnique();
-
                     b.ToTable("Customers", "customers");
                 });
 
@@ -79,7 +57,6 @@ namespace Customers.Infrastructure.Migrations
                     b.OwnsMany("Customers.Domain.Entities.CustomerAddress", "CustomerAddresses", b1 =>
                         {
                             b1.Property<Guid>("Id")
-                                .ValueGeneratedOnAdd()
                                 .HasColumnType("uuid");
 
                             b1.Property<string>("ContactNumber")

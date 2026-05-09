@@ -14,59 +14,52 @@ using Menus.Application.Mappers;
 
 namespace Menus.Application.UseCases.Commands.CreateMenuMeal
 {
-    public class CreateMenuMealCommandHandler : IRequestHandler<CreateMenuMealCommand,Guid>
+    internal sealed class CreateMenuMealCommandHandler (
+        IUnitOfWork unitOfWork,
+        IFoodServices foodService,
+        IMenuMealRepository mealRepository,
+        IMenuCategoryRepository categoryRepository,
+        ILogger<CreateMenuMealCommandHandler> logger) : IRequestHandler<CreateMenuMealCommand,Guid>
     {
-        private readonly IMenuMealRepository _mealRepository;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IFoodServices _foodService;
-        private readonly ILogger<CreateMenuMealCommandHandler> _logger;
-
-        public CreateMenuMealCommandHandler(
-            IMenuMealRepository repository,
-            IFoodServices foodService,
-            ILogger<CreateMenuMealCommandHandler> logger,
-            IUnitOfWork unitOfWork)
-        {
-            _mealRepository = repository;
-            _foodService = foodService;
-            _logger = logger;
-            _unitOfWork = unitOfWork;
-        }
-
-        public async Task<Guid> Handle(CreateMenuMealCommand request, CancellationToken ct)
+        public async Task<Guid> Handle(CreateMenuMealCommand command, CancellationToken ct)
         {
             //TODO check user permissions
 
-            await EnsureUniqueMealName(request.Name, request.RestaurantId, ct);
+            var category = await categoryRepository.GetByIdAsync(command.CategoryId, ct);
 
-            var nutritionByIngredient = await _foodService.GetFoodNutritionsAsync(request.Ingredients, ct);
+            if (category is null || category.RestaurantId != command.RestaurantId)
+                throw new NotFoundException("Category", command.CategoryId);
+            
+            await EnsureUniqueMealName(command.Name, command.RestaurantId, ct);
 
-            ValidateAllIngredientsFound(request.Ingredients.ToList(), nutritionByIngredient);
+            var nutritionByIngredient = await foodService.GetFoodNutritionsAsync(command.Ingredients, ct);
+
+            ValidateAllIngredientsFound(command.Ingredients.ToList(), nutritionByIngredient);
 
             var mealIngredients = BuildMealIngredients(nutritionByIngredient);
             var nutritionMap = NutritionMapper.ToNutrition(nutritionByIngredient);
-            var sizes = BuildMealSizes(request.Sizes, nutritionMap);
+            var sizes = BuildMealSizes(command.Sizes, nutritionMap);
 
             var meal = new MenuMeal(
-                request.CategoryId,
-                request.RestaurantId,
-                request.Name,
-                request.Description,
-                request.ImgUrl,
+                command.CategoryId,
+                command.RestaurantId,
+                command.Name,
+                command.Description,
+                command.ImgUrl,
                 mealIngredients,
                 sizes);
 
-            _mealRepository.Add(meal);
-            await _unitOfWork.SaveChangesAsync(ct);
+            mealRepository.Add(meal);
+            await unitOfWork.SaveChangesAsync(ct);
 
-            _logger.LogInformation("Meal created successfully. MealId={MealId}, Name={Name}, RestaurantId={RestaurantId}", meal.Id, meal.Name, meal.RestaurantId);
+            logger.LogInformation("Meal created successfully. MealId={MealId}, Name={Name}, RestaurantId={RestaurantId}", meal.Id, meal.Name, meal.RestaurantId);
 
             return meal.Id;
         }
 
         private async Task EnsureUniqueMealName(string mealName, Guid restaurantId, CancellationToken ct)
         {
-            if (await _mealRepository.ExistsByNameInRestaurantAsync(mealName, restaurantId, ct))
+            if (await mealRepository.ExistsByNameInRestaurantAsync(mealName, restaurantId, ct))
                 throw new DuplicateException("Meal",mealName);
         }
         private void ValidateAllIngredientsFound(IReadOnlyList<Guid> requestFoodIds, Dictionary<Guid,FoodNutritionDTO> ingredientsRetrived)
@@ -75,7 +68,7 @@ namespace Menus.Application.UseCases.Commands.CreateMenuMeal
 
             if (missingIngredients.Any())
             {
-                _logger.LogWarning("Ingredients missing in food service. Missing ={list}", missingIngredients);
+                logger.LogWarning("Ingredients missing in food service. Missing ={list}", missingIngredients);
                 throw new NotFoundException("ingredients not found");
             }
         }

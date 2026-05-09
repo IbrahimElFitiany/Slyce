@@ -1,0 +1,6 @@
+﻿using MediatR;
+
+namespace Identity.Application.UseCases.Commands.Login
+{
+    public sealed record LoginCommand(string Email, string Password) : IRequest<LoginResult>;
+}

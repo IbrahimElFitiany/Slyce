@@ -1,58 +1,49 @@
 ﻿using Customers.Domain.Enums;
 using Customers.Domain.Exceptions;
 using Customers.Domain.ValueObjects;
+using Shared.Domain.Common;
 using Shared.Domain.Exceptions;
-using Shared.Domain.ValueObjects;
 
 namespace Customers.Domain.Entities
 {
-    public sealed class Customer
+    public sealed class Customer : AggregateRoot
     {
         private const int MinimumAge = 18;
 
-        public Guid Id { get; private init; }
-        public string Fname { get; private set; } = null!;
-        public string Lname { get; private set; } = null!;
         public Gender? Gender { get;  private set; }
-        public Email? Email { get; private set; }
         public string? ProfileImage { get; private set; }
         public DateOnly Bday { get; private set; }
-        public PhoneNumber? PhoneNumber { get; private set; }
-        public Height Height { get; private set; } = null!;
+        public Height? Height { get; private set; } = null!;
 
-        private readonly List<CustomerAddress> _customerAddresses = new ();
+        private readonly List<CustomerAddress> _customerAddresses = [];
         public IReadOnlyCollection<CustomerAddress> CustomerAddresses => _customerAddresses;
-        public DateTime CreatedAt { get; private set; } 
-        public DateTime UpdatedAt { get; private set; }
 
         private Customer() { }
 
-        public Customer(
-            string fname,
-            string lname,
-            Email? email,
-            PhoneNumber? phoneNumber,
-            Height height,
-            DateOnly bday) 
+        private Customer(Guid id, Height? height, DateOnly bday) 
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(fname, nameof(fname));
-            ArgumentException.ThrowIfNullOrWhiteSpace(lname, nameof(lname));
-
-            if (email is null && phoneNumber is null)
-                throw new NoContactMethodException();
-
             EnsureValidAge(bday);
 
-            Id = Guid.NewGuid();
-            Fname = fname;
-            Lname = lname;
-            Email = email;
-            PhoneNumber = phoneNumber;
+            Id = id;
             Height = height;
             Bday = bday;
-
             CreatedAt = UpdatedAt =  DateTime.UtcNow;
         }
+
+        public static Customer Create(
+            Guid id,
+            Gender? gender,
+            DateOnly birthDay,
+            Height? height,
+            string? profilePic)
+        {
+            var customer = new Customer(id, height, birthDay);
+            customer.ProfileImage = profilePic;
+            customer.Gender = gender;
+
+            return customer;
+        }
+
 
         public void AddAddress(CustomerAddress newAddress)
         {
@@ -61,15 +52,18 @@ namespace Customers.Domain.Entities
             if (_customerAddresses.Count == 0)
                 newAddress.SetAsPrimary();
 
-            if (_customerAddresses.Any(a => a.Label == newAddress.Label))
+            if (_customerAddresses.Any(a => a.Label == newAddress.Label.ToLowerInvariant()))
                 throw new DuplicateException(nameof(CustomerAddress.Label), newAddress.Label);
 
             _customerAddresses.Add(newAddress);
         }
 
-        public void UpdateEmail(string email)
+        public void UpdateGender(Gender gender)
         {
-            Email = Email.Create(email);
+            if (Gender == gender)
+                return;
+
+            Gender = gender;
             UpdatedAt = DateTime.UtcNow;
         }
 

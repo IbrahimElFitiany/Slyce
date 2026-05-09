@@ -5,5 +5,6 @@ namespace Customers.Contracts.Interfaces
     public interface ICustomerServices
     {
         Task<CustomerAddressDTO> GetCustomerAddressByIdAsync (Guid CustomerId, Guid Addressid, CancellationToken ct = default);
+        Task CreateCustomerAsync(Guid Id, DateOnly Birthday, CancellationToken cancellationToken);
     }
 }

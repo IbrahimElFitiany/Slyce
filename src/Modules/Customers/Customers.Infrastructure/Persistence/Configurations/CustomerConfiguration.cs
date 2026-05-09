@@ -7,28 +7,14 @@ using Shared.Domain.ValueObjects;
 
 namespace Customers.Infrastructure.Persistence.Configurations
 {
-    public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
+    public sealed class CustomerConfiguration : IEntityTypeConfiguration<Customer>
     {
         public void Configure(EntityTypeBuilder<Customer> builder)
         {
             builder.HasKey(c => c.Id);
 
-            builder.Property(c => c.Fname)
-                .IsRequired()
-                .HasMaxLength(50);
-            
-            builder.Property(c => c.Lname)
-                .IsRequired()
-                .HasMaxLength(50);
-
             builder.Property(c => c.Gender)
                 .HasConversion<string>();
-
-            builder.Property(c => c.Email)
-                .HasConversion(
-                    v => v == null ? null : v.Value,
-                    v => v == null ? null : Email.Create(v))
-                .IsRequired(false);
 
             builder.Property(c=> c.ProfileImage)
                 .IsRequired(false);
@@ -36,17 +22,11 @@ namespace Customers.Infrastructure.Persistence.Configurations
             builder.Property(c=> c.Bday)
                 .IsRequired();
 
-            builder.Property(c => c.PhoneNumber)
-                .HasConversion(
-                    v => v == null ? null : v.Value,
-                    v => v == null ? null : PhoneNumber.Create(v))
-                .IsRequired(false);
-
             builder.Property(c => c.Height)
                 .HasConversion(
                     v => v.Centimeters,
                     v => Height.FromCm(v))
-                .IsRequired();
+                .IsRequired(false);
 
             builder.OwnsMany(c => c.CustomerAddresses, ca => {
 
@@ -108,10 +88,6 @@ namespace Customers.Infrastructure.Persistence.Configurations
 
                 ca.HasIndex(nameof(CustomerAddress.Label), "CustomerId").IsUnique();
             });
-
-
-            builder.HasIndex(c => c.Email).IsUnique();
-            builder.HasIndex(c => c.PhoneNumber).IsUnique();
         }
     }
 }

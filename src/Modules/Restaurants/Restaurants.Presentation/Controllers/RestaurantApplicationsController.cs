@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Restaurants.Application.UseCases.Commands.ApproveRestaurantApplication;
 using Restaurants.Application.UseCases.Commands.CreateRestaurantApplication;
 using Restaurants.Presentation.DTOs;
+using Shared.Presentation;
 
 namespace Restaurants.Presentation.Controllers
 {
@@ -11,14 +12,8 @@ namespace Restaurants.Presentation.Controllers
     [Route("api/v{version:apiVersion}/restaurant-applications")]
     [ApiVersion("1.0")]
     [ApiController]
-    public class RestaurantApplicationsController : ControllerBase
+    public sealed class RestaurantApplicationsController(IMediator mediator) : BaseController
     {
-        private readonly IMediator _mediator;
-        public RestaurantApplicationsController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
-
         [HttpPost]
         public async Task<IActionResult> CreateRestaurantApplication([FromBody] CreateRestaurantApplicationRequest dto, CancellationToken cancellationToken)
         {
@@ -41,19 +36,17 @@ namespace Restaurants.Presentation.Controllers
                 BranchCount: dto.BranchCount,
                 Description: dto.Description
                 );
-            var result = await _mediator.Send(command, cancellationToken);
+            var result = await mediator.Send(command, cancellationToken);
 
             return CreatedAtAction(nameof(GetById), new { id = result }, new { id = result });
         }
 
         [HttpPost("{applicationId}/approve")]
         public async Task<IActionResult> ApproveRestaurantApplication([FromRoute] Guid applicationId, CancellationToken cancellationToken)
-        {
-            Guid dummyUserId = Guid.NewGuid();
+        { 
+            await mediator.Send(new ApproveRestaurantApplicationCommand(UserId, applicationId));
 
-            await _mediator.Send(new ApproveRestaurantApplicationCommand(dummyUserId, applicationId));
-
-            return Ok();
+            return NoContent();
         }
 
         [HttpGet("{id}")]

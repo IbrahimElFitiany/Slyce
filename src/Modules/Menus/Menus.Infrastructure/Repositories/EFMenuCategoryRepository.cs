@@ -4,17 +4,12 @@ using Menus.Infrastructure.Persistence;
 
 namespace Menus.Infrastructure.Repositories
 {
-    public class EFMenuCategoryRepository : IMenuCategoryRepository
+    public sealed class EFMenuCategoryRepository(MenusDbContext dbContext) : IMenuCategoryRepository
     {
-        private readonly MenusDbContext _dbContext;
-        public EFMenuCategoryRepository (MenusDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
 
         public void Add(MenuCategory menuCategory)
         {
-            _dbContext.MenuCategories.AddAsync(menuCategory);
+            dbContext.MenuCategories.Add(menuCategory);
         }
 
         public void Delete(Guid id)
@@ -22,9 +17,9 @@ namespace Menus.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<MenuCategory?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<MenuCategory?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await dbContext.MenuCategories.FindAsync(id, cancellationToken);
         }
 
         public Task<IEnumerable<MenuCategory>> ListAsync(CancellationToken cancellationToken = default)

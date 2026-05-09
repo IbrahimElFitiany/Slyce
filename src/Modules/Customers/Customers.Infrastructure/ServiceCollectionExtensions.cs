@@ -1,6 +1,9 @@
-﻿using Customers.Application.Interfaces;
+﻿using MediatR;
+using FluentValidation;
+using Shared.Application.Behaviors;
+using Customers.Application.Interfaces;
 using Customers.Application.Services;
-using Customers.Application.UseCases.Commands.RegisterCustomer;
+using Customers.Application.UseCases.Commands.UpdateGender;
 using Customers.Contracts.Interfaces;
 using Customers.Infrastructure.Persistence;
 using Customers.Infrastructure.Repositories;
@@ -13,7 +16,7 @@ namespace Customers.Infrastructure
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddCustomerModule(this IServiceCollection services ,IConfiguration configuration) {
+        public static IServiceCollection AddCustomerModule(this IServiceCollection services, IConfiguration configuration) {
 
             services.AddDbContext<CustomersDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -21,11 +24,13 @@ namespace Customers.Infrastructure
 
             services.AddScoped<ICustomerServices, CustomerServices>();
 
-            services.AddMediatR(cfg => 
-            cfg.RegisterServicesFromAssemblies(
-                typeof(RegisterCustomerCommandHandler).Assembly,
-                typeof(CustomersDbContext).Assembly));
+            services.AddValidatorsFromAssemblyContaining<UpdateGenderCommand>(includeInternalTypes: true);
 
+            services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssemblies(typeof(CustomersDbContext).Assembly, typeof(UpdateGenderCommand).Assembly);
+                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            });
 
             return services;
         }

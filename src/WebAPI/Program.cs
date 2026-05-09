@@ -16,6 +16,8 @@ using Subscriptions.Presentation.Controllers;
 using Subscriptions.Infrastructure;
 using Food.Presentation.Controllers;
 using Orders.Presentation.Controllers;
+using Identity.Infrastructure;
+using Identity.Presentation.Controllers;
 
 
 namespace WebAPI
@@ -29,7 +31,7 @@ namespace WebAPI
             builder.Services
                 .AddExceptionHandling()
                 .AddCORS()
-                .AddAuth()
+                .AddAuth(builder.Configuration)
                 .AddAuthorization()
                 .AddAPIVersioning()
                 .AddSignalR();
@@ -40,7 +42,8 @@ namespace WebAPI
                 .AddRestaurantModule(builder.Configuration)
                 .AddMenusModule(builder.Configuration)
                 .AddFoodModule(builder.Configuration)
-                .AddSubcriptionsModule(builder.Configuration);
+                .AddSubcriptionsModule(builder.Configuration)
+                .AddIdentityModule(builder.Configuration);
 
 
             //will refactor later
@@ -67,6 +70,10 @@ namespace WebAPI
             builder.Services
                 .AddControllers()
                 .AddApplicationPart(typeof(OrdersController).Assembly);
+
+            builder.Services
+                .AddControllers()
+                .AddApplicationPart(typeof(UsersController).Assembly);
 
             builder.Services.AddScoped<IOrderNotifier, SignalROrderNotifier>();
             builder.Services.AddControllers().AddJsonOptions(options =>
