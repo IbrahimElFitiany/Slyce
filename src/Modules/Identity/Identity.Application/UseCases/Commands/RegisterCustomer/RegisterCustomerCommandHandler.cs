@@ -3,6 +3,7 @@ using Identity.Application.Interfaces;
 using Identity.Domain.Aggregates;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Shared.Domain.Exceptions;
 using Shared.Domain.ValueObjects;
 
 namespace Identity.Application.UseCases.Commands.RegisterCustomer
@@ -20,8 +21,15 @@ namespace Identity.Application.UseCases.Commands.RegisterCustomer
             // KNOWN BUG: User and Customer creation are not atomic, if CreateCustomerAsync fails,
             // the User record is already committed with no rollback.
             // Will be addressed via outbox/integration events in the future
-            
+
             // TODO: Replace with transactional outbox pattern
+
+
+            var existingUser = await userRepository.GetUserByEmailAsync(Email.Create(command.Email), ct);
+
+            if (existingUser is not null)
+                throw new DuplicateException("User", command.Email);
+
             var user = User.CreateCustomer(
                 command.FirstName,
                 command.LastName,
@@ -31,6 +39,7 @@ namespace Identity.Application.UseCases.Commands.RegisterCustomer
 
             userRepository.Add(user);
             await unitOfWork.SaveChangesAsync(ct);
+
             logger.LogInformation("User registered: {UserId}", user.Id);
 
             await customerServices.CreateCustomerAsync(user.Id, command.BirthDay, ct);
