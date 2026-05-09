@@ -38,7 +38,6 @@ namespace Identity.Infrastructure
             services.AddHostedService<EmailWorker>();
             services.Configure<SMTPSettings>(configuration.GetSection("EmailSettings"));
 
-            services.AddScoped<IIdentityServices, IdentityServices>();
 
             services.AddValidatorsFromAssemblyContaining<LoginCommand>(includeInternalTypes: true);
 
