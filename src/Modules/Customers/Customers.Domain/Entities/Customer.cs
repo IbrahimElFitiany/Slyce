@@ -14,7 +14,6 @@ namespace Customers.Domain.Entities
         public Gender? Gender { get;  private set; }
         public string? ProfileImage { get; private set; }
         public DateOnly Bday { get; private set; }
-        public PhoneNumber? PhoneNumber { get; private set; }
         public Height? Height { get; private set; } = null!;
 
         private readonly List<CustomerAddress> _customerAddresses = [];
@@ -60,6 +59,14 @@ namespace Customers.Domain.Entities
             _customerAddresses.Add(newAddress);
         }
 
+        public void UpdateGender(Gender gender)
+        {
+            if (Gender == gender)
+                return;
+
+            Gender = gender;
+            UpdatedAt = DateTime.UtcNow;
+        }
 
 
         private static void EnsureValidAge(DateOnly birthday)

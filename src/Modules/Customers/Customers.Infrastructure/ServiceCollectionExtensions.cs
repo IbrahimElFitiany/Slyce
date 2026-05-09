@@ -1,6 +1,6 @@
 ﻿using Customers.Application.Interfaces;
 using Customers.Application.Services;
-using Customers.Application.UseCases.Queries.ListCustomerAddresses;
+using Customers.Application.UseCases.Commands.UpdateGender;
 using Customers.Contracts.Interfaces;
 using Customers.Infrastructure.Persistence;
 using Customers.Infrastructure.Repositories;
@@ -13,7 +13,7 @@ namespace Customers.Infrastructure
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddCustomerModule(this IServiceCollection services ,IConfiguration configuration) {
+        public static IServiceCollection AddCustomerModule(this IServiceCollection services, IConfiguration configuration) {
 
             services.AddDbContext<CustomersDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -21,9 +21,13 @@ namespace Customers.Infrastructure
 
             services.AddScoped<ICustomerServices, CustomerServices>();
 
-            services.AddMediatR(cfg => 
-            cfg.RegisterServicesFromAssemblies(
-                typeof(CustomersDbContext).Assembly));
+            services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssemblies(typeof(CustomersDbContext).Assembly);
+                cfg.RegisterServicesFromAssemblies(typeof(UpdateGenderCommand).Assembly);
+            });
+            
+
 
 
             return services;

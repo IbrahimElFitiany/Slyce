@@ -1,7 +1,6 @@
 ﻿using Customers.Application.Interfaces;
 using Customers.Domain.Entities;
 using Customers.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 
 namespace Customers.Infrastructure.Repositories
 {

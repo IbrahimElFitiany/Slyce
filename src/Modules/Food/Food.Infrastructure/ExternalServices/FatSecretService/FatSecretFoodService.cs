@@ -30,7 +30,6 @@ namespace Food.Infrastructure.ExternalServices.FatSecretService
         {
             var token = await _tokenService.GetTokenAsync(cancellationToken);
 
-            ///modify this shit fuck 
             var uri = $"{_options.Value.BaseUrl}{Uri.EscapeDataString(searchTerm)}&format=json&include_food_images=true";
 
             var request = new HttpRequestMessage(HttpMethod.Get, uri);

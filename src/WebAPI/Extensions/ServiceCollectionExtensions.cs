@@ -2,6 +2,7 @@
 using Identity.Infrastructure.TokenGeneration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using WebAPI.Infrastructure.ExceptionHandling;
@@ -45,6 +46,7 @@ namespace WebAPI.Extensions
             })
             .AddJwtBearer(options =>
             {
+                options.MapInboundClaims = false;
                 options.RequireHttpsMetadata = false;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
