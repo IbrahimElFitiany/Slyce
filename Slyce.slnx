@@ -19,7 +19,7 @@
   </Folder>
   <Folder Name="/src/Modules/Menus/">
     <Project Path="src/Modules/Menus/Menus.Application/Menus.Application.csproj" />
-    <Project Path="src/Modules/Menus/Menus.Contracts/Menus.Contracts.csproj"/>
+    <Project Path="src/Modules/Menus/Menus.Contracts/Menus.Contracts.csproj" />
     <Project Path="src/Modules/Menus/Menus.Domain/Menus.Domain.csproj" />
     <Project Path="src/Modules/Menus/Menus.Infrastructure/Menus.Infrastructure.csproj" />
     <Project Path="src/Modules/Menus/Menus.Presentation/Menus.Presentation.csproj" />
@@ -53,6 +53,7 @@
   <Folder Name="/src/SharedKernal/">
     <Project Path="src/SharedKernal/Shared.Application/Shared.Application.csproj" />
     <Project Path="src/SharedKernal/Shared.Domain/Shared.Domain.csproj" />
+    <Project Path="src/SharedKernal/Shared.Presentation/Shared.Presentation.csproj" />
   </Folder>
   <Folder Name="/tests/" />
   <Folder Name="/tests/Menus/" >
