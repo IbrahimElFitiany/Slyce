@@ -1,5 +1,8 @@
-﻿using Identity.Application.Interfaces;
+﻿using MediatR;
+using FluentValidation;
+using Identity.Application.Interfaces;
 using Identity.Application.Interfaces.EmailService;
+using Identity.Application.UseCases.Commands.Login;
 using Identity.Application.UseCases.Commands.RegisterCustomer;
 using Identity.Infrastructure.EmailService;
 using Identity.Infrastructure.Persistence;
@@ -8,6 +11,7 @@ using Identity.Infrastructure.TokenGeneration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Application.Behaviors;
 
 
 namespace Identity.Infrastructure
@@ -34,8 +38,14 @@ namespace Identity.Infrastructure
             services.AddHostedService<EmailWorker>();
             services.Configure<SMTPSettings>(configuration.GetSection("EmailSettings"));
 
+            services.AddScoped<IIdentityServices, IdentityServices>();
 
-            services.AddMediatR(cfg =>  cfg.RegisterServicesFromAssemblies(typeof(RegisterCustomerCommand).Assembly));
+            services.AddValidatorsFromAssemblyContaining<LoginCommand>(includeInternalTypes: true);
+
+            services.AddMediatR(cfg => {
+                cfg.RegisterServicesFromAssemblies(typeof(RegisterCustomerCommand).Assembly);
+                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            });
 
 
             return services;

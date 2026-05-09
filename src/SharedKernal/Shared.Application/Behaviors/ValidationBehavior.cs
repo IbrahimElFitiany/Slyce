@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Shared.Application.Behaviors
 {
-    public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
+    public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
     {
         private readonly IEnumerable<IValidator<TRequest>> _validators;
 
