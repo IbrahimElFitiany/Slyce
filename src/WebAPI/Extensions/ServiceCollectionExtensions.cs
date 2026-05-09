@@ -1,7 +1,11 @@
 ﻿using Asp.Versioning;
+using Identity.Infrastructure.TokenGeneration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System.Text;
 using WebAPI.Infrastructure.ExceptionHandling;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace WebAPI.Extensions
 {
@@ -29,7 +33,11 @@ namespace WebAPI.Extensions
 
             return services;
         }
-        public static IServiceCollection AddAuth(this IServiceCollection services) {
+        public static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration configuration) {
+
+            var jwtSettings = configuration.GetSection("JwtSettings").Get<JwtSettings>()
+                ?? throw new Exception("Jwt settings missing");
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -37,28 +45,29 @@ namespace WebAPI.Extensions
             })
             .AddJwtBearer(options =>
             {
-                options.Authority = "http://localhost:8080/realms/slyce-realm";
-                options.Audience = "slyce-api";
                 options.RequireHttpsMetadata = false;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret)),
+
                     ValidateIssuer = true,
+                    ValidIssuer = jwtSettings.Issuer,
+                    ValidAudience = jwtSettings.Audience,
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero,
-                    RoleClaimType = "realm_access.roles"
-                };
 
+                    RoleClaimType = ClaimTypes.Role,
+                };
                 options.Events = new JwtBearerEvents
                 {
                     OnMessageReceived = context =>
                     {
-                        var accessToken = context.Request.Query["access_token"];
-                        if (!string.IsNullOrEmpty(accessToken) &&
-                            context.HttpContext.Request.Path.StartsWithSegments("/hubs/orders"))
-                        {
-                            context.Token = accessToken;
-                        }
+                        // Cookie
+                        if (context.Request.Cookies.TryGetValue("access_token", out var cookieToken))
+                            context.Token = cookieToken;
+
                         return Task.CompletedTask;
                     }
 
