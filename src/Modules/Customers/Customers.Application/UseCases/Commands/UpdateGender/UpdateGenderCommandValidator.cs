@@ -7,7 +7,6 @@ namespace Customers.Application.UseCases.Commands.UpdateGender
     {
         public UpdateGenderCommandValidator()
         {
-            Console.WriteLine("testy---------------------------");
             RuleFor(x => x.CustomerId)
                 .NotEqual(Guid.Empty);
 

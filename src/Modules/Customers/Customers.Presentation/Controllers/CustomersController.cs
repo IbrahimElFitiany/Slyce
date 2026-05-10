@@ -1,10 +1,11 @@
 ﻿using MediatR;
 using Asp.Versioning;
-using Customers.Application.UseCases.Commands.UpdateGender;
 using Customers.Presentation.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Presentation;
+using Customers.Application.UseCases.Commands.UpdateWeight;
+using Customers.Application.UseCases.Commands.UpdateGender;
 
 namespace Customers.Presentation.Controllers
 {
@@ -25,6 +26,14 @@ namespace Customers.Presentation.Controllers
         public async Task<IActionResult> UpdateCustomerGender([FromBody] UpdateGenderRequest request)
         {
             await mediator.Send(new UpdateGenderCommand(UserId, request.Gender));
+            return NoContent();
+        }
+
+        [HttpPatch("me/profile/weight")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> UpdateCustomerWeight([FromBody] UpdateWeightRequest request)
+        {
+            await mediator.Send(new UpdateWeightCommand(UserId, request.WeightKg));
             return NoContent();
         }
 
