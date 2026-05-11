@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Shared.Presentation;
 using Customers.Application.UseCases.Commands.UpdateWeight;
 using Customers.Application.UseCases.Commands.UpdateGender;
+using Customers.Application.UseCases.Commands.UpdateHeight;
 
 namespace Customers.Presentation.Controllers
 {
@@ -34,6 +35,14 @@ namespace Customers.Presentation.Controllers
         public async Task<IActionResult> UpdateCustomerWeight([FromBody] UpdateWeightRequest request)
         {
             await mediator.Send(new UpdateWeightCommand(UserId, request.WeightKg));
+            return NoContent();
+        }
+
+        [HttpPatch("me/profile/height")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> UpdateCustomerheight([FromBody] UpdateHeightRequest request)
+        {
+            await mediator.Send(new UpdateHeightCommand(UserId, request.HeightCm));
             return NoContent();
         }
 

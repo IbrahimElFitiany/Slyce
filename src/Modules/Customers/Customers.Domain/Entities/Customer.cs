@@ -77,6 +77,16 @@ namespace Customers.Domain.Entities
             UpdatedAt = DateTime.UtcNow;
         }
 
+        public void UpdateHeight(Height height)
+        {
+            if (Height == height) {
+                return;
+            }
+
+            Height = height;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
         private static void EnsureValidAge(DateOnly birthday)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
