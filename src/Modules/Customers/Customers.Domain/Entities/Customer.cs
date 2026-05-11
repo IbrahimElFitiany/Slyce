@@ -15,6 +15,7 @@ namespace Customers.Domain.Entities
         public DateOnly Bday { get; private set; }
         public Height? Height { get; private set; }
         public Weight? Weight { get; private set; }
+        public ActivityRate ActivityRate { get; private set; }
 
         private readonly List<CustomerAddress> _customerAddresses = [];
         public IReadOnlyCollection<CustomerAddress> CustomerAddresses => _customerAddresses;
@@ -79,11 +80,19 @@ namespace Customers.Domain.Entities
 
         public void UpdateHeight(Height height)
         {
-            if (Height == height) {
+            if (Height == height)
                 return;
-            }
 
             Height = height;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void UpdateActivityRate(ActivityRate activityRate)
+        {
+            if (ActivityRate == activityRate)
+                return;
+
+            ActivityRate = activityRate;
             UpdatedAt = DateTime.UtcNow;
         }
 
