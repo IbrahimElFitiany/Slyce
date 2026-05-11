@@ -13,7 +13,9 @@ namespace Customers.Domain.Entities
         public Gender? Gender { get;  private set; }
         public string? ProfileImage { get; private set; }
         public DateOnly Bday { get; private set; }
-        public Height? Height { get; private set; } = null!;
+        public Height? Height { get; private set; }
+        public Weight? Weight { get; private set; }
+        public ActivityRate ActivityRate { get; private set; }
 
         private readonly List<CustomerAddress> _customerAddresses = [];
         public IReadOnlyCollection<CustomerAddress> CustomerAddresses => _customerAddresses;
@@ -67,6 +69,32 @@ namespace Customers.Domain.Entities
             UpdatedAt = DateTime.UtcNow;
         }
 
+        public void UpdateWeight(Weight weight)
+        {
+            if (Weight == weight) 
+                return;
+
+            Weight = weight;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void UpdateHeight(Height height)
+        {
+            if (Height == height)
+                return;
+
+            Height = height;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void UpdateActivityRate(ActivityRate activityRate)
+        {
+            if (ActivityRate == activityRate)
+                return;
+
+            ActivityRate = activityRate;
+            UpdatedAt = DateTime.UtcNow;
+        }
 
         private static void EnsureValidAge(DateOnly birthday)
         {

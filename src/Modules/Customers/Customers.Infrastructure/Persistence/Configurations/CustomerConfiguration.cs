@@ -28,6 +28,15 @@ namespace Customers.Infrastructure.Persistence.Configurations
                     v => Height.FromCm(v))
                 .IsRequired(false);
 
+            builder.Property(c => c.Weight)
+                .HasConversion(
+                    v => v.Kilograms,
+                    v => Weight.FromKilograms(v))
+                .IsRequired(false);
+
+            builder.Property(c => c.ActivityRate)
+                .HasConversion<string>();
+
             builder.OwnsMany(c => c.CustomerAddresses, ca => {
 
                 ca.ToTable("CustomerAddresses");
