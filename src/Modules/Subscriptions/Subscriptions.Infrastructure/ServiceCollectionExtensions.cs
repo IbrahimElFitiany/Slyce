@@ -28,7 +28,7 @@ namespace Subscriptions.Infrastructure
                 cfg.RegisterServicesFromAssemblyContaining<CreateSubscriptionCommand>();
                 cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             });
-            services.AddValidatorsFromAssembly(typeof(CreateSubscriptionCommandValidator).Assembly);
+            services.AddValidatorsFromAssembly(typeof(CreateSubscriptionCommand).Assembly, includeInternalTypes: true);
             return services;
         }
     }

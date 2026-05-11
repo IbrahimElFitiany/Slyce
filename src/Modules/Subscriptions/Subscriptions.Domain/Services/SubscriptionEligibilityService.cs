@@ -5,7 +5,7 @@ using Subscriptions.Domain.ValueObjects;
 
 namespace Subscriptions.Domain.Services
 {
-    public class SubscriptionEligibilityService
+    public sealed class SubscriptionEligibilityService
     {
         private readonly IDistanceCalculator _distanceCalculator;
 

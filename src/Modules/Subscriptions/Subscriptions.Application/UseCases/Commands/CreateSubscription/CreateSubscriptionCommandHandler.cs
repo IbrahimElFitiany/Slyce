@@ -15,39 +15,21 @@ using Menus.Contracts.DTOs;
 
 namespace Subscriptions.Application.UseCases.Commands.CreateSubscription
 {
-    public sealed class CreateSubscriptionCommandHandler : IRequestHandler<CreateSubscriptionCommand, Guid>
+    internal sealed class CreateSubscriptionCommandHandler(
+        ICustomerServices customerServices,
+        IRestaurantServices restaurantServices,
+        IMenuQueryServices menuQueryServices,
+        IUnitOfWork unitOfWork,
+        ISubscriptionRepository subscriptionRepository,
+        SubscriptionEligibilityService eligibilityService,
+        ILogger<CreateSubscriptionCommandHandler> logger) : IRequestHandler<CreateSubscriptionCommand, Guid>
     {
-        private readonly ICustomerServices _customerServices;
-        private readonly IRestaurantServices _restaurantServices;
-        private readonly IMenuQueryServices _menuQueryServices;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly ISubscriptionRepository _subscriptionRepository;
-        private readonly SubscriptionEligibilityService _eligibilityService;
-        private readonly ILogger<CreateSubscriptionCommandHandler> _logger;
 
-        public CreateSubscriptionCommandHandler(
-            ICustomerServices customerServices,
-            IRestaurantServices restaurantServices,
-            IMenuQueryServices menuQueryServices,
-            IUnitOfWork unitOfWork,
-            ISubscriptionRepository subscriptionRepository,
-            SubscriptionEligibilityService eligibilityService,
-            ILogger<CreateSubscriptionCommandHandler> logger)
+        public async Task<Guid> Handle(CreateSubscriptionCommand command, CancellationToken ct)
         {
-            _customerServices = customerServices;
-            _restaurantServices = restaurantServices;
-            _menuQueryServices = menuQueryServices;
-            _unitOfWork = unitOfWork;
-            _subscriptionRepository = subscriptionRepository;
-            _eligibilityService = eligibilityService;
-            _logger = logger;
-        }
-
-        public async Task<Guid> Handle(CreateSubscriptionCommand command, CancellationToken cancellationToken)
-        {
-            var branch = await GetBranchForSubscriptionAsync(command.BranchId, cancellationToken);
-            var customerAddress = await _customerServices.GetCustomerAddressByIdAsync(command.CustomerId, command.DeliveryAddressId, cancellationToken);
-            var meals = await GetMealSizesAsync(command, branch.RestaurantId, cancellationToken);
+            var branch = await GetBranchForSubscriptionAsync(command.BranchId, ct);
+            var customerAddress = await customerServices.GetCustomerAddressByIdAsync(command.CustomerId, command.DeliveryAddressId, ct);
+            var meals = await GetMealSizesAsync(command, branch.RestaurantId, ct);
 
             var deliveryTimeFrame = Enum.Parse<TimeSlot>(command.TimeSlot).ToDeliveryTimeFrame();
             var branchSchedule = new BranchSchedule(
@@ -57,8 +39,8 @@ namespace Subscriptions.Application.UseCases.Commands.CreateSubscription
                 )
             );
 
-            _eligibilityService.EnsureScheduleMatches(deliveryTimeFrame, command.SubscriptionDays, branchSchedule);
-            await _eligibilityService.EnsureCustomerIsWithinRadius(
+            eligibilityService.EnsureScheduleMatches(deliveryTimeFrame, command.SubscriptionDays, branchSchedule);
+            await eligibilityService.EnsureCustomerIsWithinRadius(
                customerCoordinates: new Coordinates(customerAddress.Latitude, customerAddress.Longitude),
                branchCoordinates: new Coordinates(branch.Latitude, branch.Longitude));
 
@@ -87,10 +69,10 @@ namespace Subscriptions.Application.UseCases.Commands.CreateSubscription
                 billingCycle: Enum.Parse<BillingCycle>(command.BillingCycle),
                 startDate: command.StartDate);
 
-            _subscriptionRepository.Add(subscription);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            subscriptionRepository.Add(subscription);
+            await unitOfWork.SaveChangesAsync(ct);
 
-            _logger.LogInformation("Subscription {SubscriptionId} created for Customer {CustomerId} at Branch {BranchId} starting {StartDate}.",
+            logger.LogInformation("Subscription {SubscriptionId} created for Customer {CustomerId} at Branch {BranchId} starting {StartDate}.",
                 subscription.Id,
                 command.CustomerId,
                 command.BranchId,
@@ -101,17 +83,16 @@ namespace Subscriptions.Application.UseCases.Commands.CreateSubscription
 
         private async Task<BranchForSubscription> GetBranchForSubscriptionAsync(Guid branchId, CancellationToken ct)
         {
-            var branch = await _restaurantServices.GetBranchForSubscriptionAsync(branchId, ct);
-
-            if (branch is null)
-                throw new NotFoundException(nameof(branch), branchId);
+            var branch = await restaurantServices.GetBranchForSubscriptionAsync(branchId, ct)
+                ?? throw new NotFoundException("branch", branchId);
 
             return branch;
         }
+
         private async Task<IReadOnlyCollection<MealSizeDTO>> GetMealSizesAsync(CreateSubscriptionCommand command, Guid restaurantId, CancellationToken ct)
         {
             var sizeIds = command.SubscriptionMeals.Select(sm => sm.SizeId).Distinct().ToList();
-            var sizes = await _menuQueryServices.GetMealSizesByRestaurantAsync(sizeIds, restaurantId, ct);
+            var sizes = await menuQueryServices.GetMealSizesByRestaurantAsync(sizeIds, restaurantId, ct);
 
             if (sizes.Count != sizeIds.Count)
                 throw new NotFoundException("One or more meal sizes do not exist or do not belong to the restaurant");
