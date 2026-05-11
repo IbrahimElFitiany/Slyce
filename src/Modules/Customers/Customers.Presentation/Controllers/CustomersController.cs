@@ -55,13 +55,5 @@ namespace Customers.Presentation.Controllers
             return NoContent();
         }
 
-        [HttpPatch("me/profile/gender")]
-        [Authorize (Roles = "Customer")]
-        public async Task<IActionResult> UpdateCustomerGender([FromBody] UpdateGenderRequest request)
-        {
-            await mediator.Send(new UpdateGenderCommand(UserId, request.Gender));
-            return NoContent();
-        }
-
     }
 }
