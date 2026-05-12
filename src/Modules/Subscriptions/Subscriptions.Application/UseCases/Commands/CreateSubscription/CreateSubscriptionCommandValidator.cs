@@ -3,7 +3,7 @@ using Subscriptions.Domain.Enums;
 
 namespace Subscriptions.Application.UseCases.Commands.CreateSubscription
 {
-    public sealed class CreateSubscriptionCommandValidator : AbstractValidator<CreateSubscriptionCommand>
+    internal sealed class CreateSubscriptionCommandValidator : AbstractValidator<CreateSubscriptionCommand>
     {
         public CreateSubscriptionCommandValidator() 
         {

@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Presentation;
 using Subscriptions.Application.UseCases.Commands.CreateSubscription;
@@ -15,6 +16,7 @@ namespace Subscriptions.Presentation.Controllers
     {
 
         [HttpPost]
+        [Authorize (Roles = "Customer")]
         public async Task<IActionResult> CreateSubscription([FromBody] CreateSubscriptionRequest request, CancellationToken ct)
         {
             var command = new CreateSubscriptionCommand(
