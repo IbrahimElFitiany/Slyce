@@ -28,6 +28,11 @@ namespace Restaurants.Infrastructure.Persistence.Configurations
                 .HasMaxLength(200)
                 .HasConversion(e => e.Value, v => Email.Create(v));
 
+            builder.Property(ra => ra.OwnerEmail)
+                .IsRequired()
+                .HasMaxLength(200)
+                .HasConversion(e => e.Value, v => Email.Create(v));
+
             builder.Property(ra => ra.OwnerMobileNumber)
                 .IsRequired()
                 .HasMaxLength(20)
