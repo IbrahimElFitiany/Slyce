@@ -2,8 +2,10 @@
 using FluentValidation;
 using Identity.Application.Interfaces;
 using Identity.Application.Interfaces.EmailService;
+using Identity.Application.Services;
 using Identity.Application.UseCases.Commands.Login;
 using Identity.Application.UseCases.Commands.RegisterCustomer;
+using Identity.Contract.Interfaces;
 using Identity.Infrastructure.EmailService;
 using Identity.Infrastructure.Persistence;
 using Identity.Infrastructure.Repositories;
@@ -12,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Application.Behaviors;
+using Identity.Infrastructure.Cache;
 
 
 namespace Identity.Infrastructure
@@ -38,6 +41,7 @@ namespace Identity.Infrastructure
             services.AddHostedService<EmailWorker>();
             services.Configure<SMTPSettings>(configuration.GetSection("EmailSettings"));
 
+            services.AddScoped<IIdentityServices, IdentityServices>();
 
             services.AddValidatorsFromAssemblyContaining<LoginCommand>(includeInternalTypes: true);
 
@@ -46,6 +50,12 @@ namespace Identity.Infrastructure
                 cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             });
 
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = configuration.GetConnectionString("RedisConnection");
+            });
+
+            services.AddScoped<ICacheService, RedisCache>();
 
             return services;
         }

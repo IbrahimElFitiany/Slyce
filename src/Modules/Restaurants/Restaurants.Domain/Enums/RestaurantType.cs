@@ -3,6 +3,6 @@
     public enum RestaurantType
     {
         official,
-        home_kitchen
+        Homekitchen
     }
 }

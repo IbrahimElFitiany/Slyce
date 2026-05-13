@@ -7,6 +7,7 @@ namespace Restaurants.Application.UseCases.Commands.CreateRestaurantApplication
         string OwnerFirstName,
         string OwnerLastName,
         string CompanyEmail,
+        string OwnerEmail,
         string OwnerMobileNumber,
         string CompanyMobileNumber,
         string RestaurantType,

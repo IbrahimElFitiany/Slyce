@@ -11,6 +11,7 @@ namespace Restaurants.Domain.Entities
         public string OwnerFirstName { get; private set; } = null!;
         public string OwnerLastName { get; private set; } = null!;
         public Email CompanyEmail { get; private set; } = null!;
+        public Email OwnerEmail { get; private set; } = null!;
         public PhoneNumber OwnerMobileNumber { get; private set; } = null!;
         public PhoneNumber CompanyMobileNumber { get; private set; } = null!;
         public RestaurantType RestaurantType { get; private set; }
@@ -30,6 +31,7 @@ namespace Restaurants.Domain.Entities
             string ownerFirstName,
             string ownerLastName,
             Email companyEmail,
+            Email ownerEmail,
             PhoneNumber ownerMobileNumber,
             PhoneNumber companyMobileNumber,
             RestaurantType restaurantType,
@@ -47,6 +49,7 @@ namespace Restaurants.Domain.Entities
             OwnerFirstName = ownerFirstName;
             OwnerLastName = ownerLastName;
             CompanyEmail = companyEmail;
+            OwnerEmail = ownerEmail;
             OwnerMobileNumber = ownerMobileNumber;
             CompanyMobileNumber = companyMobileNumber;
             RestaurantType = restaurantType;

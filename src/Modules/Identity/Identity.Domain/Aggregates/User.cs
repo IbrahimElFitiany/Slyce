@@ -1,6 +1,7 @@
 ﻿using Identity.Domain.DomainEvents;
 using Identity.Domain.Enums;
 using Shared.Domain.Common;
+using Shared.Domain.Exceptions;
 using Shared.Domain.ValueObjects;
 
 namespace Identity.Domain.Aggregates
@@ -47,6 +48,21 @@ namespace Identity.Domain.Aggregates
             customer.RaiseDomainEvent(new CustomerCreatedDomainEvent(customer.Id, customer.Email.Value));
 
             return customer;
+        }
+
+        public static User CreateRestaurantOwner(string firstName, string lastName, Email email)
+        {
+            var restaurantOwner = new User(firstName, lastName, email, UserType.RestaurantOwner);
+
+            restaurantOwner.RaiseDomainEvent(new RestaurantOwnerCreatedDomainEvent(restaurantOwner.Id, email.Value));
+
+            return restaurantOwner;
+        }
+
+        public void UpdatePassword(string newPasswordHash)
+        {
+            PasswordHash = newPasswordHash;
+            UpdatedAt = DateTime.UtcNow;
         }
 
     }
