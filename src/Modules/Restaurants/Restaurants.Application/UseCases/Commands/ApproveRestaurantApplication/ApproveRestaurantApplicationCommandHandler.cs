@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Identity.Contract.Interfaces;
 using Microsoft.Extensions.Logging;
 using Restaurants.Application.Interfaces;
 using Restaurants.Domain.Entities;
@@ -6,39 +7,30 @@ using Shared.Application.Exceptions;
 
 namespace Restaurants.Application.UseCases.Commands.ApproveRestaurantApplication
 {
-    public class ApproveRestaurantApplicationCommandHandler : IRequestHandler<ApproveRestaurantApplicationCommand, Guid>
+    internal sealed class ApproveRestaurantApplicationCommandHandler(
+        IRestaurantRepository restaurantRepository,
+        IRestaurantBranchRepository branchRepository,
+        IRestaurantApplicationRepository applicationRepository,
+        IUnitOfWork unitOfWork,
+        IIdentityServices identityServices,
+        ILogger<ApproveRestaurantApplicationCommandHandler> logger) : IRequestHandler<ApproveRestaurantApplicationCommand, Guid>
     {
-        private readonly IRestaurantRepository _restaurantRepository;
-        private readonly IRestaurantBranchRepository _branchRepository;
-        private readonly IRestaurantApplicationRepository _applicationRepository;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<ApproveRestaurantApplicationCommandHandler> _logger;
 
-        public ApproveRestaurantApplicationCommandHandler(
-            IRestaurantRepository restaurantRepository,
-            IRestaurantBranchRepository branchRepository,
-            IRestaurantApplicationRepository applicationRepository,
-            IUnitOfWork unitOfWork,
-            ILogger<ApproveRestaurantApplicationCommandHandler> logger) 
-        {
-            _restaurantRepository = restaurantRepository;
-            _applicationRepository = applicationRepository;
-            _branchRepository = branchRepository;
-            _unitOfWork = unitOfWork;
-            _logger = logger;
-        }
-
-        public async Task<Guid> Handle(ApproveRestaurantApplicationCommand request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(ApproveRestaurantApplicationCommand command, CancellationToken ct)
         {
             //TODO User Permission
-            //TODO Command Validation
 
-            var application = await _applicationRepository.GetByIdAsync(request.ApplicationId, cancellationToken);
+            var application = await applicationRepository.GetByIdAsync(command.ApplicationId, ct)
+                ?? throw new NotFoundException(nameof(RestaurantApplication), command.ApplicationId);    
 
-            if (application is null)
-                throw new NotFoundException(nameof(RestaurantApplication), request.ApplicationId);
+            application.Approve(command.UserId);
 
-            application.Approve(request.UserId);
+
+            // KNOWN DEFECT: orphaned owner account if SaveChangesAsync fails, ( 2 separate transactions)
+            await identityServices.CreateRestaurantOwner(
+                application.OwnerFirstName,
+                application.OwnerLastName,
+                application.OwnerEmail.Value, ct);
 
             var restaurant = new Restaurant(
                 brandName: application.BrandName,
@@ -52,12 +44,12 @@ namespace Restaurants.Application.UseCases.Commands.ApproveRestaurantApplication
                 application.MainBranchLocation,
                 application.CompanyMobileNumber);
 
-             _restaurantRepository.Add(restaurant);
-             _branchRepository.Add(mainBranch);
+             restaurantRepository.Add(restaurant);
+             branchRepository.Add(mainBranch);
 
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await unitOfWork.SaveChangesAsync(ct);
             
-            _logger.LogInformation(
+            logger.LogInformation(
                 "Application {ApplicationId} approved. Restaurant {RestaurantId} created with main branch {BranchId}",
                 application.Id, restaurant.Id, mainBranch.Id);
             
