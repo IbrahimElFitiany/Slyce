@@ -29,9 +29,6 @@ namespace Restaurants.Application.UseCases.Commands.CreateRestaurantApplication
                 throw new DuplicateException($"A restaurant application with brandName'{command.BrandName}' already exists.");
             }
 
-            if (!Enum.TryParse<RestaurantType>(command.RestaurantType, true, out var restaurantType))
-                throw new Exception($"Invalid restaurant type: '{command.RestaurantType}'.");
-
             var restaurantApplication = new RestaurantApplication(
                 brandName: command.BrandName,
                 ownerFirstName: command.OwnerFirstName,
@@ -40,7 +37,7 @@ namespace Restaurants.Application.UseCases.Commands.CreateRestaurantApplication
                 ownerEmail: Email.Create(command.OwnerEmail),
                 ownerMobileNumber: PhoneNumber.Create(command.OwnerMobileNumber),
                 companyMobileNumber: PhoneNumber.Create(command.CompanyMobileNumber),
-                restaurantType: restaurantType,
+                restaurantType: Enum.Parse<RestaurantType>(command.RestaurantType),
                 branchCount: command.BranchCount,
                 mainBranchLocation: new Address(
                     command.MainBranchAddress.City,
