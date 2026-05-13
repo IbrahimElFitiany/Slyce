@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Application.Behaviors;
+using Identity.Infrastructure.Cache;
 
 
 namespace Identity.Infrastructure
@@ -49,6 +50,12 @@ namespace Identity.Infrastructure
                 cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             });
 
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = configuration.GetConnectionString("RedisConnection");
+            });
+
+            services.AddScoped<ICacheService, RedisCache>();
 
             return services;
         }

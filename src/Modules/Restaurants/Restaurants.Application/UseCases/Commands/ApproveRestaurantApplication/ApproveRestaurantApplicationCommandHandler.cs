@@ -27,11 +27,10 @@ namespace Restaurants.Application.UseCases.Commands.ApproveRestaurantApplication
 
 
             // KNOWN DEFECT: orphaned owner account if SaveChangesAsync fails, ( 2 separate transactions)
-            // KNOWN DEFECT: use personal email, not CompanyEmail
             await identityServices.CreateRestaurantOwner(
                 application.OwnerFirstName,
                 application.OwnerLastName,
-                application.CompanyEmail.Value, ct);
+                application.OwnerEmail.Value, ct);
 
             var restaurant = new Restaurant(
                 brandName: application.BrandName,

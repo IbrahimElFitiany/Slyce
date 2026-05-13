@@ -1,17 +1,19 @@
 ﻿using Asp.Versioning;
 using Identity.Application.UseCases.Commands.Login;
 using Identity.Application.UseCases.Commands.RegisterCustomer;
+using Identity.Application.UseCases.Commands.SetPassword;
 using Identity.Presentation.DTOs;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Presentation;
 
 namespace Identity.Presentation.Controllers
 {
     [Route("api/v{version:apiVersion}")]
     [ApiVersion("1.0")]
     [ApiController]
-    public sealed class UsersController (IMediator mediator) : ControllerBase
+    public sealed class UsersController (IMediator mediator) : BaseController 
     {
 
         [HttpPost("customers")]
@@ -53,5 +55,14 @@ namespace Identity.Presentation.Controllers
 
             return NoContent();
         }
+
+        [HttpPatch ("auth/set-password")]
+        public async Task<IActionResult> SetPassword([FromBody] SetPasswordRequest request, CancellationToken ct)
+        {
+            await mediator.Send(new SetPasswordCommand(request.Token, request.Password), ct);
+
+            return NoContent();
+        }
+
     }
 }
