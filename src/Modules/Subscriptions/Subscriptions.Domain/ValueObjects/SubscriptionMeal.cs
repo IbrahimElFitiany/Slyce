@@ -18,9 +18,9 @@ namespace Subscriptions.Domain.ValueObjects
             int quantity,
             Price priceAtSubscription)
         {
-            ArgumentOutOfRangeException.ThrowIfEqual(MealId, Guid.Empty);
-            ArgumentOutOfRangeException.ThrowIfEqual(SizeId, Guid.Empty);
-            ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(Quantity, 0);
+            ArgumentOutOfRangeException.ThrowIfEqual(mealId, Guid.Empty);
+            ArgumentOutOfRangeException.ThrowIfEqual(sizeId, Guid.Empty);
+            ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(quantity, 0);
 
             MealId = mealId;
             SizeId = sizeId;

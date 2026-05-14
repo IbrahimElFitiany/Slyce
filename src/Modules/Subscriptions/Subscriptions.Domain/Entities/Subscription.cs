@@ -1,34 +1,31 @@
-﻿using Shared.Domain.ValueObjects;
+﻿using Shared.Domain.Common;
+using Shared.Domain.ValueObjects;
 using Subscriptions.Domain.Enums;
 using Subscriptions.Domain.Exceptions;
 using Subscriptions.Domain.ValueObjects;
-using System.Linq;
 
 namespace Subscriptions.Domain.Entities
 {
-    public sealed class Subscription
+    public sealed class Subscription : AggregateRoot
     {
-        public Guid Id { get; private init; }
         public Guid CustomerId { get; private init; }
         public Guid BranchId { get; private init; }
         public Guid DeliveryAddressId{ get; private init; }
         public Address DeliveryAddress { get; private set; } = null!;
         public DeliveryTimeFrame TimeFrame { get; private set; } = null!;
 
-        private List<SubscriptionDeliveryDay> _deliveryDays = new();
+        private readonly List<SubscriptionDeliveryDay> _deliveryDays = [];
         public IReadOnlyCollection<SubscriptionDeliveryDay> DeliveryDays { get; private set; } = null!;
         
         public DateOnly StartDate { get; private set; }
         public DateOnly EndDate { get; private set; }
 
-        private List<SubscriptionMeal> _subscriptionMeals = new();
+        private readonly List<SubscriptionMeal> _subscriptionMeals = [];
         public IReadOnlyCollection<SubscriptionMeal> SubscriptionMeals => _subscriptionMeals;
         
         public Price TotalPrice { get; private set; } = null!;
         public BillingCycle BillingCycle { get; private set; }
         public SubscriptionStatus Status { get; private set; }
-        public DateTime CreatedAt { get; private init; }
-        public DateTime UpdatedAt { get; private set; }
 
         private Subscription() { }
 
@@ -54,11 +51,10 @@ namespace Subscriptions.Domain.Entities
             BranchId = branchId;
             DeliveryAddressId = deliveryAddressId;
             DeliveryAddress = deliveryAddress;
-            
+            TimeFrame = timeFrame;
+
             ValidateDeliveryDaysCount(deliveryDays);
             _deliveryDays.AddRange(deliveryDays);
-
-            TimeFrame = timeFrame;
 
             ValidateSubscriptionMealsCount(subscriptionMeals);
             _subscriptionMeals.AddRange(subscriptionMeals);
@@ -74,7 +70,7 @@ namespace Subscriptions.Domain.Entities
                 _ => throw new ArgumentOutOfRangeException(nameof(billingCycle))
             };
 
-            TotalPrice = CalculatePriceFromSubscriptionMeals(StartDate,EndDate,DeliveryDays,SubscriptionMeals);
+            TotalPrice = CalculatePriceFromSubscriptionMeals(StartDate, EndDate, _deliveryDays, _subscriptionMeals);
             Status = SubscriptionStatus.Active;
             CreatedAt = UpdatedAt = DateTime.UtcNow;
         }

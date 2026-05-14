@@ -7,36 +7,25 @@ using Shared.Application.Exceptions;
 
 namespace Restaurants.Application.UseCases.Commands.CreateBranchSchedule
 {
-    public sealed class CreateBranchScheduleCommandHandler : IRequestHandler<CreateBranchScheduleCommand>
+    internal sealed class CreateBranchScheduleCommandHandler(
+        ILogger<CreateBranchScheduleCommandHandler> logger,
+        IRestaurantBranchRepository branchRepository,
+        IUnitOfWork unitOfWork) : IRequestHandler<CreateBranchScheduleCommand>
     {
-        private readonly ILogger<CreateBranchScheduleCommandHandler> _logger;
-        private readonly IRestaurantBranchRepository _branchRepository;
-        private readonly IUnitOfWork _unitOfWork;
-
-        public CreateBranchScheduleCommandHandler (
-            ILogger<CreateBranchScheduleCommandHandler> logger,
-            IRestaurantBranchRepository branchRepository,
-            IUnitOfWork unitOfWork) 
+        
+        public async Task Handle(CreateBranchScheduleCommand command, CancellationToken ct)
         {
-            _logger = logger;
-            _branchRepository = branchRepository;
-            _unitOfWork = unitOfWork;
-        }
 
-        public async Task Handle(CreateBranchScheduleCommand request, CancellationToken ct)
-        {
-            var branch = await _branchRepository.GetByIdAsync(request.BranchId, ct);
-
-            if (branch is null)
-                throw new NotFoundException(nameof(RestaurantBranch), request.BranchId);
+            var branch = await branchRepository.GetByIdAsync(command.BranchId, ct)
+                ?? throw new NotFoundException(nameof(RestaurantBranch), command.BranchId);
 
             branch.InitializeSchedule(
-                request.Schedule
+                command.Schedule
                 .Select(d => new DailySchedule(d.Day,new OperatingHours(d.OpeningTime, d.ClosingTime))).ToList());
 
-            await _unitOfWork.SaveChangesAsync(ct);
+            await unitOfWork.SaveChangesAsync(ct);
 
-            _logger.LogInformation("Added working hours to branch {BranchId}", request.BranchId);
+            logger.LogInformation("Added working hours to branch {BranchId}", command.BranchId);
         }
 
     }

@@ -7,35 +7,30 @@ namespace Menus.Infrastructure.Services
 {
     internal sealed class MenuQueryServices(MenusDbContext context) : IMenuQueryServices
     {
-        private readonly MenusDbContext _context = context;
-
         public async Task<IReadOnlyCollection<MealSizeDTO>> GetMealSizesByRestaurantAsync(IEnumerable<Guid> sizeIds, Guid restaurantId, CancellationToken cancellationToken)
         {
             var sizesIdList = sizeIds.Distinct().ToList();
-            
-            var sizes = await _context.Database
-                .SqlQuery<MealSizeDTO>(
-                    $"""
-                     select
-                         mm."Id" as MealId,
-                         mm."Name" as MealName,
-                         ms."Id" as MealSizeId,
-                         ms."Name"  as SizeName,
-                         ms.price_amount as PriceAmountAtSubscription,
-                         ms.price_currency as PriceCurrency
-                     from menus."MenuMeals" as mm
-                     join menus."MealSizes" as ms
-                     on ms."MealId" = mm."Id"
-                     where mm."RestaurantId" = {restaurantId}
-                     and ms."Id" = any ({sizesIdList})
-                     """).ToListAsync(cancellationToken);
+
+            var sizes = await context.MenuMeals
+                .Where(mm => mm.RestaurantId == restaurantId)
+                .SelectMany(mm => mm.Sizes
+                    .Where(ms => sizesIdList.Contains(ms.Id))
+                    .Select(ms => new MealSizeDTO(
+                        mm.Id,
+                        mm.Name,
+                        ms.Id,
+                        ms.Name,
+                        ms.Price.Amount,
+                        ms.Price.Currency
+                    )))
+                .ToListAsync(cancellationToken);
 
             return sizes;
         }
 
         public async Task<MealSummaryDTO?> GetMealSummaryAsync(Guid mealId, CancellationToken cancellationToken)
         {
-            var mealSummary = await _context.MenuMeals
+            var mealSummary = await context.MenuMeals
                 .Where(m => m.Id == mealId)
                 .Select(m => new MealSummaryDTO(
                     m.RestaurantId,
@@ -55,7 +50,7 @@ namespace Menus.Infrastructure.Services
             var mealIds = keyList.Select(k => k.MealId).ToArray();
             var sizeIds = keyList.Select(k => k.SizeId).ToArray();
 
-            var rows = await _context.Database
+            var rows = await context.Database
                 .SqlQuery<MealSizeInfoDTO>(
                     $"""
                      SELECT

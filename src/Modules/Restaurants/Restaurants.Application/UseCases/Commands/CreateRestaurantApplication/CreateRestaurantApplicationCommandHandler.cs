@@ -37,7 +37,7 @@ namespace Restaurants.Application.UseCases.Commands.CreateRestaurantApplication
                 ownerEmail: Email.Create(command.OwnerEmail),
                 ownerMobileNumber: PhoneNumber.Create(command.OwnerMobileNumber),
                 companyMobileNumber: PhoneNumber.Create(command.CompanyMobileNumber),
-                restaurantType: Enum.Parse<RestaurantType>(command.RestaurantType),
+                restaurantType: Enum.Parse<RestaurantType>(command.RestaurantType, ignoreCase: true),
                 branchCount: command.BranchCount,
                 mainBranchLocation: new Address(
                     command.MainBranchAddress.City,
