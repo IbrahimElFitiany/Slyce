@@ -3,11 +3,6 @@ namespace Shared.Domain.ValueObjects
 {
     public sealed class Nutrition
     {
-        private const decimal CaloriesPerGramOfFat = 9;
-        private const decimal CaloriesPerGramOfProtein = 4;
-        private const decimal CaloriesPerGramOfCarb = 4;
-        private const decimal CalorieTolerance = 1.15m;
-
         public decimal Calories { get; }
         public decimal TotalFat { get; }
         public decimal SaturatedFat { get; }
@@ -88,11 +83,6 @@ namespace Shared.Domain.ValueObjects
 
             if (SugarGrams > TotalCarbohydrate)
                 throw new ArgumentException("Sugar cannot exceed total carbohydrates");
-
-            decimal totalMacroCalories = Protein * CaloriesPerGramOfProtein + TotalCarbohydrate * CaloriesPerGramOfCarb + TotalFat * CaloriesPerGramOfFat;
-
-            if (totalMacroCalories > Calories * CalorieTolerance)
-                throw new ArgumentException("Macros exceed total calories");
         }
 
         public static Nutrition operator +(Nutrition a, Nutrition b)
