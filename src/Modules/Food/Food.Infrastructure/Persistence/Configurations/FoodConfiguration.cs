@@ -10,6 +10,9 @@ namespace Food.Infrastructure.Persistence.Configurations
         {
             builder.HasKey(f => f.Id);
 
+            builder.Property(f => f.Id)
+                .ValueGeneratedNever();
+
             builder.Property(f => f.Name)
                 .IsRequired()
                 .HasMaxLength(255);
@@ -26,55 +29,55 @@ namespace Food.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(50);
 
-            builder.ComplexProperty(f => f.NutritionPer100g, n =>
+            builder.OwnsOne(f => f.NutritionPer100g, n =>
             {
                 n.Property(x => x.Calories)
-                .HasColumnName("Calories");
+                    .HasColumnName("Calories");
 
                 n.Property(x => x.TotalFat)
-                .HasColumnName("TotalFat");
+                    .HasColumnName("TotalFat");
 
                 n.Property(x => x.SaturatedFat)
-                .HasColumnName("SaturatedFat");
+                    .HasColumnName("SaturatedFat");
 
                 n.Property(x => x.TransFat)
-                .HasColumnName("TransFat");
+                    .HasColumnName("TransFat");
 
                 n.Property(x => x.Cholesterol)
-                .HasColumnName("Cholesterol");
+                    .HasColumnName("Cholesterol");
 
                 n.Property(x => x.SodiumMg)
-                .HasColumnName("SodiumMg");
+                    .HasColumnName("SodiumMg");
 
                 n.Property(x => x.TotalCarbohydrate)
-                .HasColumnName("TotalCarbohydrate");
+                    .HasColumnName("TotalCarbohydrate");
 
                 n.Property(x => x.DietaryFiber)
-                .HasColumnName("DietaryFiber");
+                    .HasColumnName("DietaryFiber");
 
                 n.Property(x => x.SugarGrams)
-                .HasColumnName("SugarGrams");
+                    .HasColumnName("SugarGrams");
 
-                n.Property(x => x.Protein).
-                HasColumnName("Protein");
+                n.Property(x => x.Protein)
+                    .HasColumnName("Protein");
 
                 n.Property(x => x.VitaminD)
-                .HasColumnName("VitaminD");
+                    .HasColumnName("VitaminD");
 
                 n.Property(x => x.CalciumMg)
-                .HasColumnName("CalciumMg");
+                    .HasColumnName("CalciumMg");
 
                 n.Property(x => x.IronMg)
-                .HasColumnName("IronMg");
+                    .HasColumnName("IronMg");
 
                 n.Property(x => x.PotassiumMg)
-                .HasColumnName("PotassiumMg");
+                    .HasColumnName("PotassiumMg");
 
                 n.Property(x => x.VitaminAMcg)
-                .HasColumnName("VitaminAMcg");
+                    .HasColumnName("VitaminAMcg");
 
                 n.Property(x => x.VitaminCMg)
-                .HasColumnName("VitaminCMg");
+                    .HasColumnName("VitaminCMg");
             });
 
             builder.HasIndex(f => new { f.Source, f.ExternalId })

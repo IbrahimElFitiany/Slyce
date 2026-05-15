@@ -5,35 +5,30 @@ using FoodEntity = Food.Domain.Entities.Food;
 
 namespace Food.Infrastructure.Repositories
 {
-    internal class EFFoodRepository : IFoodRepository
+    internal sealed class EFFoodRepository(FoodDbContext dbContext) : IFoodRepository
     {
-        private readonly FoodDbContext _db;
-
-        public EFFoodRepository(FoodDbContext dbContext) {
-            _db = dbContext;
-        }
-
-        public async Task<IEnumerable<FoodEntity>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default)
+        public async Task<IReadOnlyList<FoodEntity>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default)
         {
-            var foods = await _db.Foods
+            var foods = await dbContext.Foods
                 .Where(f => ids.Contains(f.Id))
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return foods;
         }
-
-        public async Task InsertIfNotExistsAsync(IEnumerable<FoodEntity> foods, CancellationToken ct)
+        public async Task<IReadOnlyList<FoodEntity>> GetByExternalId(IEnumerable<string> externalIds, CancellationToken ct)
         {
-            var externalIds = foods.Select(f => f.ExternalId).ToList();
-
-            var existingIds = await _db.Foods
+            return await dbContext.Foods
                 .Where(f => externalIds.Contains(f.ExternalId))
-                .Select(f => f.ExternalId)
-                .ToHashSetAsync(ct);
-
-            var newFoods = foods.Where(f => !existingIds.Contains(f.ExternalId));
-
-            _db.Foods.AddRange(newFoods);
+                .ToListAsync(ct);
         }
+        public async Task UpsertRange(IEnumerable<FoodEntity> foods, CancellationToken ct)
+        {
+            await dbContext.Foods
+                .UpsertRange(foods)
+                .On(f => new { f.Source, f.ExternalId })
+                .NoUpdate()
+                .RunAsync(ct);
+        }
+
     }
 }

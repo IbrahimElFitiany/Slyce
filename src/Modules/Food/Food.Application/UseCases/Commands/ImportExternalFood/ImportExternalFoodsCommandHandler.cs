@@ -7,36 +7,25 @@ using Microsoft.Extensions.Logging;
 
 namespace Food.Application.UseCases.Commands.ImportExternalFood
 {
-    public sealed class ImportExternalFoodsCommandHandler : IRequestHandler<ImportExternalFoodsCommand, IEnumerable<FoodSummaryDTO>>
+    internal sealed class ImportExternalFoodsCommandHandler(
+        IFoodRepository foodRepository,
+        IExternalFoodService externalFoodService,
+        ILogger<ImportExternalFoodsCommandHandler> logger) : IRequestHandler<ImportExternalFoodsCommand, IEnumerable<FoodSummaryDTO>>
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IFoodRepository _foodRepository;
-        private readonly IExternalFoodService _externalFoodService;
-        private readonly ILogger<ImportExternalFoodsCommandHandler> _logger;
-
-        public ImportExternalFoodsCommandHandler(
-            IUnitOfWork unitOfWork,
-            IFoodRepository foodRepository,
-            IExternalFoodService externalFoodService,
-            ILogger<ImportExternalFoodsCommandHandler> logger)
-        {
-            _unitOfWork = unitOfWork;
-            _foodRepository = foodRepository;
-            _externalFoodService = externalFoodService;
-            _logger = logger;
-        }
 
         public async Task<IEnumerable<FoodSummaryDTO>> Handle(ImportExternalFoodsCommand request, CancellationToken cancellationToken)
         {
-            var externalFoods = await _externalFoodService.SearchAsync(request.SearchTerm, cancellationToken);
+            var externalFoods = await externalFoodService.SearchAsync(request.SearchTerm, cancellationToken);
 
             var foods = ExternalFoodToFoodEntities(externalFoods);
 
-            await _foodRepository.InsertIfNotExistsAsync(foods, cancellationToken);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            
-            _logger.LogInformation("added external food to db");
-            return foods.Select(f => new FoodSummaryDTO(
+            await foodRepository.UpsertRange(foods, cancellationToken);
+
+            var newFood = await foodRepository.GetByExternalId(foods.Select(f => f.ExternalId), cancellationToken);
+
+            logger.LogInformation("added external food to db");
+
+            return newFood.Select(f => new FoodSummaryDTO(
                 Id: f.Id,
                 Name: f.Name,
                 ImageUrl: f.Image,
@@ -47,7 +36,7 @@ namespace Food.Application.UseCases.Commands.ImportExternalFood
             ));
         }
 
-        private IEnumerable<FoodEntity> ExternalFoodToFoodEntities(IEnumerable<ExternalFoodResultDTO> externalFoods)
+        private static IEnumerable<FoodEntity> ExternalFoodToFoodEntities(IEnumerable<ExternalFoodResultDTO> externalFoods)
         {
             return externalFoods.Select(externalFood => new FoodEntity(
                 name: externalFood.Name,

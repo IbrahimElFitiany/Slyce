@@ -20,7 +20,6 @@ namespace Food.Infrastructure
         public static IServiceCollection AddFoodModule(this IServiceCollection services ,IConfiguration configuration) {
 
             services.AddDbContext<FoodDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
             
             services.Configure<FatSecretSettings>(configuration.GetSection("FatSecretSettings"));
             services.AddHttpClient("FatSecret");
