@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Restaurants.Application.UseCases.Commands.ApproveRestaurantApplication;
 using Restaurants.Application.UseCases.Commands.CreateRestaurantApplication;
 using Restaurants.Application.UseCases.Commands.RejectRestaurantApplication;
+using Restaurants.Application.UseCases.Queries.GetRestaurantApplicationById;
 using Restaurants.Application.UseCases.Queries.GetRestaurantApplicationsSummary;
 using Restaurants.Presentation.DTOs;
 using Shared.Presentation;
@@ -44,7 +45,7 @@ namespace Restaurants.Presentation.Controllers
 
             var result = await mediator.Send(command, cancellationToken);
 
-            return CreatedAtAction(nameof(GetById), new { id = result }, new { applicationId = result });
+            return CreatedAtAction(nameof(GetRestaurantApplicaitonById), new { id = result }, new { applicationId = result });
         }
 
         [Authorize (Roles = "Admin")]
@@ -89,10 +90,10 @@ namespace Restaurants.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById([FromRoute] Guid id, CancellationToken ct)
+        public async Task<IActionResult> GetRestaurantApplicaitonById([FromRoute] Guid id, CancellationToken ct)
         {
-            await Task.Delay(19);
-            return Ok(new { });
+            var result = await mediator.Send(new GetRestaurantApplicationByIdQuery(id), ct);
+            return Ok(result);
         }
     }
 }
