@@ -8,6 +8,7 @@ using Restaurants.Application.Services;
 using Restaurants.Application.UseCases.Commands.CreateRestaurantApplication;
 using Restaurants.Contracts.Interfaces;
 using Restaurants.Infrastructure.Persistence;
+using Restaurants.Infrastructure.Queries;
 using Restaurants.Infrastructure.Repositories;
 using Shared.Application.Behaviors;
 
@@ -30,6 +31,7 @@ namespace Restaurants.Infrastructure
             services.AddScoped<IRestaurantServices, RestaurantServices>();
             services.AddMediatR(cfg => {
                 cfg.RegisterServicesFromAssemblyContaining<CreateRestaurantApplicationCommand>();
+                cfg.RegisterServicesFromAssemblyContaining<GetRestaurantApplicationsSummaryQueryHandler>();
                 cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             });
 

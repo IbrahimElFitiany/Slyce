@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Restaurants.Application.UseCases.Commands.ApproveRestaurantApplication;
 using Restaurants.Application.UseCases.Commands.CreateRestaurantApplication;
 using Restaurants.Application.UseCases.Commands.RejectRestaurantApplication;
+using Restaurants.Application.UseCases.Queries.GetRestaurantApplicationsSummary;
 using Restaurants.Presentation.DTOs;
 using Shared.Presentation;
 
@@ -65,6 +66,26 @@ namespace Restaurants.Presentation.Controllers
             await mediator.Send(new RejectRestaurantApplicationCommand(applicationId, UserId, request.RejectionReason), ct);
 
             return NoContent();
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> GetRestaurantApplicationsSummary(
+            [FromQuery] GetRestaurantApplicationsSummaryRequest request,
+            CancellationToken ct)
+        {
+            var query = new GetRestaurantApplicationsSummaryQuery(
+                request.Status,
+                request.SortDescending,
+                request.From,
+                request.To,
+                request.Page,
+                request.PageSize);
+
+            var applications = await mediator.Send(query, ct);
+
+            return Ok(applications);
         }
 
         [HttpGet("{id}")]
