@@ -1,17 +1,15 @@
 ﻿using Restaurants.Domain.Enums;
+using Shared.Domain.Common;
 
 namespace Restaurants.Domain.Entities
 {
-    public sealed class Restaurant
+    public sealed class Restaurant : AggregateRoot
     {
-        public Guid Id { get; private init; }
         public string? Image { get; private set; }
         public string BrandName { get; private set; } = null!;
         public string? Description { get; private set; }
         public RestaurantType Type { get; private set; }
         public RestaurantStatus Status { get; private set; } = RestaurantStatus.Draft;
-        public DateTime CreatedAt { get; private set; }
-        public DateTime UpdatedAt { get; private set; }
 
         private Restaurant() { }
         public Restaurant(
@@ -41,7 +39,14 @@ namespace Restaurants.Domain.Entities
         {
             Status = status;
             UpdatedAt = DateTime.UtcNow;
-        } 
+        }
+        public void UpdateLogo(string image)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(image);
+
+            Image = image;
+            UpdatedAt = DateTime.UtcNow;
+        }
 
     }
 }
