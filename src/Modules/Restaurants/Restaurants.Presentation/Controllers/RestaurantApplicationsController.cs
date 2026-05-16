@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurants.Application.UseCases.Commands.ApproveRestaurantApplication;
 using Restaurants.Application.UseCases.Commands.CreateRestaurantApplication;
+using Restaurants.Application.UseCases.Commands.RejectRestaurantApplication;
 using Restaurants.Presentation.DTOs;
 using Shared.Presentation;
 
@@ -50,6 +51,18 @@ namespace Restaurants.Presentation.Controllers
         public async Task<IActionResult> ApproveRestaurantApplication([FromRoute] Guid applicationId, CancellationToken ct)
         { 
             await mediator.Send(new ApproveRestaurantApplicationCommand(UserId, applicationId), ct);
+
+            return NoContent();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("{applicationId}/reject")]
+        public async Task<IActionResult> RejectRestaurantApplication(
+            [FromRoute] Guid applicationId,
+            [FromBody] RejectRestaurantApplicationRequest request,
+            CancellationToken ct)
+        {
+            await mediator.Send(new RejectRestaurantApplicationCommand(applicationId, UserId, request.RejectionReason), ct);
 
             return NoContent();
         }
