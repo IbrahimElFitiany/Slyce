@@ -6,6 +6,7 @@ using Customers.Presentation.DTOs;
 using Customers.Application.UseCases.Queries.GetCustomerAddress;
 using Customers.Application.UseCases.Queries.ListCustomerAddresses;
 using Shared.Presentation;
+using Customers.Application.UseCases.Commands.DeleteAddress;
 
 
 namespace Customers.Presentation.Controllers
@@ -42,6 +43,15 @@ namespace Customers.Presentation.Controllers
 
             return Ok(result);
         }
+
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAddress([FromRoute] Guid id, CancellationToken cancellationToken)
+        {
+            await mediator.Send(new DeleteAddressCommand(UserId, id), cancellationToken);
+            return NoContent();
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> ListCustomerAddresses(CancellationToken cancellationToken)

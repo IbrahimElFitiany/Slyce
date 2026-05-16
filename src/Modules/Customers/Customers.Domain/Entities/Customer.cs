@@ -60,6 +60,16 @@ namespace Customers.Domain.Entities
             _customerAddresses.Add(newAddress);
         }
 
+        public void RemoveAddress(Guid addressId)
+        {
+            //TODO: throw Domain specefic exception 
+            var address = _customerAddresses.Find(a => a.Id == addressId)
+                ?? throw new InvalidDomainOperationException("Address not found.");
+
+            _customerAddresses.Remove(address);
+        }
+
+
         public void UpdateGender(Gender gender)
         {
             if (Gender == gender)
