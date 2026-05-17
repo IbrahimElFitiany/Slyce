@@ -2,7 +2,7 @@
 
 namespace Restaurants.Contracts.Interfaces
 {
-    public interface IRestaurantServices
+    public interface IRestaurantQueryServices
     {
         Task<bool> ExistsAsync(Guid restaurantId, CancellationToken cancellationToken);
 
@@ -12,5 +12,8 @@ namespace Restaurants.Contracts.Interfaces
         /// </summary>
         /// <returns>A <see cref="BranchForSubscription"/> containing the branch details, or <c>null</c> if not found.</returns>
         Task<BranchForSubscription?> GetBranchForSubscriptionAsync(Guid branchId, CancellationToken cancellationToken);
+
+
+        Task<IReadOnlyDictionary<Guid, BranchInfoDTO>> GetBranchInfosAsync(IEnumerable<Guid> branchIds, CancellationToken cancellationToken);
     }
 }
