@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Restaurants.Application.UseCases.Commands.ActivateBranch;
 using Restaurants.Application.UseCases.Commands.AddBranch;
 using Restaurants.Application.UseCases.Commands.CreateBranchSchedule;
+using Restaurants.Application.UseCases.Queries.GetBranchDetails;
 using Restaurants.Presentation.DTOs;
 
 
@@ -33,6 +34,12 @@ namespace Restaurants.Presentation.Controllers
             var result = await mediator.Send(command, ct);
 
             return Created(string.Empty ,new { branchId = result });
+        }
+
+        [HttpGet("{id}/details")]
+        public async Task<IActionResult> GetBranchDetails([FromRoute] Guid id, CancellationToken ct)
+        {
+            return Ok(await mediator.Send(new GetBranchDetailsQuery(id), ct));
         }
 
         [HttpPatch("{id}/activate")]
