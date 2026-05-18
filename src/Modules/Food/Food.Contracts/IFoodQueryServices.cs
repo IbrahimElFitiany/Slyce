@@ -2,7 +2,7 @@
 
 namespace Food.Contracts
 {
-    public interface IFoodServices
+    public interface IFoodQueryServices
     {
         /// <summary>
         /// Retrieves the nutrition information for the specified food items.
@@ -14,5 +14,9 @@ namespace Food.Contracts
         /// the nutrition details per 100g of that food.
         /// </returns>
         Task<Dictionary<Guid, FoodNutritionDTO>> GetFoodNutritionsAsync(IEnumerable<Guid> foodIds, CancellationToken cancellationToken);
+
+        Task<bool> AllAllergensExistAsync(IEnumerable<Guid> allergenIds, CancellationToken cancellationToken);
+
+        Task<bool> AllFoodPreferencesExistAsync( IEnumerable<Guid> foodPreferenceIds, CancellationToken cancellationToken);
     }
 }
