@@ -20,13 +20,13 @@ namespace Restaurants.Application.UseCases.Commands.CreateRestaurantApplication
             if (await restaurantApplicationRepository.ExistsByEmailAsync(command.CompanyEmail, ct))
             {
                 logger.LogWarning("Duplicate email attempted: {Email}", command.CompanyEmail);
-                throw new DuplicateException(command.CompanyEmail);
+                throw new DuplicateException("restaurant-application", command.CompanyEmail);
             }
 
             if (await restaurantApplicationRepository.ExistsByBrandNameAsync(command.BrandName, ct))
             {
                 logger.LogWarning("Duplicate BrandName attempted: {BrandName}", command.BrandName);
-                throw new DuplicateException($"A restaurant application with brandName'{command.BrandName}' already exists.");
+                throw new DuplicateException("restaurant-application", command.BrandName);
             }
 
             var restaurantApplication = new RestaurantApplication(

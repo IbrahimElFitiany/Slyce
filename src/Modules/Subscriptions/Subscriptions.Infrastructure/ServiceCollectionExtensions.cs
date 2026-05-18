@@ -9,6 +9,7 @@ using Subscriptions.Application.UseCases.Commands.CreateSubscription;
 using Subscriptions.Domain.Interfaces;
 using Subscriptions.Domain.Services;
 using Subscriptions.Infrastructure.Persistence;
+using Subscriptions.Infrastructure.Queries;
 using Subscriptions.Infrastructure.Repositories;
 
 namespace Subscriptions.Infrastructure
@@ -25,7 +26,7 @@ namespace Subscriptions.Infrastructure
             services.AddScoped<ISubscriptionRepository, EFSubscriptionRepository>();
 
             services.AddMediatR(cfg => {
-                cfg.RegisterServicesFromAssemblyContaining<CreateSubscriptionCommand>();
+                cfg.RegisterServicesFromAssemblies(typeof(CreateSubscriptionCommand).Assembly, typeof(GetCustomerSubscriptionsQueryHandler).Assembly);
                 cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             });
             services.AddValidatorsFromAssembly(typeof(CreateSubscriptionCommand).Assembly, includeInternalTypes: true);

@@ -74,15 +74,6 @@ namespace Shared.Domain.ValueObjects
             PotassiumMg = potassiumMg;
             VitaminAMcg = vitaminA_Mcg;
             VitaminCMg = vitaminC_Mg;
-
-            if (SaturatedFat + TransFat > TotalFat)
-                throw new ArgumentException("Saturated and trans fat cannot exceed total fat");
-
-            if (DietaryFiber > TotalCarbohydrate)
-                throw new ArgumentException("Dietary fiber cannot exceed total carbohydrates");
-
-            if (SugarGrams > TotalCarbohydrate)
-                throw new ArgumentException("Sugar cannot exceed total carbohydrates");
         }
 
         public static Nutrition operator +(Nutrition a, Nutrition b)

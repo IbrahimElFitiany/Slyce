@@ -17,7 +17,7 @@ namespace Subscriptions.Application.UseCases.Commands.CreateSubscription
 {
     internal sealed class CreateSubscriptionCommandHandler(
         ICustomerServices customerServices,
-        IRestaurantServices restaurantServices,
+        IRestaurantQueryServices restaurantServices,
         IMenuQueryServices menuQueryServices,
         IUnitOfWork unitOfWork,
         ISubscriptionRepository subscriptionRepository,

@@ -72,10 +72,12 @@ namespace Restaurants.Domain.Entities
             ReviewedBy = adminId;
             RejectionReason = null;
         }
-        public void Reject(Guid adminId, string reason)
+        public void Reject(Guid adminId, string? reason)
         {
             ArgumentOutOfRangeException.ThrowIfEqual(adminId, Guid.Empty);
-            ArgumentException.ThrowIfNullOrWhiteSpace(reason);
+
+            if (reason is not null)
+                ArgumentException.ThrowIfNullOrWhiteSpace(reason);
 
             if (Status != ApplicationStatus.Pending)
                 throw new InvalidDomainOperationException("Only pending applications can be rejected");

@@ -10,7 +10,6 @@ namespace Menus.Domain.Entities
     {
         private const int MealSizesLimit = 5;
 
-        public Guid Id { get; private init; }
         public Guid CategoryId { get; private init; }
         public Guid RestaurantId { get; private init; }
         public string Name { get; private set; } = null!;
@@ -24,10 +23,6 @@ namespace Menus.Domain.Entities
 
         private readonly List<MealSize> _sizes = new();
         public IReadOnlyCollection<MealSize> Sizes => _sizes;
-
-        public DateTime CreatedAt { get; private init; } = DateTime.UtcNow;
-        public DateTime UpdatedAt { get; private set; } = DateTime.UtcNow;
-
 
         private HashSet<Guid>? _ingredientIdsCache;
         private HashSet<Guid> GetIngredientIds()

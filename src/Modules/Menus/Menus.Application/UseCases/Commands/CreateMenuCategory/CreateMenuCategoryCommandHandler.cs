@@ -3,41 +3,30 @@ using Menus.Domain.Entities;
 using Menus.Application.Interfaces;
 using Microsoft.Extensions.Logging;
 using Restaurants.Contracts.Interfaces;
+using Shared.Application.Exceptions;
 
 
 namespace Menus.Application.UseCases.Commands.CreateMenuCategory
 {
-    public class CreateMenuCategoryCommandHandler : IRequestHandler<CreateMenuCategoryCommand,Guid>
+    internal sealed class CreateMenuCategoryCommandHandler(
+        IMenuCategoryRepository menuCategoryRepository,
+        IRestaurantQueryServices restaurantQueryServices,
+        ILogger<CreateMenuCategoryCommandHandler> logger,
+        IUnitOfWork unitOfWork) : IRequestHandler<CreateMenuCategoryCommand, Guid>
     {
-        private readonly IMenuCategoryRepository _repository;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IRestaurantServices _restaurantServices;
-        private readonly ILogger<CreateMenuCategoryCommandHandler> _logger;
-
-        public CreateMenuCategoryCommandHandler(
-            IMenuCategoryRepository repository,
-            IRestaurantServices restaurantServices,
-            ILogger<CreateMenuCategoryCommandHandler> logger,
-            IUnitOfWork unitOfWork)
-        {
-            _repository = repository;
-            _restaurantServices = restaurantServices;
-            _logger = logger;
-            _unitOfWork = unitOfWork;
-        }
-
-        public async Task<Guid> Handle(CreateMenuCategoryCommand request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CreateMenuCategoryCommand command, CancellationToken ct)
         {
 
-            if (!await _restaurantServices.ExistsAsync(request.RestaurantId,cancellationToken)) 
-                throw new Exception("restaurant is not there");
+            if (!await restaurantQueryServices.ExistsAsync(command.RestaurantId, ct)) 
+                throw new NotFoundException("restaurant", command.RestaurantId);
 
-            var newCategory = new MenuCategory(request.RestaurantId, request.Name);
+            var newCategory = new MenuCategory(command.RestaurantId, command.Name);
 
-            _repository.Add(newCategory);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            menuCategoryRepository.Add(newCategory);
 
-            _logger.LogInformation("Resataurant {RestaurantId} create a new Category {CategoryId}", newCategory.RestaurantId , newCategory.Id);
+            await unitOfWork.SaveChangesAsync(ct);
+
+            logger.LogInformation("Resataurant {RestaurantId} create a new Category {CategoryId}", newCategory.RestaurantId , newCategory.Id);
 
             return newCategory.Id;
         }
