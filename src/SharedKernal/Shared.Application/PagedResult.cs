@@ -8,5 +8,8 @@
         int TotalPages,
         bool HasNext,
         bool HasPrevious,
-        IReadOnlyList<T> Items);
+        IReadOnlyList<T> Items)
+    {
+        public static PagedResult<T> Empty(int page, int pageSize) => new(0, pageSize, page, 0, false, false, []);
+    }
 }

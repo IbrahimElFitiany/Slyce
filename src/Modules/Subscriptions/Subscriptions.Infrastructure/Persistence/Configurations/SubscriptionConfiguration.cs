@@ -6,7 +6,7 @@ using Shared.Domain.ValueObjects;
 
 namespace Subscriptions.Infrastructure.Persistence.Configurations
 {
-    public class SubscriptionConfiguration : IEntityTypeConfiguration<Subscription>
+    internal sealed class SubscriptionConfiguration : IEntityTypeConfiguration<Subscription>
     {
         public void Configure(EntityTypeBuilder<Subscription> builder)
         {
@@ -108,7 +108,7 @@ namespace Subscriptions.Infrastructure.Persistence.Configurations
                 });
             });
 
-            builder.ComplexProperty(s => s.TotalPrice, p =>
+            builder.OwnsOne(s => s.TotalPrice, p =>
             {
                 p.Property(p => p.Amount)
                 .HasPrecision(18,2)

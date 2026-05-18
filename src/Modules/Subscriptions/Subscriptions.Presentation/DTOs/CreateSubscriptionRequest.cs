@@ -3,8 +3,8 @@
     public sealed record CreateSubscriptionRequest(
         Guid BranchId,
         Guid DeliveryAddressId,
-        IEnumerable<DayOfWeek> DeliveryDays,
-        IEnumerable<SubscriptionMealRequest> SubscriptionMeals,
+        IReadOnlyCollection<DayOfWeek> DeliveryDays,
+        IReadOnlyCollection<SubscriptionMealRequest> SubscriptionMeals,
         string TimeSlot,
         DateOnly StartDate,
         string BillingCycle);

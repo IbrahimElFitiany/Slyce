@@ -15,8 +15,8 @@ namespace Subscriptions.Domain.Entities
         public DeliveryTimeFrame TimeFrame { get; private set; } = null!;
 
         private readonly List<SubscriptionDeliveryDay> _deliveryDays = [];
-        public IReadOnlyCollection<SubscriptionDeliveryDay> DeliveryDays { get; private set; } = null!;
-        
+        public IReadOnlyCollection<SubscriptionDeliveryDay> DeliveryDays => _deliveryDays;
+
         public DateOnly StartDate { get; private set; }
         public DateOnly EndDate { get; private set; }
 
@@ -38,8 +38,7 @@ namespace Subscriptions.Domain.Entities
             IEnumerable<SubscriptionDeliveryDay> deliveryDays,
             DateOnly startDate,
             IEnumerable<SubscriptionMeal> subscriptionMeals,
-            BillingCycle billingCycle
-)
+            BillingCycle billingCycle )
         {
             ArgumentOutOfRangeException.ThrowIfEqual(customerId, Guid.Empty);
             ArgumentOutOfRangeException.ThrowIfEqual(branchId, Guid.Empty);

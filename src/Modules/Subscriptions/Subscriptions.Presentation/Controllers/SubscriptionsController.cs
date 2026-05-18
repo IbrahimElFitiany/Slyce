@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Presentation;
 using Subscriptions.Application.UseCases.Commands.CreateSubscription;
+using Subscriptions.Application.UseCases.Queries.GetCustomerSubscriptionsSummary;
 using Subscriptions.Presentation.DTOs;
 
 
@@ -33,6 +34,22 @@ namespace Subscriptions.Presentation.Controllers
             var result = await mediator.Send(command,ct);
 
             return CreatedAtAction(nameof(GetSubscription), new { id = result }, new { SubscriptionId = result });
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> GetCustomerSubscriptions([FromQuery] GetCustomerSubscriptionsRequest request, CancellationToken ct)
+        {
+            var query = new GetCustomerSubscriptionsSummaryQuery(
+                UserId,
+                request.Status,
+                request.SortDescending,
+                request.Page,
+                request.PageSize);
+
+            var results = await mediator.Send(query, ct);
+
+            return Ok(results);
         }
 
         [HttpGet ("{id}")]
