@@ -1,4 +1,4 @@
-﻿namespace Food.Application.UseCases.Queries
+﻿namespace Food.Application.UseCases.Queries.SearchFoodSummary
 {
     public sealed record SearchFoodSummaryQueryResult(
         Guid Id,

@@ -1,6 +1,8 @@
 ﻿using Asp.Versioning;
 using Food.Application.UseCases.Commands.ImportExternalFood;
-using Food.Application.UseCases.Queries;
+using Food.Application.UseCases.Queries.GetAllergens;
+using Food.Application.UseCases.Queries.GetFoodPreferences;
+using Food.Application.UseCases.Queries.SearchFoodSummary;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,5 +34,18 @@ namespace Food.Presentation.Controllers
             var result = await _mediator.Send(new ImportExternalFoodsCommand(searchTerm), ct);
             return Ok(result);
         }
+
+        [HttpGet("allergens")]
+        public async Task<IActionResult> GetAllergens(CancellationToken ct)
+        {
+            return Ok(await _mediator.Send(new GetAllergensQuery(), ct));
+        }
+
+        [HttpGet("food-preferences")]
+        public async Task<IActionResult> GetFoodPreferences(CancellationToken ct)
+        {
+            return Ok(await _mediator.Send(new GetFoodPreferencesQuery(), ct));
+        }
+
     }
 }

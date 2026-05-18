@@ -2,7 +2,6 @@
 using FluentValidation;
 using Food.Application.Interfaces;
 using Food.Application.Services;
-using Food.Application.UseCases.Queries;
 using Food.Contracts;
 using Food.Infrastructure.ExternalServices.FatSecretService;
 using Food.Infrastructure.Persistence;
@@ -12,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Application.Behaviors;
+using Food.Application.UseCases.Queries.SearchFoodSummary;
 
 namespace Food.Infrastructure
 {
