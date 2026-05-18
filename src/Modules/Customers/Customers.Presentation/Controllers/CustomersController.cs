@@ -8,6 +8,8 @@ using Customers.Application.UseCases.Commands.UpdateWeight;
 using Customers.Application.UseCases.Commands.UpdateGender;
 using Customers.Application.UseCases.Commands.UpdateHeight;
 using Customers.Application.UseCases.Commands.UpdateActivityRate;
+using Customers.Application.UseCases.Commands.UpdateCustomerAllergens;
+using Customers.Application.UseCases.Commands.UpdateCustomerDietPreferences;
 
 namespace Customers.Presentation.Controllers
 {
@@ -52,6 +54,22 @@ namespace Customers.Presentation.Controllers
         public async Task<IActionResult> UpdateCustomerActivityRate([FromBody] UpdateActivityRateRequest request, CancellationToken ct)
         {
             await mediator.Send(new UpdateActivityRateCommand(UserId, request.ActivityRate), ct);
+            return NoContent();
+        }
+
+        [HttpPatch("me/profile/allergens")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> UpdateCustomerAllergens([FromBody] UpdateAllergensRequest request, CancellationToken ct)
+        {
+            await mediator.Send(new UpdateCustomerAllergensCommand(UserId, request.AllergenIds), ct);
+            return NoContent();
+        }
+
+        [HttpPatch("me/profile/diet-prefs")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> UpdateCustomerDietPreferences([FromBody] UpdateDietPreferencesRequest request, CancellationToken ct)
+        {
+            await mediator.Send(new UpdateCustomerDietPreferencesCommand(UserId, request.DietPreferenceIds), ct);
             return NoContent();
         }
 

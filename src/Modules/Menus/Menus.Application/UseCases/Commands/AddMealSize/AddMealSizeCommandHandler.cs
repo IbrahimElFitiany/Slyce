@@ -16,13 +16,13 @@ namespace Menus.Application.UseCases.Commands.AddMealSize
     {
         private readonly IMenuMealRepository _menuMealRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IFoodServices _foodServices;
+        private readonly IFoodQueryServices _foodServices;
         private readonly ILogger<AddMealSizeCommandHandler> _logger;
 
         public AddMealSizeCommandHandler(
             IMenuMealRepository menuMealRepository,
             IUnitOfWork unitOfWork,
-            IFoodServices foodServices,
+            IFoodQueryServices foodServices,
             ILogger<AddMealSizeCommandHandler> logger)
         {
             _menuMealRepository = menuMealRepository;

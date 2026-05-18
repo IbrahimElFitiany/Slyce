@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using FluentValidation;
 using Food.Application.Interfaces;
-using Food.Application.Services;
 using Food.Contracts;
 using Food.Infrastructure.ExternalServices.FatSecretService;
 using Food.Infrastructure.Persistence;
@@ -12,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Application.Behaviors;
 using Food.Application.UseCases.Queries.SearchFoodSummary;
+using Food.Infrastructure.Services;
 
 namespace Food.Infrastructure
 {
@@ -27,7 +27,7 @@ namespace Food.Infrastructure
             services.AddScoped<IExternalFoodService, FatSecretFoodService>();
             services.AddSingleton<FatSecretTokenService>();
 
-            services.AddScoped<IFoodServices, FoodContractServices>();
+            services.AddScoped<IFoodQueryServices, FoodQueryServices>();
             services.AddScoped<IFoodRepository, EFFoodRepository>();
 
             services.AddValidatorsFromAssemblyContaining<SearchFoodSummaryValidator>();
