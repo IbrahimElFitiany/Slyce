@@ -16,10 +16,10 @@ namespace Customers.Infrastructure.Persistence.Configurations
             builder.Property(c => c.Gender)
                 .HasConversion<string>();
 
-            builder.Property(c=> c.ProfileImage)
+            builder.Property(c => c.ProfileImage)
                 .IsRequired(false);
 
-            builder.Property(c=> c.Bday)
+            builder.Property(c => c.Bday)
                 .IsRequired();
 
             builder.Property(c => c.Height)
@@ -37,7 +37,8 @@ namespace Customers.Infrastructure.Persistence.Configurations
             builder.Property(c => c.ActivityRate)
                 .HasConversion<string>();
 
-            builder.OwnsMany(c => c.CustomerAddresses, ca => {
+            builder.OwnsMany(c => c.CustomerAddresses, ca =>
+            {
 
                 ca.ToTable("CustomerAddresses");
 
@@ -61,7 +62,8 @@ namespace Customers.Infrastructure.Persistence.Configurations
                 //still no support for ComplexProperty in owned collections
                 //https://github.com/dotnet/efcore/issues/33170
                 // so OwnsOne is used for OperatingHours instead.
-                ca.OwnsOne(a => a.Address, a => {
+                ca.OwnsOne(a => a.Address, a =>
+                {
 
                     a.Property(a => a.City)
                     .HasColumnName(nameof(Address.City))
@@ -97,6 +99,16 @@ namespace Customers.Infrastructure.Persistence.Configurations
 
                 ca.HasIndex(nameof(CustomerAddress.Label), "CustomerId").IsUnique();
             });
+
+            builder.PrimitiveCollection("_allergens")
+                .HasField("_allergens")
+                .UsePropertyAccessMode(PropertyAccessMode.Field)
+                .HasColumnName("allergen_ids");
+
+            builder.PrimitiveCollection("_dietPreferences")
+                .HasField("_dietPreferences")
+                .UsePropertyAccessMode(PropertyAccessMode.Field)
+                .HasColumnName("diet_preference_ids");
         }
     }
 }

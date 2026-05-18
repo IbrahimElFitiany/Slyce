@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\SharedKernal\Shared.Application\Shared.Application.csproj" />
+    <ProjectReference Include="..\..\Food\Food.Contracts\Food.Contracts.csproj" />
     <ProjectReference Include="..\Customers.Contracts\Customers.Contracts.csproj" />
     <ProjectReference Include="..\Customers.Domain\Customers.Domain.csproj" />
   </ItemGroup>
