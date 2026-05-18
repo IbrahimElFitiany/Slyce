@@ -1,5 +1,6 @@
 ﻿using FoodEntity = Food.Domain.Entities.Food;
 using Microsoft.EntityFrameworkCore;
+using Food.Domain;
 
 namespace Food.Infrastructure.Persistence
 {
@@ -7,6 +8,8 @@ namespace Food.Infrastructure.Persistence
     {
         public FoodDbContext(DbContextOptions<FoodDbContext> options) : base(options) { }
         public DbSet<FoodEntity> Foods { get; set; }
+        public DbSet<Allergen> Allergens { get; set; }
+        public DbSet<FoodPreference> FoodPreferences { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

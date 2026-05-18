@@ -1,4 +1,4 @@
-﻿using Food.Application.UseCases.Queries;
+﻿using Food.Application.UseCases.Queries.SearchFoodSummary;
 using Food.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -6,21 +6,18 @@ using Shared.Application;
 
 namespace Food.Infrastructure.Queries
 {
-    public sealed class SearchFoodSummaryQueryHandler (FoodDbContext foodDbContext) :
+    internal sealed class SearchFoodSummaryQueryHandler (FoodDbContext foodDbContext) :
         IRequestHandler<SearchFoodSummaryQuery, PagedResult<SearchFoodSummaryQueryResult>>
     {
-        private readonly FoodDbContext _foodDbContext = foodDbContext;
         
-        public async Task<PagedResult<SearchFoodSummaryQueryResult>> Handle(
-            SearchFoodSummaryQuery searchQuery,
-            CancellationToken ct)
+        public async Task<PagedResult<SearchFoodSummaryQueryResult>> Handle(SearchFoodSummaryQuery searchQuery, CancellationToken ct)
         {
-            //rn just using Postgris for development speed 
+            //rn just using Postgres for development speed 
             //considering ElasticSearch with cdc to move the food data to es 
 
             var term = $"%{searchQuery.Term}%";
 
-            var query = _foodDbContext.Foods
+            var query = foodDbContext.Foods
                 .Where(f => EF.Functions.ILike(f.Name, term));
 
             var total = await query.CountAsync(ct);

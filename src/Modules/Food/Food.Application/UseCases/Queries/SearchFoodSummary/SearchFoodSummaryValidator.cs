@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Food.Application.UseCases.Queries
+namespace Food.Application.UseCases.Queries.SearchFoodSummary
 {
     public sealed class SearchFoodSummaryValidator : AbstractValidator<SearchFoodSummaryQuery>
     {

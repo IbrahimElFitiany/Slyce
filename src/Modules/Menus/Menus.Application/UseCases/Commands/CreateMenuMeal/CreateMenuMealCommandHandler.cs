@@ -16,7 +16,7 @@ namespace Menus.Application.UseCases.Commands.CreateMenuMeal
 {
     internal sealed class CreateMenuMealCommandHandler (
         IUnitOfWork unitOfWork,
-        IFoodServices foodService,
+        IFoodQueryServices foodService,
         IMenuMealRepository mealRepository,
         IMenuCategoryRepository categoryRepository,
         ILogger<CreateMenuMealCommandHandler> logger) : IRequestHandler<CreateMenuMealCommand,Guid>

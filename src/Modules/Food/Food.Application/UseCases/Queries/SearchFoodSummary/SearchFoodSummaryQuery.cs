@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Shared.Application;
 
-namespace Food.Application.UseCases.Queries
+namespace Food.Application.UseCases.Queries.SearchFoodSummary
 {
     public sealed record SearchFoodSummaryQuery(
         string Term,

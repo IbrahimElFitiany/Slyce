@@ -20,6 +20,12 @@ namespace Customers.Domain.Entities
         private readonly List<CustomerAddress> _customerAddresses = [];
         public IReadOnlyCollection<CustomerAddress> CustomerAddresses => _customerAddresses;
 
+        private readonly List<Guid> _allergens = [];
+        public IReadOnlyCollection<Guid> Allergens => _allergens;
+
+        private readonly List<Guid> _dietPreferences = [];
+        public IReadOnlyCollection<Guid> DietPreferences => _dietPreferences;
+
         private Customer() { }
 
         private Customer(Guid id, Height? height, DateOnly bday) 
@@ -69,7 +75,6 @@ namespace Customers.Domain.Entities
             _customerAddresses.Remove(address);
         }
 
-
         public void UpdateGender(Gender gender)
         {
             if (Gender == gender)
@@ -106,6 +111,19 @@ namespace Customers.Domain.Entities
             UpdatedAt = DateTime.UtcNow;
         }
 
+        public void UpdateAllergens(IEnumerable<Guid> allergenIds)
+        {
+            ArgumentNullException.ThrowIfNull(allergenIds);
+            _allergens.Clear();
+            _allergens.AddRange(allergenIds.Distinct());
+        }
+
+        public void UpdateDietPreferences(IEnumerable<Guid> dietPreferenceIds)
+        {
+            ArgumentNullException.ThrowIfNull(dietPreferenceIds);
+            _dietPreferences.Clear();
+            _dietPreferences.AddRange(dietPreferenceIds.Distinct());
+        }
         private static void EnsureValidAge(DateOnly birthday)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);

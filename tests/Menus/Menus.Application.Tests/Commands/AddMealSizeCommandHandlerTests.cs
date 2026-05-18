@@ -21,7 +21,7 @@ namespace Menus.Application.Tests.Commands
         private readonly Mock<IMenuMealRepository> _menuMealRepositoryMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
         private readonly ILogger<AddMealSizeCommandHandler> _logger;
-        private readonly Mock<IFoodServices> _foodServiceMock;
+        private readonly Mock<IFoodQueryServices> _foodServiceMock;
         private readonly AddMealSizeCommandHandler _handler;
 
         public AddMealSizeCommandHandlerTests()
