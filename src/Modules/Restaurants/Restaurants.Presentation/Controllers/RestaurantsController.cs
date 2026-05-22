@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurants.Application.UseCases.Commands.UpdateRestaurantImage;
+using Restaurants.Application.UseCases.Queries.GetNearbyTopRatedRestaurants;
 using Restaurants.Presentation.DTOs;
 using Shared.Presentation;
 
@@ -25,6 +26,14 @@ namespace Restaurants.Presentation.Controllers
             await mediator.Send(new UpdateRestaurantImageCommand(id, request.ImageUrl), ct);
 
             return NoContent();
+        }
+
+        [HttpGet("top-rated/nearby")]
+        public async Task<IActionResult> GettopRated([FromBody] GetNearbyTopRatedRestaurantsRequest request, CancellationToken ct)
+        {
+            var branches = await mediator.Send(new GetNearbyTopRatedRestaurantsQuery(request.Latitude, request.Longitude), ct);
+
+            return Ok(branches);
         }
     }
 }
