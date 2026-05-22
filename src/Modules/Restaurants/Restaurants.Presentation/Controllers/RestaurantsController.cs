@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Restaurants.Application.UseCases.Commands.UpdateRestaurantBanner;
 using Restaurants.Application.UseCases.Commands.UpdateRestaurantImage;
 using Restaurants.Application.UseCases.Queries.GetNearbyTopRatedRestaurants;
 using Restaurants.Presentation.DTOs;
@@ -25,6 +26,17 @@ namespace Restaurants.Presentation.Controllers
             //TODO AuthR and 
             await mediator.Send(new UpdateRestaurantImageCommand(id, request.ImageUrl), ct);
 
+            return NoContent();
+        }
+
+        [HttpPut("{id}/banner")]
+        [Authorize(Roles = "RestaurantOwner")]
+        public async Task<IActionResult> UpdateRestaurantBanner(
+            [FromRoute] Guid id,
+            [FromBody] UpdateRestauantBannerRequest request,
+            CancellationToken ct)
+        {
+            await mediator.Send(new UpdateRestaurantBannerCommand(id, request.BannerUrl), ct);
             return NoContent();
         }
 
