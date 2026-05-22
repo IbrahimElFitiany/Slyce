@@ -31,6 +31,15 @@ namespace Restaurants.Domain.Entities
             CreatedAt = UpdatedAt = DateTime.UtcNow;
         }
 
+        public void Activate()
+        {
+            if (Status == RestaurantStatus.Active)
+                return;
+
+            Status = RestaurantStatus.Active;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
         public void UpdateStatus(RestaurantStatus status)
         {
             Status = status;
