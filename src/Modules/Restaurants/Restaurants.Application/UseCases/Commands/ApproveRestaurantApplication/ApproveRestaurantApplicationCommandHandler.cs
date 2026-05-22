@@ -34,7 +34,6 @@ namespace Restaurants.Application.UseCases.Commands.ApproveRestaurantApplication
 
             var restaurant = new Restaurant(
                 brandName: application.BrandName,
-                image: null,
                 description: null,
                 restaurantType: application.RestaurantType);
 
