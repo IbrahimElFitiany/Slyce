@@ -15,7 +15,7 @@ namespace Orders.Infrastructure.Persistence.Configurations
                 .ValueGeneratedNever()
                 .IsRequired();
 
-            builder.Property(c => c.RestaurantId)
+            builder.Property(c => c.BranchId)
                 .ValueGeneratedNever()
                 .IsRequired();
 
