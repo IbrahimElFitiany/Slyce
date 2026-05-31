@@ -39,7 +39,7 @@ namespace Restaurants.Application.UseCases.Commands.ApproveRestaurantApplication
 
             var mainBranch = new RestaurantBranch(
                 restaurant.Id,
-                null,
+                "Main Branch",
                 application.MainBranchLocation,
                 application.CompanyMobileNumber);
 

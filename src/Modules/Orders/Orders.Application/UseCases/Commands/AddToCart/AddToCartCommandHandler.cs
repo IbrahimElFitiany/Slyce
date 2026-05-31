@@ -2,38 +2,47 @@
 using Menus.Contracts.Interfaces;
 using Orders.Application.Interfaces;
 using Orders.Domain.Aggregates.Carts;
+using Restaurants.Contracts.Interfaces;
 using Shared.Application.Exceptions;
+using Shared.Domain.Exceptions;
 
 namespace Orders.Application.UseCases.Commands.AddToCart
 {
     internal sealed class AddToCartCommandHandler(
         IMenuQueryServices menuQueryServices,
+        IRestaurantQueryServices restaurantQueryServices,
         ICartRepository cartRepository,
         IUnitOfWork unitOfWork) : IRequestHandler<AddToCartCommand>
     {
-        private readonly IMenuQueryServices _menuQueryServices = menuQueryServices;
-        private readonly ICartRepository _cartRepository = cartRepository;
-        private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         public async Task Handle(AddToCartCommand command, CancellationToken ct)
         {
-            var meal = await _menuQueryServices.GetMealSummaryAsync(command.MealId, ct) ??
-                throw new NotFoundException("MenuMeal", command.MealId);
+            var branchs = await restaurantQueryServices.GetBranchInfosAsync([command.BranchId], ct);
+
+            var branch = branchs.GetValueOrDefault(command.BranchId)
+                ?? throw new NotFoundException("Branch", command.BranchId);
+
+            var meal = await menuQueryServices.GetMealSummaryAsync(command.MealId, ct)
+                ?? throw new NotFoundException("MenuMeal", command.MealId);
+
+            if (meal.RestaurantId != branch.RestaurantId)
+                throw new InvalidDomainOperationException($"Meal '{meal.MealId}' does not belong to the restaurant");
 
             if (!meal.MealSizeIds.Contains(command.SizeId))
                 throw new NotFoundException("MealSize", command.SizeId);
 
-            var cart = await _cartRepository.GetCartByCustomerIdAsync(command.CustomerId, ct);
+
+            var cart = await cartRepository.GetCartByCustomerIdAsync(command.CustomerId, ct);
 
             if (cart is null)
             {
-                cart = new Cart(command.CustomerId, meal.RestaurantId);
-                _cartRepository.Add(cart);
+                cart = new Cart(command.CustomerId, branch.BranchId);
+                cartRepository.Add(cart);
             }
 
-            cart.AddCartItem(command.MealId, command.SizeId, command.Quantity, meal.RestaurantId);
+            cart.AddCartItem(command.MealId, command.SizeId, command.Quantity, branch.BranchId);
 
-            await _unitOfWork.SaveChangesAsync(ct);
+            await unitOfWork.SaveChangesAsync(ct);
         }
     }
 }
