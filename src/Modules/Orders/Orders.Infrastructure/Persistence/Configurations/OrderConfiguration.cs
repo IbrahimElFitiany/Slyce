@@ -15,7 +15,7 @@ namespace Orders.Infrastructure.Persistence.Configurations
             builder.Property(o => o.CustomerId)
                 .IsRequired();
 
-            builder.Property(o => o.RestaurantId)
+            builder.Property(o => o.BranchId)
                 .IsRequired();
 
             builder.OwnsMany(o => o.OrderItems, oi =>

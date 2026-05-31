@@ -4,6 +4,7 @@ namespace Orders.Application.UseCases.Commands.AddToCart
 {
     public sealed record AddToCartCommand(
         Guid CustomerId,
+        Guid BranchId,
         Guid MealId,
         Guid SizeId,
         int Quantity) : IRequest;

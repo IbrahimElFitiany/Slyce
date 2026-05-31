@@ -19,26 +19,19 @@ namespace Orders.Application.UseCases.Commands.CheckoutCart
         ICustomerServices customerServices,
         IMenuQueryServices menuQueryServices) : IRequestHandler<CheckoutCartCommand, Guid>
     {
-        private readonly IUnitOfWork _unitOfWork = unitOfWork;
-        private readonly IPaymentService _paymentService = paymentService;
-        private readonly ICartRepository _cartRepository = cartRepository;
-        private readonly IOrderRepository _orderRepository = orderRepository;
-        private readonly ICustomerServices _customerServices = customerServices;
-        private readonly IMenuQueryServices _menuQueryServices = menuQueryServices;
-
         public async Task<Guid> Handle(CheckoutCartCommand command, CancellationToken ct)
         {
-            var cart = await _cartRepository.GetCartByCustomerIdAsync(command.CustomerId, ct)
+            var cart = await cartRepository.GetCartByCustomerIdAsync(command.CustomerId, ct)
                 ?? throw new NotFoundException("Cart for this Customer is not found");
 
             var pairs = cart.CartItems.Select(ci => (ci.MealId, ci.SizeId));
 
-            var mealSizeSnapshots = await _menuQueryServices.GetMealSizeSnapshotsAsync(pairs, ct);
+            var mealSizeSnapshots = await menuQueryServices.GetMealSizeSnapshotsAsync(pairs, ct);
 
             if (mealSizeSnapshots.Count != cart.CartItems.Count)
                 throw new NotFoundException("some meals couldn't be fetched");
 
-            var customerAddress = await _customerServices.GetCustomerAddressByIdAsync(command.CustomerId, command.DeliveryAddressId, ct) 
+            var customerAddress = await customerServices.GetCustomerAddressByIdAsync(command.CustomerId, command.DeliveryAddressId, ct) 
                 ?? throw new NotFoundException("Customer Address", command.DeliveryAddressId);
 
             var deliveryAddress = new Address(
@@ -59,19 +52,19 @@ namespace Orders.Application.UseCases.Commands.CheckoutCart
 
             var paymentMethod = Enum.Parse<OrderPaymentMethod>(command.PaymentMethod, ignoreCase: true);
 
-            var order = Order.CreateFromCart(
+            var order = Order.Create(
                 command.CustomerId,
-                cart.RestaurantId,
+                cart.BranchId,
                 orderItemCreationInputs,
                 paymentMethod,
                 deliveryAddress);
 
-            _orderRepository.Add(order);
-            await _unitOfWork.SaveChangesAsync(ct);
+            orderRepository.Add(order);
+            await unitOfWork.SaveChangesAsync(ct);
 
             if (paymentMethod is not OrderPaymentMethod.CashOnDelivery)
             {
-                var paymentResult = await _paymentService.ProcessAsync(new PaymentRequest(
+                var paymentResult = await paymentService.ProcessAsync(new PaymentRequest(
                     order.Id,
                     order.TotalPrice.Amount,
                     order.TotalPrice.Currency, null, null, null, null), ct);
@@ -79,13 +72,13 @@ namespace Orders.Application.UseCases.Commands.CheckoutCart
                 if (paymentResult.Status is PaymentStatus.Failed)
                 {
                     order.UpdatePaymentStatus(OrderPaymentStatus.Failed);
-                    await _unitOfWork.SaveChangesAsync(ct);
+                    await unitOfWork.SaveChangesAsync(ct);
                     throw new Exception();
                 }
             }
 
-            _cartRepository.Remove(cart);
-            await _unitOfWork.SaveChangesAsync(ct);
+            cartRepository.Remove(cart);
+            await unitOfWork.SaveChangesAsync(ct);
 
             return order.Id;
         }
