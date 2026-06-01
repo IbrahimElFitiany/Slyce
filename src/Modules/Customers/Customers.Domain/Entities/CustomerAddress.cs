@@ -2,7 +2,7 @@
 
 namespace Customers.Domain.Entities
 {
-    public sealed class CustomerAddress
+    public sealed class CustomerAddress 
     {
         public Guid Id { get; private init; }
         public string Label { get; private set; } = null!;
@@ -12,17 +12,14 @@ namespace Customers.Domain.Entities
 
         private CustomerAddress() { }   
 
-        public CustomerAddress(
-            string label,
-            PhoneNumber contactNumber,
-            Address address)
+        public CustomerAddress(string label, PhoneNumber contactNumber, Address address)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(label, nameof(label));
             ArgumentNullException.ThrowIfNull(contactNumber, nameof(contactNumber));
             ArgumentNullException.ThrowIfNull(address, nameof(address));
 
             Id = Guid.NewGuid();
-            Label = label;
+            Label = label.Trim().ToLowerInvariant();
             ContactNumber = contactNumber;
             Address = address;
         }

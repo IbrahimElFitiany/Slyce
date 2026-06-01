@@ -60,7 +60,7 @@ namespace Customers.Domain.Entities
             if (_customerAddresses.Count == 0)
                 newAddress.SetAsPrimary();
 
-            if (_customerAddresses.Any(a => a.Label == newAddress.Label.ToLowerInvariant()))
+            if (_customerAddresses.Any(a => a.Label.Equals(newAddress.Label, StringComparison.InvariantCultureIgnoreCase)))
                 throw new DuplicateException(nameof(CustomerAddress.Label), newAddress.Label);
 
             _customerAddresses.Add(newAddress);

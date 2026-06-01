@@ -8,47 +8,21 @@ using Microsoft.Extensions.Logging;
 
 namespace Customers.Application.UseCases.Commands.CreateAddress
 {
-    public sealed class CreateAddressCommandHandler : IRequestHandler<CreateAddressCommand,Guid>
+    internal sealed class CreateAddressCommandHandler(
+        ILogger<CreateAddressCommandHandler> logger,
+        ICustomerRepository customerRepository,
+        IUnitOfWork unitOfWork) : IRequestHandler<CreateAddressCommand,Guid>
     {
-        private readonly ILogger<CreateAddressCommandHandler> _logger;
-        private readonly ICustomerRepository _customerRepository;
-        private readonly IUnitOfWork _unitOfWork;
 
-        public CreateAddressCommandHandler(
-            ILogger<CreateAddressCommandHandler> logger,
-            ICustomerRepository customerRepository,
-            IUnitOfWork unitOfWork)
+        public async Task<Guid> Handle(CreateAddressCommand command, CancellationToken cancellationToken)
         {
-            _logger = logger;
-            _customerRepository = customerRepository;
-            _unitOfWork = unitOfWork;
-        }
+            var customer = await customerRepository.GetByIdAsync(command.CustomerId, cancellationToken)
+                ?? throw new NotFoundException("Customer", command.CustomerId);
 
-        public async Task<Guid> Handle(CreateAddressCommand request, CancellationToken cancellationToken)
-        {
-            var customer = await _customerRepository.GetByIdAsync(request.CustomerId, cancellationToken);
-
-            if (customer is null) 
-                throw new NotFoundException(nameof(Customer), request.CustomerId);
-
-            var address = MapToCustomerAddress(request);
-
-            customer.AddAddress(address);
-
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-            _logger.LogInformation("Customer {CustomerId} added a new address {AddressId} with label {Label}",
-                customer.Id, address.Id, address.Label);
-
-            return address.Id;
-        }
-
-        private CustomerAddress MapToCustomerAddress(CreateAddressCommand command)
-        {
-            return new CustomerAddress(
-                command.Label,
-                PhoneNumber.Create(command.ContactNumber),
-                new Address(
+            var address =  new CustomerAddress(
+                label: command.Label,
+                contactNumber: PhoneNumber.Create(command.ContactNumber),
+                address: new Address(
                     command.City,
                     command.Area,
                     command.StreetName,
@@ -56,6 +30,15 @@ namespace Customers.Application.UseCases.Commands.CreateAddress
                     new Coordinates(
                         command.Latitude,
                         command.Longitude)));
+
+            customer.AddAddress(address);
+
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+
+            logger.LogInformation("Customer {CustomerId} added a new address {AddressId} with label {Label}",
+                customer.Id, address.Id, address.Label);
+
+            return address.Id;
         }
     }
 }
