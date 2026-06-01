@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Orders.Application.UseCases.Commands.AddToCart;
 using Orders.Application.UseCases.Commands.CheckoutCart;
@@ -14,6 +15,7 @@ namespace Orders.Presentation.Controllers
     [Route("api/v{version:apiVersion}/cart")]
     [ApiVersion("1.0")]
     [ApiController]
+    [Authorize(Roles = "Customer")]
     public sealed class CartController(IMediator mediator) : BaseController
     {
 
@@ -24,6 +26,7 @@ namespace Orders.Presentation.Controllers
         {
             var command = new AddToCartCommand(
                 UserId,
+                request.BranchId,
                 request.MealId,
                 request.SizeId,
                 request.Quantity);

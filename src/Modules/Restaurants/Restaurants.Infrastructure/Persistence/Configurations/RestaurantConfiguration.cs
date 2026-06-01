@@ -13,7 +13,11 @@ namespace Restaurants.Infrastructure.Persistence.Configurations
             builder.Property(r => r.Id)
                 .ValueGeneratedNever();
 
-            builder.Property(r => r.Image)
+            builder.Property(r => r.Logo)
+                .IsRequired(false)
+                .HasMaxLength(500);
+
+            builder.Property(r => r.Banner)
                 .IsRequired(false)
                 .HasMaxLength(500);
 

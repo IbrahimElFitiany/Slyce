@@ -9,7 +9,7 @@ namespace Orders.Domain.Aggregates.Order
     public sealed class Order : AggregateRoot
     {
         public Guid CustomerId { get; private init; }
-        public Guid RestaurantId { get; private init; }
+        public Guid BranchId { get; private init; }
 
         private readonly List<OrderItem> _orderItems = [];
         public IReadOnlyCollection<OrderItem> OrderItems => _orderItems.AsReadOnly();
@@ -34,20 +34,20 @@ namespace Orders.Domain.Aggregates.Order
 
         private Order(
             Guid customerId,
-            Guid restaurantId,
+            Guid branchId,
             OrderPaymentMethod paymentMethod,
             Address deliveryAddress,
             IEnumerable<OrderItem> orderItems) 
         {
             ArgumentOutOfRangeException.ThrowIfEqual(customerId, Guid.Empty);
-            ArgumentOutOfRangeException.ThrowIfEqual(restaurantId, Guid.Empty);
+            ArgumentOutOfRangeException.ThrowIfEqual(branchId, Guid.Empty);
 
             if (!orderItems.Any())
                 throw new OrderRequiresAtLeastOneItemException();
 
             Id = Guid.NewGuid();
             CustomerId = customerId;
-            RestaurantId = restaurantId;
+            BranchId = branchId;
             PaymentMethod = paymentMethod;
             DeliveryAddress = deliveryAddress;
             _orderItems.AddRange(orderItems);
@@ -58,19 +58,18 @@ namespace Orders.Domain.Aggregates.Order
             CreatedAt = UpdatedAt = DateTime.UtcNow;
         }
 
-        public static Order CreateFromCart(
+        public static Order Create(
             Guid customerId,
-            Guid restaurantId,
-            IEnumerable<OrderItemCreationInput> cartItems,
+            Guid branchId,
+            IEnumerable<OrderItemCreationInput> orderItemInputs,
             OrderPaymentMethod paymentMethod,
             Address deliveryAddress)
         {
 
-            var orderItems = cartItems
-                .Select(ci => new OrderItem(ci.MealId, ci.SizeId, ci.Quantity, ci.Price))
-                .ToList();
+            var orderItems = orderItemInputs
+                .Select(ci => new OrderItem(ci.MealId, ci.SizeId, ci.Quantity, ci.Price));
 
-            return new Order(customerId, restaurantId, paymentMethod, deliveryAddress, orderItems);
+            return new Order(customerId, branchId, paymentMethod, deliveryAddress, orderItems);
         }
 
 

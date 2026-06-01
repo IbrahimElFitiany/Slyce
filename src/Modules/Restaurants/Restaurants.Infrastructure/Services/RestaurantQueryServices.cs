@@ -38,7 +38,7 @@ namespace Restaurants.Infrastructure.Services
                 .Join(restaurantDbContext.Restaurants,
                     b => b.RestaurantId,
                     r => r.Id,
-                    (b, r) => new BranchInfoDTO(b.Id,r.Id, r.BrandName, r.Image))
+                    (b, r) => new BranchInfoDTO(b.Id,r.Id, r.BrandName, r.Logo))
                 .ToDictionaryAsync(b => b.BranchId, ct);
         }
     }
