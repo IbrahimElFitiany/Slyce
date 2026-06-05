@@ -4,6 +4,6 @@ namespace Orders.Contract.Interfaces
 {
     public interface IOrderServices
     {
-        Task CreateOrdersAsync(IEnumerable<OrderDTO> orderDTOs, CancellationToken ct);
+        Task CreateOrderAsync(OrderDTO orderDTO, CancellationToken cancellationToken = default);
     }
 }
