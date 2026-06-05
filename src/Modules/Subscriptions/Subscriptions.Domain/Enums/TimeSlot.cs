@@ -1,4 +1,4 @@
-﻿using Subscriptions.Domain.ValueObjects;
+﻿using Shared.Domain.ValueObjects;
 
 namespace Subscriptions.Domain.Enums
 {

@@ -4,27 +4,11 @@ using Orders.Infrastructure.Persistence;
 
 namespace Orders.Infrastructure.Repositores
 {
-    public class EFOrderRepository : IOrderRepository
+    internal sealed class EFOrderRepository(OrdersDbContext context) : IOrderRepository
     {
-        private readonly OrdersDbContext _context;
-
-        public EFOrderRepository(OrdersDbContext context)
-        {
-            _context = context;
-        }
-
-        public void Add(Order order)
-        {
-            _context.Orders.Add(order);
-        }
-        public void UpdateStatus(Order order)
-        {
-            _context.Orders.Update(order);
-        }
-        public async Task<Order?> GetByIdAsync(Guid id)
-        {
-            return await _context.Orders.FindAsync(id);
-        }
-
+        public void Add(Order order)  => context.Orders.Add(order);
+        public void AddRange(IEnumerable<Order> orders) => context.Orders.AddRange(orders);
+        public void UpdateStatus(Order order) => context.Orders.Update(order);
+        public async Task<Order?> GetByIdAsync(Guid id, CancellationToken ct) => await context.Orders.FindAsync(id, ct);
     }
 }
