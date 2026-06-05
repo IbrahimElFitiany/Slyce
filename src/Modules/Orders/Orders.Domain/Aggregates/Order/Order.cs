@@ -10,6 +10,7 @@ namespace Orders.Domain.Aggregates.Order
     {
         public Guid CustomerId { get; private init; }
         public Guid BranchId { get; private init; }
+        public Guid? SubscriptionId { get; private init; }
 
         private readonly List<OrderItem> _orderItems = [];
         public IReadOnlyCollection<OrderItem> OrderItems => _orderItems.AsReadOnly();
@@ -18,6 +19,7 @@ namespace Orders.Domain.Aggregates.Order
         public OrderPaymentStatus PaymentStatus { get; private set; } = OrderPaymentStatus.Pending;
         public OrderPaymentMethod PaymentMethod { get; private set; }
         public Address DeliveryAddress { get; private set; } = null!;
+        public DeliveryTimeFrame? DeliveryTimeFrame { get; private set; }
         public DateTime? EstimatedDeliveryTime { get; private set; }
         public DateTime? ActualDeliveryTime { get; private set; }
         public Guid? AssignedDriverId { get; private set; }
@@ -71,7 +73,27 @@ namespace Orders.Domain.Aggregates.Order
 
             return new Order(customerId, branchId, paymentMethod, deliveryAddress, orderItems);
         }
+        public static Order CreateFromSubscription(
+            Guid subscriptionId,
+            Guid customerId,
+            Guid branchId,
+            IEnumerable<OrderItemCreationInput> orderItemInputs,
+            DeliveryTimeFrame deliveryTimeFrame,
+            Address deliveryAddress)
+        {
 
+            var orderItems = orderItemInputs
+                .Select(ci => new OrderItem(ci.MealId, ci.SizeId, ci.Quantity, ci.Price));
+
+            var order = new Order(customerId, branchId, OrderPaymentMethod.Card, deliveryAddress, orderItems)
+            {
+                SubscriptionId = subscriptionId,
+                PaymentStatus = OrderPaymentStatus.Paid,
+                DeliveryTimeFrame = deliveryTimeFrame
+            };
+
+            return order;
+        }
 
         public void AssignDriver(Guid driverId)
         {

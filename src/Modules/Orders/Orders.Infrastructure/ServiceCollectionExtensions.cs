@@ -5,8 +5,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Orders.Application.Interfaces;
 using Orders.Application.Interfaces.Payment;
+using Orders.Application.Services;
 using Orders.Application.UseCases.Commands.AddToCart;
 using Orders.Application.UseCases.Commands.CheckoutCart;
+using Orders.Contract.Interfaces;
 using Orders.Infrastructure.Payment;
 using Orders.Infrastructure.Persistence;
 using Orders.Infrastructure.Repositores;
@@ -32,6 +34,8 @@ namespace Orders.Infrastructure
             services.AddScoped<ICartRepository, EFCartRepository>();
             services.AddScoped<IUnitOfWork,UnitOfWork>();
             services.AddScoped<IPaymentService, FakePaymentService>();
+
+            services.AddScoped<IOrderServices, OrderServices>();
 
             return services;
         }
