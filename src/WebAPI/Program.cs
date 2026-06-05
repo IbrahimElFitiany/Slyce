@@ -18,6 +18,8 @@ using Food.Presentation.Controllers;
 using Orders.Presentation.Controllers;
 using Identity.Infrastructure;
 using Identity.Presentation.Controllers;
+using Hangfire;
+using Subscriptions.Application.Jobs;
 
 
 namespace WebAPI
@@ -97,6 +99,19 @@ namespace WebAPI
 
             app.MapControllers();
             app.MapHub<OrderHub>("/hubs/orders");
+
+            app.UseHangfireDashboard("/hangfire");
+            app.UseSubscriptionsBackgroundJobs();
+
+
+            if (app.Environment.IsStaging() || app.Environment.IsDevelopment())
+            {
+                app.MapPost("api/debug/jobs/subscription-orders", async (SubscriptionOrderGenerationJob job) =>
+                {
+                    await job.ExecuteAsync();
+                    return Results.Ok();
+                });
+            }
 
             app.Run();
         }

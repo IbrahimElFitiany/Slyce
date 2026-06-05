@@ -11,6 +11,7 @@
     <ProjectReference Include="..\..\Customers\Customers.Contracts\Customers.Contracts.csproj" />
     <ProjectReference Include="..\..\Menus\Menus.Contracts\Menus.Contracts.csproj" />
     <ProjectReference Include="..\..\Restaurants\Restaurants.Contracts\Restaurants.Contracts.csproj" />
+    <ProjectReference Include="..\Orders.Contract\Orders.Contract.csproj" />
     <ProjectReference Include="..\Orders.Domain\Orders.Domain.csproj" />
   </ItemGroup>
 

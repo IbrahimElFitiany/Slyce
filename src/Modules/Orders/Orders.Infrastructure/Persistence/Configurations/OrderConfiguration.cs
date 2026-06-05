@@ -18,6 +18,9 @@ namespace Orders.Infrastructure.Persistence.Configurations
             builder.Property(o => o.BranchId)
                 .IsRequired();
 
+            builder.Property(o => o.SubscriptionId)
+                .IsRequired(false);
+
             builder.OwnsMany(o => o.OrderItems, oi =>
             {
                 oi.ToTable(nameof(Order.OrderItems));
@@ -112,6 +115,12 @@ namespace Orders.Infrastructure.Persistence.Configurations
                     c.Property(c => c.Longitude)
                     .IsRequired();
                 });
+            });
+
+            builder.OwnsOne(o => o.DeliveryTimeFrame, tf =>
+            {
+                tf.Property(t => t.From).HasColumnName("DeliveryTimeFrame_From");
+                tf.Property(t => t.To).HasColumnName("DeliveryTimeFrame_To");
             });
 
             builder.Property(o => o.EstimatedDeliveryTime)

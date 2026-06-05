@@ -33,6 +33,7 @@
   </Folder>
   <Folder Name="/src/Modules/Orders/">
     <Project Path="src/Modules/Orders/Orders.Application/Orders.Application.csproj" />
+    <Project Path="src/Modules/Orders/Orders.Contract/Orders.Contract.csproj" />
     <Project Path="src/Modules/Orders/Orders.Domain/Orders.Domain.csproj" />
     <Project Path="src/Modules/Orders/Orders.Infrastructure/Orders.Infrastructure.csproj" />
     <Project Path="src/Modules/Orders/Orders.Presentation/Orders.Presentation.csproj" />
