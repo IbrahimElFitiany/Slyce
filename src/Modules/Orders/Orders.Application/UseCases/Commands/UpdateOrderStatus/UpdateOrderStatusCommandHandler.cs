@@ -7,12 +7,10 @@ namespace Orders.Application.UseCases.Commands.UpdateOrderStatus
 {
     internal sealed class UpdateOrderStatusCommandHandler(IOrderRepository orderRepository, IOrderNotifier orderNotifier) : IRequestHandler<UpdateOrderStatusCommand>
     {
-        private readonly IOrderRepository _orderRepository = orderRepository;
-        private readonly IOrderNotifier _notifier = orderNotifier;
 
         public async Task Handle(UpdateOrderStatusCommand command, CancellationToken ct)
         {
-            var order = await _orderRepository.GetByIdAsync(command.OrderId)
+            var order = await orderRepository.GetByIdAsync(command.OrderId, ct)
                 ?? throw new NotFoundException("order");
 
             OrderStatus orderStatus;
@@ -20,9 +18,9 @@ namespace Orders.Application.UseCases.Commands.UpdateOrderStatus
 
             order.UpdateStatus(orderStatus);
 
-            _orderRepository.UpdateStatus(order);
+            orderRepository.UpdateStatus(order);
 
-            await _notifier.NotifyOrderStatusChanged(order.Id, Guid.Parse("e4ad1378-d90a-4d28-97cc-535adb69419a"), orderStatus);
+            await orderNotifier.NotifyOrderStatusChanged(order.Id, Guid.Parse("e4ad1378-d90a-4d28-97cc-535adb69419a"), orderStatus);
         }
     }
 }
