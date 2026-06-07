@@ -8,7 +8,6 @@ namespace Orders.Infrastructure.Repositores
     {
         public void Add(Order order)  => context.Orders.Add(order);
         public void AddRange(IEnumerable<Order> orders) => context.Orders.AddRange(orders);
-        public void UpdateStatus(Order order) => context.Orders.Update(order);
         public async Task<Order?> GetByIdAsync(Guid id, CancellationToken ct) => await context.Orders.FindAsync(id, ct);
     }
 }

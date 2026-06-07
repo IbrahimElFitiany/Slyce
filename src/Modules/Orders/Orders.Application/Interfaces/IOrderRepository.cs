@@ -6,7 +6,6 @@ namespace Orders.Application.Interfaces
     {
         void Add(Order order);
         void AddRange(IEnumerable<Order> orders);
-        void UpdateStatus(Order order);
         Task<Order?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
     }
 }

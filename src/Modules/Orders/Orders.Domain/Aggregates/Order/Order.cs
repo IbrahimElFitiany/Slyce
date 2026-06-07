@@ -32,6 +32,14 @@ namespace Orders.Domain.Aggregates.Order
             [OrderPaymentStatus.Refunded] = [],
         };
 
+        private static readonly Dictionary<OrderStatus, HashSet<OrderStatus>> _validStatusTransitions = new()
+        {
+            [OrderStatus.Pending] = [OrderStatus.Cancelled, OrderStatus.Preparing],
+            [OrderStatus.Preparing] = [OrderStatus.OutForDelivery],
+            [OrderStatus.OutForDelivery] = [OrderStatus.Delivered],
+            [OrderStatus.Delivered] = []
+        };
+
         private Order() { }
 
         private Order(
@@ -100,14 +108,18 @@ namespace Orders.Domain.Aggregates.Order
             AssignedDriverId = driverId;
         }
 
-        public void UpdateStatus(OrderStatus status)
+        public void UpdateStatus(OrderStatus newOrderStatus)
         {
-            Status = status;
+            if (!_validStatusTransitions[Status].Contains(newOrderStatus))
+                throw new InvalidOrderStatusTransitionException(Status, newOrderStatus);
 
-            if (status == OrderStatus.Delivered)
+            Status = newOrderStatus;
+            UpdatedAt = DateTime.UtcNow;
+
+            if (newOrderStatus == OrderStatus.Delivered)
                 ActualDeliveryTime = DateTime.UtcNow;
 
-            RaiseDomainEvent(new OrderStatusChangedDomainEvent(Id, CustomerId, status.ToString()));
+            RaiseDomainEvent(new OrderStatusChangedDomainEvent(Id, CustomerId, newOrderStatus.ToString()));
         }
 
         public void SetEstimatedDeliveryTime(DateTime estimatedTime)
