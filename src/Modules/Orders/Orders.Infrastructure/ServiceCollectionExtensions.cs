@@ -11,6 +11,7 @@ using Orders.Application.UseCases.Commands.CheckoutCart;
 using Orders.Contract.Interfaces;
 using Orders.Infrastructure.Payment;
 using Orders.Infrastructure.Persistence;
+using Orders.Infrastructure.Queries;
 using Orders.Infrastructure.Repositores;
 using Shared.Application.Behaviors;
 
@@ -25,6 +26,7 @@ namespace Orders.Infrastructure
 
             services.AddMediatR(cfg => {
                 cfg.RegisterServicesFromAssemblyContaining<AddToCartCommand>();
+                cfg.RegisterServicesFromAssemblyContaining<GetOrdersTrendByBranchQueryHandler>();
                 cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             });
 
