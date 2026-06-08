@@ -1,37 +1,48 @@
 ﻿using Asp.Versioning;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Orders.Application.UseCases.Commands.CreateOrder;
 using Orders.Application.UseCases.Commands.UpdateOrderStatus;
+using Orders.Application.UseCases.Queries.GetOrdersTrendByBranch;
 using Orders.Presentation.DTOs;
+using Shared.Presentation;
 
 namespace Orders.Presentation.Controllers
 {
-    [Route("api/v{version:apiVersion}/orders")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    public sealed class OrdersController(IMediator mediator) : ControllerBase
+    public sealed class OrdersController(IMediator mediator) : BaseController
     {
-        private readonly IMediator _mediator = mediator;
-
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateOrderRequest createOrderRequest, CancellationToken ct)
+        [Authorize(Roles = "Admin, RestaurantOwner")]
+        [HttpPatch("{id}/status")]
+        public async Task<IActionResult> UpdateStatus(
+            [FromRoute] Guid id,
+            [FromBody] UpdateOrderStatusRequest request,
+            CancellationToken cancellationToken)
         {
-            var orderId = await _mediator.Send(new CreateOrderCommand(createOrderRequest.CustomerId, Guid.NewGuid(), new List<OrderItemRequest> { }), ct);
-            return Created(string.Empty, orderId);
-        }
-
-        [HttpPut("{id}/status")]
-        public async Task<IActionResult> UpdateStatus([FromRoute] Guid id, [FromBody] UpdateOrderStatusRequest updateOrder)
-        {
-            await _mediator.Send(new UpdateOrderStatusCommand(id, updateOrder.Status));
-            return Ok();
+            await mediator.Send(new UpdateOrderStatusCommand(id, request.Status), cancellationToken);
+            return NoContent();
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOrder ([FromRoute] Guid id)
         {
             return Ok();
+        }
+
+        [Authorize(Roles = "Admin, RestaurantOwner")]
+        [HttpGet("branch/{id:guid}/summary")]
+        public async Task<IActionResult> GetOrdersTrendByBranchId(
+            [FromRoute] Guid id,
+            [FromQuery] string period,
+            CancellationToken cancellationToken)
+        {
+            if (!Enum.TryParse<PeriodType>(period, ignoreCase: true, out var parsedPeriod))
+                parsedPeriod = PeriodType.Today;
+
+            var result = await mediator.Send(new GetOrdersTrendByBranchQuery(id, parsedPeriod), cancellationToken);
+            return Ok(result);
         }
     }
 }

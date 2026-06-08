@@ -5,8 +5,6 @@ using Orders.Application.Interfaces;
 using Orders.Infrastructure;
 using Restaurants.Infrastructure;
 using WebAPI.Extensions;
-using WebAPI.Hubs;
-using WebAPI.Notifications;
 using Menus.Infrastructure;
 using Food.Infrastructure;
 using Menus.Presentation.Controllers;
@@ -77,7 +75,6 @@ namespace WebAPI
                 .AddControllers()
                 .AddApplicationPart(typeof(UsersController).Assembly);
 
-            builder.Services.AddScoped<IOrderNotifier, SignalROrderNotifier>();
             builder.Services.AddControllers().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -98,7 +95,6 @@ namespace WebAPI
             app.UseHttpsRedirection();
 
             app.MapControllers();
-            app.MapHub<OrderHub>("/hubs/orders");
 
             app.UseHangfireDashboard("/hangfire");
             app.UseSubscriptionsBackgroundJobs();

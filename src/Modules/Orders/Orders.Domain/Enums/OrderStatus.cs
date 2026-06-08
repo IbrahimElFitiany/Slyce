@@ -4,7 +4,8 @@
     {
         Pending,
         Preparing,
-        Ready,
-        Delivered
+        OutForDelivery,
+        Delivered,
+        Cancelled
     }
 }
