@@ -41,5 +41,13 @@ namespace Restaurants.Infrastructure.Services
                     (b, r) => new BranchInfoDTO(b.Id,r.Id, r.BrandName, r.Logo))
                 .ToDictionaryAsync(b => b.BranchId, ct);
         }
+
+        public async Task<Guid?> GetRestaurantIdByOwnerIdAsync(Guid ownerId, CancellationToken cancellationToken)
+        {
+            return await restaurantDbContext.Restaurants
+                .Where(r => r.OwnerId == ownerId)
+                .Select(r => r.Id)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
     }
 }

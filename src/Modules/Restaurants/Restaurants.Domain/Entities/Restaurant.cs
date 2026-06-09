@@ -5,6 +5,7 @@ namespace Restaurants.Domain.Entities
 {
     public sealed class Restaurant : AggregateRoot
     {
+        public Guid OwnerId { get; init; }
         public string? Logo { get; private set; } = null;
         public string BrandName { get; private set; } = null!;
         public string? Banner { get; private set; } = null;
@@ -14,6 +15,7 @@ namespace Restaurants.Domain.Entities
 
         private Restaurant() { }
         public Restaurant(
+            Guid ownerId,
             string brandName,
             string? description,
             RestaurantType restaurantType)
@@ -24,6 +26,7 @@ namespace Restaurants.Domain.Entities
                 ArgumentException.ThrowIfNullOrWhiteSpace(description);
 
             Id = Guid.NewGuid();
+            OwnerId = ownerId;
             BrandName = brandName;
             Description = description;
             Type = restaurantType;
