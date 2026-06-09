@@ -13,6 +13,7 @@ namespace Restaurants.Contracts.Interfaces
         /// <returns>A <see cref="BranchForSubscription"/> containing the branch details, or <c>null</c> if not found.</returns>
         Task<BranchForSubscription?> GetBranchForSubscriptionAsync(Guid branchId, CancellationToken cancellationToken);
 
+        Task<Guid?> GetRestaurantIdByOwnerIdAsync(Guid ownerId, CancellationToken cancellationToken);
 
         Task<IReadOnlyDictionary<Guid, BranchInfoDTO>> GetBranchInfosAsync(IEnumerable<Guid> branchIds, CancellationToken cancellationToken);
     }

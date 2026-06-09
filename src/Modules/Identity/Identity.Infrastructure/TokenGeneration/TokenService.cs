@@ -13,17 +13,22 @@ namespace Identity.Infrastructure.TokenGeneration
     {
         private readonly JwtSettings _settings = settings.Value;
 
-        public (string, DateTime) GenerateToken(User user)
+        public (string, DateTime) GenerateToken(User user, Guid? restaurantId = null)
         {
-            var claims = new[]
+            var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Name, user.FirstName),
-                new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email.Value),
-                new Claim(ClaimTypes.Role, user.UserType.ToString()),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new(JwtRegisteredClaimNames.Name, user.FirstName),
+                new(JwtRegisteredClaimNames.FamilyName, user.LastName),
+                new(JwtRegisteredClaimNames.Email, user.Email.Value),
+                new(ClaimTypes.Role, user.UserType.ToString()),
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
+
+            if (restaurantId.HasValue)
+            {
+                claims.Add(new Claim("restaurant_id", restaurantId.Value.ToString()));
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.Secret));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
