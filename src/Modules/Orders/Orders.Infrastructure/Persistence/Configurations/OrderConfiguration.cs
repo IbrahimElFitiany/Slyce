@@ -74,7 +74,7 @@ namespace Orders.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasConversion<string>();
 
-            builder.ComplexProperty(o => o.TotalPrice, p =>
+            builder.OwnsOne(o => o.TotalPrice, p =>
             {
                 p.Property(x => x.Amount)
                  .HasPrecision(10, 2)
@@ -93,7 +93,7 @@ namespace Orders.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasConversion<string>();
 
-            builder.ComplexProperty(o => o.DeliveryAddress, a =>
+            builder.OwnsOne(o => o.DeliveryAddress, a =>
             {
                 a.Property(a => a.City)
                 .IsRequired();
@@ -107,7 +107,7 @@ namespace Orders.Infrastructure.Persistence.Configurations
                 a.Property(a => a.StreetNumber)
                 .IsRequired();
 
-                a.ComplexProperty(a => a.Coordinates, c =>
+                a.OwnsOne(a => a.Coordinates, c =>
                 {
                     c.Property(c => c.Latitude)
                     .IsRequired();
