@@ -10,12 +10,14 @@ namespace Identity.Application.Services
         IUnitOfWork unitOfWork) : IIdentityServices
     {
 
-        public async Task CreateRestaurantOwner(string fname, string lname, string email, CancellationToken cancellationToken)
+        public async Task<Guid> CreateRestaurantOwner(string fname, string lname, string email, CancellationToken cancellationToken)
         {
             var restaurantOwner =  User.CreateRestaurantOwner(fname, lname, Email.Create(email));
 
             userRepository.Add(restaurantOwner);
             await unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return restaurantOwner.Id;
         }
     }
 }

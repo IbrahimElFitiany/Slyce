@@ -2,6 +2,6 @@
 {
     public interface IIdentityServices
     {
-        Task CreateRestaurantOwner(string fname,string lname, string email, CancellationToken cancellationToken);
+        Task<Guid> CreateRestaurantOwner(string fname,string lname, string email, CancellationToken cancellationToken);
     }
 }
