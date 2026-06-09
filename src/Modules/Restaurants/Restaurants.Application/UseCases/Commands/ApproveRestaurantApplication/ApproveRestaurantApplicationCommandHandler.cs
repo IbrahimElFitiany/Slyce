@@ -27,12 +27,13 @@ namespace Restaurants.Application.UseCases.Commands.ApproveRestaurantApplication
 
 
             // KNOWN DEFECT: orphaned owner account if SaveChangesAsync fails, ( 2 separate transactions)
-            await identityServices.CreateRestaurantOwner(
+            var ownerId = await identityServices.CreateRestaurantOwner(
                 application.OwnerFirstName,
                 application.OwnerLastName,
                 application.OwnerEmail.Value, ct);
 
             var restaurant = new Restaurant(
+                ownerId: ownerId,
                 brandName: application.BrandName,
                 description: null,
                 restaurantType: application.RestaurantType);
