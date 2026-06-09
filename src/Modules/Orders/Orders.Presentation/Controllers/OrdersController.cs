@@ -25,12 +25,6 @@ namespace Orders.Presentation.Controllers
             return NoContent();
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetOrder ([FromRoute] Guid id)
-        {
-            return Ok();
-        }
-
         [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpGet("branch/{id:guid}/summary")]
         public async Task<IActionResult> GetOrdersTrendByBranchId(
