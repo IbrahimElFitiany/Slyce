@@ -55,9 +55,9 @@ namespace Orders.Presentation.Controllers
             CancellationToken ct)
         {
             var command = new CheckoutCartCommand(UserId, request.DeliveryAddressId, request.PaymentMethod);
-            var OrderId = await mediator.Send(command, ct);
+            await mediator.Send(command, ct);
 
-            return CreatedAtAction(nameof(OrdersController.GetOrder), "Orders", new { id = OrderId }, new { orderId = OrderId });
+            return NoContent();
         }
 
     }

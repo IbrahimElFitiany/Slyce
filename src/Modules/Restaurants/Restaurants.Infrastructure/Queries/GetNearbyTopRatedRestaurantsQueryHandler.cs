@@ -18,6 +18,7 @@ namespace Restaurants.Infrastructure.Queries
                     """
                     SELECT
                         b."Id"          AS "BranchId",
+                        r."Id"          AS "RestaurantId",
                         r."BrandName"   AS "RestaurantName",
                         r."Logo"        AS "RestaurantLogoUrl",
                         4.4::real       AS "Rating",
