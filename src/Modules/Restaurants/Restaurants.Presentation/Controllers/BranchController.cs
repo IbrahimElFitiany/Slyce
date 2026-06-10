@@ -1,11 +1,14 @@
 ﻿using Asp.Versioning;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurants.Application.UseCases.Commands.ActivateBranch;
 using Restaurants.Application.UseCases.Commands.AddBranch;
 using Restaurants.Application.UseCases.Commands.CreateBranchSchedule;
 using Restaurants.Application.UseCases.Queries.GetBranchDetails;
+using Restaurants.Application.UseCases.Queries.GetRestaurantBranches;
 using Restaurants.Presentation.DTOs;
+using Shared.Presentation;
 
 
 namespace Restaurants.Presentation.Controllers
@@ -13,7 +16,7 @@ namespace Restaurants.Presentation.Controllers
     [Route("api/v{version:apiVersion}/branches")]
     [ApiVersion("1.0")]
     [ApiController]
-    public sealed class BranchController(IMediator mediator) : ControllerBase
+    public sealed class BranchController(IMediator mediator) : BaseController
     {
 
         [HttpPost]
@@ -69,5 +72,14 @@ namespace Restaurants.Presentation.Controllers
         {
             throw new NotImplementedException();
         }
+
+        [Authorize(Roles = "RestaurantOwner")]
+        [HttpGet("dropdown")]
+        public async Task<IActionResult> GetRestaurantBranchesDropdown([FromRoute] Guid id, CancellationToken ct)
+        {
+            var results = await mediator.Send(new GetRestaurantBranchesQuery(RestaurantId), ct);
+            return Ok(results);
+        }
+
     }
 }
