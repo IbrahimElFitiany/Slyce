@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Restaurants.Domain.Entities;
 using Restaurants.Domain.ValueObjects;
 using Shared.Domain.ValueObjects;
-using System.Reflection.Emit;
-using System;
 
 namespace Restaurants.Infrastructure.Persistence.Configurations
 {
@@ -17,7 +15,7 @@ namespace Restaurants.Infrastructure.Persistence.Configurations
             builder.Property(b => b.RestaurantId)
                 .IsRequired();
 
-            builder.ComplexProperty(b => b.Address, builder =>
+            builder.OwnsOne(b => b.Address, builder =>
             {
                 builder.Property(a => a.City)
                 .HasColumnName(nameof(Address.City))
@@ -35,7 +33,7 @@ namespace Restaurants.Infrastructure.Persistence.Configurations
                 .HasColumnName(nameof(Address.StreetNumber))
                 .IsRequired(false);
 
-                builder.ComplexProperty(a => a.Coordinates, builder =>
+                builder.OwnsOne(a => a.Coordinates, builder =>
                 {
                     builder.Property(c => c.Latitude)
                     .HasColumnName(nameof(Coordinates.Latitude))

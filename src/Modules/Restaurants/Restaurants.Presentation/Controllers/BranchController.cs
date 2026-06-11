@@ -6,6 +6,7 @@ using Restaurants.Application.UseCases.Commands.ActivateBranch;
 using Restaurants.Application.UseCases.Commands.AddBranch;
 using Restaurants.Application.UseCases.Commands.CreateBranchSchedule;
 using Restaurants.Application.UseCases.Queries.GetBranchDetails;
+using Restaurants.Application.UseCases.Queries.GetPendingBranches;
 using Restaurants.Application.UseCases.Queries.GetRestaurantBranches;
 using Restaurants.Presentation.DTOs;
 using Shared.Presentation;
@@ -71,6 +72,18 @@ namespace Restaurants.Presentation.Controllers
         public Task<IActionResult> GetSchedule([FromRoute] Guid id, CancellationToken ct)
         {
             throw new NotImplementedException();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("pending")]
+        public async Task<IActionResult> GetPendingBranches(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            CancellationToken ct = default)
+        {
+            var query = new GetPendingBranchesQuery(page, pageSize);
+            var result = await mediator.Send(query, ct);
+            return Ok(result);
         }
 
         [Authorize(Roles = "RestaurantOwner")]
