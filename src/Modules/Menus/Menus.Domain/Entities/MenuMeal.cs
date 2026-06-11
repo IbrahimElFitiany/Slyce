@@ -137,5 +137,13 @@ namespace Menus.Domain.Entities
             return input.SetEquals(current);
         }
 
+        public void MarkAsReviewed()
+        {
+            if (Reviewed) return;
+
+            Reviewed = true;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
     }
 }
