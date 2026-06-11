@@ -7,6 +7,7 @@ using Menus.Application.UseCases.Queries.GetMealByID;
 using Shared.Presentation;
 using Menus.Application.UseCases.Queries.GetUnreviewedMeals;
 using Microsoft.AspNetCore.Authorization;
+using Menus.Application.UseCases.Queries.GetPendingMealById;
 
 namespace Menus.Presentation.Controllers
 {
@@ -59,6 +60,15 @@ namespace Menus.Presentation.Controllers
         public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
         {
             var result = await mediator.Send(new GetMealByIdQuery(id), ct); 
+            return Ok(result);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("pending/{id}")]
+        public async Task<IActionResult> GetPendingMeal([FromRoute] Guid id, CancellationToken ct)
+        {
+            var result = await mediator.Send(new GetPendingMealByIdQuery(id), ct);
+
             return Ok(result);
         }
 
