@@ -25,7 +25,7 @@ namespace Identity.Application.DomainEventHandlers
                 new EmailMessage(
                     domainEvent.Email, 
                     "Please set your password",
-                    $"slycefront-staticfornow.com/auth/set-password?token={token}"), ct);
+                    $"https://restaurant-managment-six.vercel.app/set-password?token={token}"), ct);
         }
     }
 }

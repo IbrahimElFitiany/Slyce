@@ -19,12 +19,12 @@ namespace Restaurants.Presentation.Controllers
     [ApiController]
     public sealed class BranchController(IMediator mediator) : BaseController
     {
-
+        [Authorize (Roles ="RestaurantOwner")]
         [HttpPost]
         public async Task<IActionResult> AddBranch([FromBody] AddBranchRequest request, CancellationToken ct)
         {
             var command = new AddBranchCommand(
-                RestaurantId: request.RestaurantId,
+                RestaurantId: RestaurantId,
                 BranchName: request.BranchName,
                 BranchContactNumber: request.BranchContactNumber,
                 Address: new BranchAddressInput(
