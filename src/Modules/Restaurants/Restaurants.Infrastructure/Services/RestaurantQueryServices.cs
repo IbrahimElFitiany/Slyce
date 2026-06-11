@@ -42,6 +42,16 @@ namespace Restaurants.Infrastructure.Services
                 .ToDictionaryAsync(b => b.BranchId, ct);
         }
 
+        public async Task<IReadOnlyDictionary<Guid, RestaurantBrandingDTO>> GetRestaurantBrandingByIdsAsync(IEnumerable<Guid> restaurantIds, CancellationToken cancellationToken)
+        {
+            return await restaurantDbContext.Restaurants
+                    .Where(r => restaurantIds.Contains(r.Id))
+                    .ToDictionaryAsync(
+                        r => r.Id,
+                        r => new RestaurantBrandingDTO(r.BrandName, r.Logo),
+                        cancellationToken);
+        }
+
         public async Task<Guid?> GetRestaurantIdByOwnerIdAsync(Guid ownerId, CancellationToken cancellationToken)
         {
             return await restaurantDbContext.Restaurants

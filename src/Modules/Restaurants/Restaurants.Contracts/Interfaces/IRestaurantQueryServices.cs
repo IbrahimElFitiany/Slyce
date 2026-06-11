@@ -16,5 +16,10 @@ namespace Restaurants.Contracts.Interfaces
         Task<Guid?> GetRestaurantIdByOwnerIdAsync(Guid ownerId, CancellationToken cancellationToken);
 
         Task<IReadOnlyDictionary<Guid, BranchInfoDTO>> GetBranchInfosAsync(IEnumerable<Guid> branchIds, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Retrieves the minimal branding information for a batch of restaurants.
+        /// </summary>
+        Task<IReadOnlyDictionary<Guid, RestaurantBrandingDTO>> GetRestaurantBrandingByIdsAsync(IEnumerable<Guid> restaurantIds, CancellationToken cancellationToken);
     }
 }
