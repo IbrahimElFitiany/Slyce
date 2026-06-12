@@ -66,5 +66,13 @@ namespace Orders.Domain.Aggregates.Carts
                 cartItem.DecreaseQuantity(cartItem.Quantity - quantity);
         }
 
+        public void RemoveCartItem(Guid mealId, Guid sizeId)
+        {
+            var cartItem = _cartItems.FirstOrDefault(ci => ci.MealId == mealId && ci.SizeId == sizeId)
+                ?? throw new CartItemNotFoundException();
+
+            _cartItems.Remove(cartItem);
+        }
+
     }
 }
