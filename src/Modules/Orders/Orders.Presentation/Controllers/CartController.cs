@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Orders.Application.UseCases.Commands.AddToCart;
 using Orders.Application.UseCases.Commands.CheckoutCart;
 using Orders.Application.UseCases.Commands.ClearCart;
+using Orders.Application.UseCases.Commands.UpdateCartItemQuantity;
 using Orders.Application.UseCases.Queries.ViewCart;
 using Orders.Presentation.DTOs;
 using Shared.Presentation;
@@ -18,6 +19,16 @@ namespace Orders.Presentation.Controllers
     [Authorize(Roles = "Customer")]
     public sealed class CartController(IMediator mediator) : BaseController
     {
+
+        [HttpPatch("items/quantity")]
+        public async Task<IActionResult> UpdateCartItemQuantity([FromBody] UpdateCartItemQuantityRequest request, CancellationToken ct)
+        {
+            await mediator.Send(new UpdateCartItemQuantityCommand(UserId, request.MealId, request.SizeId, request.Quantity), ct);
+            return NoContent();
+        }
+
+        public sealed record UpdateCartItemQuantityRequest(Guid MealId, Guid SizeId, int Quantity);
+
 
         [HttpPost]
         public async Task<IActionResult> AddToCart(
