@@ -48,5 +48,23 @@ namespace Orders.Domain.Aggregates.Carts
             _cartItems.Remove(cartItem);
         }
 
+        public void UpdateCartItemQuantity(Guid mealId, Guid sizeId, int quantity)
+        {
+            var cartItem = _cartItems.FirstOrDefault(ci => ci.MealId == mealId && ci.SizeId == sizeId)
+                ?? throw new CartItemNotFoundException();
+
+            if (quantity == 0)
+            {
+                _cartItems.Remove(cartItem);
+                return;
+            }
+
+            if (quantity > cartItem.Quantity)
+                cartItem.IncreaseQuantity(quantity - cartItem.Quantity);
+
+            else
+                cartItem.DecreaseQuantity(cartItem.Quantity - quantity);
+        }
+
     }
 }

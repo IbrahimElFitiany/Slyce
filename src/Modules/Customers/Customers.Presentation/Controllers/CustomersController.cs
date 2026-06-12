@@ -10,6 +10,7 @@ using Customers.Application.UseCases.Commands.UpdateHeight;
 using Customers.Application.UseCases.Commands.UpdateActivityRate;
 using Customers.Application.UseCases.Commands.UpdateCustomerAllergens;
 using Customers.Application.UseCases.Commands.UpdateCustomerDietPreferences;
+using Customers.Application.UseCases.Queries.GetCustomerProfile;
 
 namespace Customers.Presentation.Controllers
 {
@@ -71,6 +72,14 @@ namespace Customers.Presentation.Controllers
         {
             await mediator.Send(new UpdateCustomerDietPreferencesCommand(UserId, request.DietPreferenceIds), ct);
             return NoContent();
+        }
+
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetCustomerProfile()
+        {
+            var result = await mediator.Send(new GetCustomerProfileQuery(UserId));
+
+            return Ok(result);
         }
 
     }
