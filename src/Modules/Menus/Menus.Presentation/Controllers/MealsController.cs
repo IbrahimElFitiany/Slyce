@@ -9,7 +9,7 @@ using Menus.Application.UseCases.Queries.GetUnreviewedMeals;
 using Microsoft.AspNetCore.Authorization;
 using Menus.Application.UseCases.Queries.GetPendingMealById;
 using Menus.Application.UseCases.Commands.ApproveMenuMeal;
-using Microsoft.AspNetCore.Http;
+using Menus.Application.UseCases.Queries.SearchMealsNearBy;
 
 namespace Menus.Presentation.Controllers
 {
@@ -18,6 +18,19 @@ namespace Menus.Presentation.Controllers
     [ApiController]
     public sealed class MealsController(IMediator mediator) : BaseController
     {
+        [HttpGet("nearby")]
+        public async Task<IActionResult> SearchNearby(
+            [FromQuery] string searchTerm,
+            [FromQuery] double lng,
+            [FromQuery] double lat,
+            CancellationToken ct)
+        {
+            var query = new SearchNearbyMealsQuery(searchTerm, lng, lat);
+            var result = await mediator.Send(query, ct);
+
+            return Ok(result);
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> CreateMenuMeal(

@@ -21,5 +21,7 @@ namespace Restaurants.Contracts.Interfaces
         /// Retrieves the minimal branding information for a batch of restaurants.
         /// </summary>
         Task<IReadOnlyDictionary<Guid, RestaurantBrandingDTO>> GetRestaurantBrandingByIdsAsync(IEnumerable<Guid> restaurantIds, CancellationToken cancellationToken);
+
+        Task<IReadOnlyList<BranchInfoDTO>> GetNearByBranchesAsync(double latitude, double longitude, CancellationToken cancellationToken = default);
     }
 }
