@@ -67,6 +67,19 @@ namespace Restaurants.Domain.Entities
             IsActive = true;
             UpdatedAt = DateTime.UtcNow;
         }
+        public void UpdateSchedule(IReadOnlyList<DailySchedule> newSchedule)
+        {
+            ArgumentNullException.ThrowIfNull(newSchedule);
 
+            if (newSchedule.Count == 0)
+                throw new InvalidDomainOperationException("Schedule must contain at least one day.");
+
+            if (newSchedule.GroupBy(d => d.Day).Any(g => g.Count() > 1))
+                throw new DuplicateException("A day cannot appear more than once.");
+
+            _schedule.Clear();
+            _schedule.AddRange(newSchedule);
+            UpdatedAt = DateTime.UtcNow;
+        }
     }
 }

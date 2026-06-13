@@ -5,11 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using Restaurants.Application.UseCases.Commands.ActivateBranch;
 using Restaurants.Application.UseCases.Commands.AddBranch;
 using Restaurants.Application.UseCases.Commands.CreateBranchSchedule;
+using Restaurants.Application.UseCases.Commands.UpdateBranchSchedule;
 using Restaurants.Application.UseCases.Queries.GetBranchDetails;
 using Restaurants.Application.UseCases.Queries.GetPendingBranches;
 using Restaurants.Application.UseCases.Queries.GetRestaurantBranches;
 using Restaurants.Presentation.DTOs;
 using Shared.Presentation;
+using System.ComponentModel.DataAnnotations;
 
 
 namespace Restaurants.Presentation.Controllers
@@ -73,6 +75,20 @@ namespace Restaurants.Presentation.Controllers
         {
             throw new NotImplementedException();
         }
+
+        [Authorize(Roles = "RestaurantOwner")]
+        [HttpPut("{id:guid}/working-hours")]
+        public async Task<IActionResult> UpdateSchedule([FromRoute] Guid id, [FromBody] UpdateBranchScheduleRequest request, CancellationToken ct)
+        {
+            await mediator.Send(new UpdateBranchScheduleCommand(
+                RestaurantId: RestaurantId,
+                BranchId: id,
+                Schedule: request.Schedule.Select(d => new DailyScheduleDTO(d.Day, d.OpeningTime, d.ClosingTime)).ToList()), ct);
+            
+            return NoContent();
+        }
+        public sealed record UpdateBranchScheduleRequest([Required][MinLength(1)] IReadOnlyList<DayWorkingHours> Schedule);
+
 
         [Authorize(Roles = "Admin")]
         [HttpGet("pending")]

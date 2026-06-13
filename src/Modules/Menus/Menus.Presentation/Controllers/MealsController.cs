@@ -78,7 +78,7 @@ namespace Menus.Presentation.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, RestaurantOwner")]
         [HttpGet("pending/{id}")]
         public async Task<IActionResult> GetPendingMeal([FromRoute] Guid id, CancellationToken ct)
         {
