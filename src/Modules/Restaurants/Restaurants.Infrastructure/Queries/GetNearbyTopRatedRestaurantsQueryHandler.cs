@@ -27,6 +27,7 @@ namespace Restaurants.Infrastructure.Queries
                     JOIN restaurants."Restaurants" r ON b."RestaurantId" = r."Id"
                     WHERE 
                         r."Status" = 'Active'
+                        AND b."IsActive" = true
                         AND ST_DWithin(
                         ST_MakePoint(b."Longitude", b."Latitude")::geography,
                         ST_MakePoint({0}, {1})::geography,
