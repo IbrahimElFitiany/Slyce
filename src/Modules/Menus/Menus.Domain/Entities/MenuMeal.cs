@@ -65,6 +65,7 @@ namespace Menus.Domain.Entities
             Description = description;
             Image = image;
             Available = available;
+            CreatedAt = UpdatedAt = DateTime.UtcNow;
             _ingredients.AddRange(ingredients);
 
             foreach (var size in sizes)
