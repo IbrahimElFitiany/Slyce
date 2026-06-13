@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Orders.Application.UseCases.Commands.AddToCart;
 using Orders.Application.UseCases.Commands.CheckoutCart;
 using Orders.Application.UseCases.Commands.ClearCart;
+using Orders.Application.UseCases.Commands.RemoveCartItem;
 using Orders.Application.UseCases.Commands.UpdateCartItemQuantity;
 using Orders.Application.UseCases.Queries.ViewCart;
 using Orders.Presentation.DTOs;
@@ -45,6 +46,15 @@ namespace Orders.Presentation.Controllers
             await mediator.Send(command, ct);
             return NoContent();
         }
+
+        [HttpDelete("items")]
+        public async Task<IActionResult> RemoveCartItem([FromBody] RemoveCartItemRequest request)
+        {
+            await mediator.Send(new RemoveCartItemCommand(UserId, request.MealId, request.SizeId));
+            return NoContent();
+        }
+
+        public sealed record RemoveCartItemRequest(Guid MealId, Guid SizeId);
 
         [HttpGet]
         public async Task<IActionResult> ViewCart(CancellationToken ct)
