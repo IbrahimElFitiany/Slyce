@@ -6,6 +6,8 @@ using Restaurants.Application.UseCases.Commands.ActivateRestaurant;
 using Restaurants.Application.UseCases.Commands.UpdateRestaurantBanner;
 using Restaurants.Application.UseCases.Commands.UpdateRestaurantImage;
 using Restaurants.Application.UseCases.Queries.GetNearbyTopRatedRestaurants;
+using Restaurants.Application.UseCases.Queries.GetRestaurants;
+using Restaurants.Domain.Enums;
 using Restaurants.Presentation.DTOs;
 using Shared.Presentation;
 
@@ -16,6 +18,17 @@ namespace Restaurants.Presentation.Controllers
     [ApiController]
     public sealed class RestaurantsController(IMediator mediator) : BaseController
     {
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetRestaurants(
+        [FromQuery] RestaurantStatus? status,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        CancellationToken ct = default)
+        {
+            var result = await mediator.Send(new GetRestaurantsQuery(status, page, pageSize), ct);
+            return Ok(result);
+        }
 
         [HttpPut("{id}/logo")]
         [Authorize(Roles = "RestaurantOwner")]
