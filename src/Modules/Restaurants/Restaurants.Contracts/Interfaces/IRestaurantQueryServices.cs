@@ -22,6 +22,6 @@ namespace Restaurants.Contracts.Interfaces
         /// </summary>
         Task<IReadOnlyDictionary<Guid, RestaurantBrandingDTO>> GetRestaurantBrandingByIdsAsync(IEnumerable<Guid> restaurantIds, CancellationToken cancellationToken);
 
-        Task<IReadOnlyList<BranchInfoDTO>> GetNearByBranchesAsync(double latitude, double longitude, CancellationToken cancellationToken = default);
+        Task<IReadOnlyList<BranchInfoDTO>> GetActiveNearByBranchesAsync(double latitude, double longitude, CancellationToken cancellationToken = default);
     }
 }

@@ -13,7 +13,7 @@ namespace Menus.Infrastructure.Queries
     {
         public async Task<SearchMealsNearByResponse> Handle(SearchNearbyMealsQuery request, CancellationToken cancellationToken)
         {
-            var nearbyBranches = await restaurantQueryServices.GetNearByBranchesAsync(request.Lat, request.Lng, cancellationToken);
+            var nearbyBranches = await restaurantQueryServices.GetActiveNearByBranchesAsync(request.Lat, request.Lng, cancellationToken);
 
             if (nearbyBranches == null || !nearbyBranches.Any())
             {
@@ -24,7 +24,7 @@ namespace Menus.Infrastructure.Queries
 
             var query = dbContext.MenuMeals
                 .AsNoTracking()
-                .Where(m => restaurantIds.Contains(m.RestaurantId));
+                .Where(m => restaurantIds.Contains(m.RestaurantId) && m.Reviewed);
 
             if (!string.IsNullOrWhiteSpace(request.SearchTerm))
             {

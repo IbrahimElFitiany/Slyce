@@ -43,7 +43,7 @@ namespace Restaurants.Infrastructure.Services
                 .ToDictionaryAsync(b => b.BranchId, ct);
         }
 
-        public async Task<IReadOnlyList<BranchInfoDTO>> GetNearByBranchesAsync(double latitude, double longitude, CancellationToken cancellationToken = default)
+        public async Task<IReadOnlyList<BranchInfoDTO>> GetActiveNearByBranchesAsync(double latitude, double longitude, CancellationToken cancellationToken = default)
         {
             const double RadiusInMeters = 6000;
 
@@ -62,6 +62,8 @@ namespace Restaurants.Infrastructure.Services
                             ST_MakePoint({0}, {1})::geography,
                             {2}
                         )
+                        AND r."Status" = 'Active'
+                        AND b."IsActive" = true
                         ORDER BY ST_Distance(
                             ST_MakePoint(b."Longitude", b."Latitude")::geography,
                             ST_MakePoint({0}, {1})::geography
