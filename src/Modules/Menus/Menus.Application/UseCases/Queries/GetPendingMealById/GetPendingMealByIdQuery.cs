@@ -10,9 +10,10 @@ namespace Menus.Application.UseCases.Queries.GetPendingMealById
         string Image,
         bool Reviewed,
         DateTime CreatedAt,
-        List<string> Ingredients,
+        List<MealIngredientDTO> Ingredients,
         List<MealSizeDTO> Sizes);
 
+    public record MealIngredientDTO(Guid FoodId, string Name);
     public record MealSizeDTO(
         Guid Id,
         string Name,
