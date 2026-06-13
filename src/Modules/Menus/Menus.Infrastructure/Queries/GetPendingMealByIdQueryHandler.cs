@@ -20,7 +20,7 @@ namespace Menus.Infrastructure.Queries
                     m.Image,
                     m.Reviewed,
                     m.CreatedAt,
-                    m.Ingredients.Select(i => i.Name).ToList(),
+                    m.Ingredients.Select(i => new MealIngredientDTO(i.FoodId, i.Name)).ToList(),
                     m.Sizes.OrderBy(s => s.SortOrder).Select(s => new MealSizeDTO(
                         s.Id,
                         s.Name,
