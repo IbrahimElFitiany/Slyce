@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Restaurants.Application.UseCases.Commands.ActivateRestaurant;
 using Restaurants.Application.UseCases.Commands.UpdateRestaurantBanner;
 using Restaurants.Application.UseCases.Commands.UpdateRestaurantImage;
+using Restaurants.Application.UseCases.Queries;
 using Restaurants.Application.UseCases.Queries.GetNearbyTopRatedRestaurants;
 using Restaurants.Application.UseCases.Queries.GetRestaurants;
 using Restaurants.Domain.Enums;
@@ -18,6 +19,15 @@ namespace Restaurants.Presentation.Controllers
     [ApiController]
     public sealed class RestaurantsController(IMediator mediator) : BaseController
     {
+        [HttpGet("{id}/branches")]
+        [Authorize(Roles = "RestaurantOwner")]
+        public async Task<IActionResult> GetRestaurantBranchesDetailed([FromRoute] Guid id, CancellationToken ct)
+        {
+            var result = await mediator.Send(new GetRestaurantsBranchesDetailedQuery(id), ct);
+            return Ok(result);
+        }
+
+
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetRestaurants(
