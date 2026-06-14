@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Orders.Application.UseCases.Queries.GetBranchOrders;
+using Orders.Application.UseCases.Queries.GetOrderById;
 using Shared.Presentation;
 
 namespace Orders.Presentation.Controllers
@@ -21,6 +22,16 @@ namespace Orders.Presentation.Controllers
             CancellationToken ct = default)
         {
             var result = await mediator.Send(new GetBranchOrdersQuery(branchId, page, pageSize), ct);
+            return Ok(result);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetBranchOrderById(
+            [FromRoute] Guid branchId,
+            [FromRoute] Guid id,
+            CancellationToken ct = default)
+        {
+            var result = await mediator.Send(new GetOrderByIdQuery(id), ct);
             return Ok(result);
         }
     }
