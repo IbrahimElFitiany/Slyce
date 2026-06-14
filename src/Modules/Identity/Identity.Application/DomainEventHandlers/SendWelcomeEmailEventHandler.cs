@@ -8,7 +8,7 @@ namespace Identity.Application.DomainEventHandlers
     {
         public async Task Handle(CustomerCreatedDomainEvent domainEvent, CancellationToken ct)
         {
-            await emailSender.SendAsync(new EmailMessage(domainEvent.Email, "Welcome To Slyce", "ahln bek or smth idk"), ct);
+            await emailSender.SendAsync(new EmailMessage(domainEvent.Email, "Welcome To Slyce", "Welcome To Slyce, Begin your journey toward a healthier, stronger you."), ct);
         }
     }
 }
