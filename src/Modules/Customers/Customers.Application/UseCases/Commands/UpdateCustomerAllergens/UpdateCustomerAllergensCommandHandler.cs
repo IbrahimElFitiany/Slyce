@@ -1,4 +1,5 @@
 ﻿using Customers.Application.Interfaces;
+using Customers.Domain.Repositories;
 using Food.Contracts;
 using MediatR;
 using Shared.Application.Exceptions;

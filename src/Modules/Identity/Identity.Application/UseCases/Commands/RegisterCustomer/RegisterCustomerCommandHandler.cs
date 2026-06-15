@@ -1,6 +1,7 @@
 ﻿using Customers.Contracts.Interfaces;
 using Identity.Application.Interfaces;
 using Identity.Domain.Aggregates;
+using Identity.Domain.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Shared.Domain.Exceptions;

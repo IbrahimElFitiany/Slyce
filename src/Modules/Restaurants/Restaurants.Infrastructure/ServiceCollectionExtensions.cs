@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Restaurants.Application.Interfaces;
 using Restaurants.Application.UseCases.Commands.CreateRestaurantApplication;
 using Restaurants.Contracts.Interfaces;
+using Restaurants.Domain.Repositories;
 using Restaurants.Infrastructure.Persistence;
 using Restaurants.Infrastructure.Queries;
 using Restaurants.Infrastructure.Repositories;

@@ -1,6 +1,6 @@
 ﻿using Menus.Domain.Entities;
 
-namespace Menus.Application.Interfaces
+namespace Menus.Domain.Repositories
 {
     public interface IMenuMealRepository
     {

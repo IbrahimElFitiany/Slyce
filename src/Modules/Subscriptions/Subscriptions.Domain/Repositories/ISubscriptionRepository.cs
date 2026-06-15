@@ -1,6 +1,6 @@
 ﻿using Subscriptions.Domain.Entities;
 
-namespace Subscriptions.Application.Interfaces
+namespace Subscriptions.Domain.Repositories
 {
     public interface ISubscriptionRepository
     {

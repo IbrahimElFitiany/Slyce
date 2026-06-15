@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Restaurants.Application.Interfaces;
 using Restaurants.Domain.Entities;
 using Shared.Application.Exceptions;
+using Restaurants.Domain.Repositories;
 
 namespace Restaurants.Application.UseCases.Commands.ApproveRestaurantApplication
 {

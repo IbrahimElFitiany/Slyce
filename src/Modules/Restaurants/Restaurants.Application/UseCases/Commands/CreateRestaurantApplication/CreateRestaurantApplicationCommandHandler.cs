@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Restaurants.Application.Interfaces;
 using Restaurants.Domain.Entities;
 using Restaurants.Domain.Enums;
+using Restaurants.Domain.Repositories;
 using Shared.Domain.Exceptions;
 using Shared.Domain.ValueObjects;
 

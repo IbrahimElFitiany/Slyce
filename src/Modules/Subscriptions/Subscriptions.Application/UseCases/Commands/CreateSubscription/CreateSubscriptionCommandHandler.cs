@@ -12,6 +12,7 @@ using Subscriptions.Domain.Enums;
 using Subscriptions.Domain.Services;
 using Subscriptions.Domain.ValueObjects;
 using Menus.Contracts.DTOs;
+using Subscriptions.Domain.Repositories;
 
 namespace Subscriptions.Application.UseCases.Commands.CreateSubscription
 {

@@ -11,6 +11,7 @@ using Subscriptions.Application.Interfaces;
 using Subscriptions.Application.Jobs;
 using Subscriptions.Application.UseCases.Commands.CreateSubscription;
 using Subscriptions.Domain.Interfaces;
+using Subscriptions.Domain.Repositories;
 using Subscriptions.Domain.Services;
 using Subscriptions.Infrastructure.Persistence;
 using Subscriptions.Infrastructure.Queries;

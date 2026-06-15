@@ -1,6 +1,7 @@
 ﻿using Identity.Application.Interfaces;
 using Identity.Contract.Interfaces;
 using Identity.Domain.Aggregates;
+using Identity.Domain.Repositories;
 using Shared.Domain.ValueObjects;
 
 namespace Identity.Application.Services

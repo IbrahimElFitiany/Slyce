@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Menus.Contracts.Interfaces;
-using Orders.Application.Interfaces;
+using Orders.Domain.Repositories;
 using Shared.Application.Exceptions;
 
 namespace Orders.Application.UseCases.Queries.ViewCart

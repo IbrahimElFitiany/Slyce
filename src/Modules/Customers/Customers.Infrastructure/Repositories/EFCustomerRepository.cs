@@ -1,5 +1,5 @@
-﻿using Customers.Application.Interfaces;
-using Customers.Domain.Entities;
+﻿using Customers.Domain.Entities;
+using Customers.Domain.Repositories;
 using Customers.Infrastructure.Persistence;
 
 namespace Customers.Infrastructure.Repositories

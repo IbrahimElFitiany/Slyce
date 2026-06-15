@@ -1,7 +1,7 @@
 ﻿using Identity.Domain.Aggregates;
 using Shared.Domain.ValueObjects;
 
-namespace Identity.Application.Interfaces
+namespace Identity.Domain.Repositories
 {
     public interface IUserRepository
     {

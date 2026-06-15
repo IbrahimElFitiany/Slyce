@@ -4,6 +4,7 @@ using Shared.Application.Exceptions;
 using Shared.Domain.ValueObjects;
 using Customers.Domain.Entities;
 using Microsoft.Extensions.Logging;
+using Customers.Domain.Repositories;
 
 
 namespace Customers.Application.UseCases.Commands.CreateAddress

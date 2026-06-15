@@ -2,6 +2,7 @@
 using Customers.Application.Interfaces;
 using Customers.Domain.ValueObjects;
 using Shared.Application.Exceptions;
+using Customers.Domain.Repositories;
 
 namespace Customers.Application.UseCases.Commands.UpdateWeight
 {

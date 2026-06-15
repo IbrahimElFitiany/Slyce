@@ -5,6 +5,7 @@ using Customers.Contracts.DTOs;
 using Customers.Contracts.Interfaces;
 using Customers.Domain.Entities;
 using Microsoft.Extensions.Logging;
+using Customers.Domain.Repositories;
 
 
 namespace Customers.Application.Services

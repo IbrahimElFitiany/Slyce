@@ -4,6 +4,7 @@ using Menus.Application.Interfaces;
 using Microsoft.Extensions.Logging;
 using Restaurants.Contracts.Interfaces;
 using Shared.Application.Exceptions;
+using Menus.Domain.Repositories;
 
 
 namespace Menus.Application.UseCases.Commands.CreateMenuCategory

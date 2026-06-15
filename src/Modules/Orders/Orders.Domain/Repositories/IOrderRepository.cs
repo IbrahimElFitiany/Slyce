@@ -1,6 +1,6 @@
 ﻿using Orders.Domain.Aggregates.Order;
 
-namespace Orders.Application.Interfaces
+namespace Orders.Domain.Repositories
 {
     public interface IOrderRepository
     {

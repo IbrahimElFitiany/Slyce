@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Menus.Application.Interfaces;
+using Menus.Domain.Repositories;
 using Shared.Application.Exceptions;
 
 namespace Menus.Application.UseCases.Commands.ApproveMenuMeal

@@ -1,5 +1,5 @@
-﻿using Menus.Application.Interfaces;
-using Menus.Domain.Entities;
+﻿using Menus.Domain.Entities;
+using Menus.Domain.Repositories;
 using Menus.Infrastructure.Persistence;
 
 namespace Menus.Infrastructure.Repositories

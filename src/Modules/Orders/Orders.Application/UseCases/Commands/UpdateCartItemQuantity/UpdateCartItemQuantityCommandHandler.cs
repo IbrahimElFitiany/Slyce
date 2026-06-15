@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Orders.Application.Interfaces;
+using Orders.Domain.Repositories;
 using Shared.Application.Exceptions;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 

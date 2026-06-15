@@ -9,6 +9,7 @@ using Menus.Domain.ValueObjects;
 using Microsoft.Extensions.Logging;
 using Shared.Application.Exceptions;
 using Shared.Domain.ValueObjects;
+using Menus.Domain.Repositories;
 
 namespace Menus.Application.UseCases.Commands.AddMealSize
 {

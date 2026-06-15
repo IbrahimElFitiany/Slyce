@@ -10,6 +10,7 @@ using Customers.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Customers.Domain.Repositories;
 
 
 namespace Customers.Infrastructure

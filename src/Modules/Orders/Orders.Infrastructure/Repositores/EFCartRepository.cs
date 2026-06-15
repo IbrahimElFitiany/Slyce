@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Orders.Application.Interfaces;
 using Orders.Domain.Aggregates.Carts;
+using Orders.Domain.Repositories;
 using Orders.Infrastructure.Persistence;
 
 namespace Orders.Infrastructure.Repositores

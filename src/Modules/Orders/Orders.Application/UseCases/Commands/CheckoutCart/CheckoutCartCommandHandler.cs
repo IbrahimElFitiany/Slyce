@@ -6,6 +6,7 @@ using Orders.Application.Interfaces.Payment;
 using Orders.Domain;
 using Orders.Domain.Aggregates.Order;
 using Orders.Domain.Enums;
+using Orders.Domain.Repositories;
 using Shared.Application.Exceptions;
 using Shared.Domain.ValueObjects;
 

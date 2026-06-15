@@ -5,7 +5,7 @@ using Menus.Domain.ValueObjects;
 using Shared.Domain.ValueObjects;
 
 
-namespace Menus.Domain.Tests.Entities
+namespace Menus.Domain.Tests
 {
     public class MenuMealTests
     {

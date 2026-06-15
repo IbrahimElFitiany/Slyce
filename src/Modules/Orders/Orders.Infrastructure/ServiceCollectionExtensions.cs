@@ -9,6 +9,7 @@ using Orders.Application.Services;
 using Orders.Application.UseCases.Commands.AddToCart;
 using Orders.Application.UseCases.Commands.CheckoutCart;
 using Orders.Contract.Interfaces;
+using Orders.Domain.Repositories;
 using Orders.Infrastructure.Payment;
 using Orders.Infrastructure.Persistence;
 using Orders.Infrastructure.Queries;

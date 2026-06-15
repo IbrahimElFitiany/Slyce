@@ -11,6 +11,7 @@ using Menus.Domain.Services;
 using Shared.Domain.Exceptions;
 using Menus.Domain;
 using Menus.Application.Mappers;
+using Menus.Domain.Repositories;
 
 namespace Menus.Application.UseCases.Commands.CreateMenuMeal
 {

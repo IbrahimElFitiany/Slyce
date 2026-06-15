@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Menus.Application.Interfaces;
 using Menus.Domain.Entities;
+using Menus.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 using Shared.Application.Exceptions;
 

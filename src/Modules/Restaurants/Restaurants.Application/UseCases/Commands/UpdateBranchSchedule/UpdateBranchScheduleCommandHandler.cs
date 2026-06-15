@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Restaurants.Application.Interfaces;
+using Restaurants.Domain.Repositories;
 using Restaurants.Domain.ValueObjects;
 using Shared.Application.Exceptions;
 

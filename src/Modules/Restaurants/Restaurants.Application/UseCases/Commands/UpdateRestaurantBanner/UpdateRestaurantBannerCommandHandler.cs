@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Restaurants.Application.Interfaces;
+using Restaurants.Domain.Repositories;
 using Shared.Application.Exceptions;
 
 namespace Restaurants.Application.UseCases.Commands.UpdateRestaurantBanner

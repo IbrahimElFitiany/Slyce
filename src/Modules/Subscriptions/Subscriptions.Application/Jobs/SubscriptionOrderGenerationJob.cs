@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Orders.Contract.Interfaces;
 using Orders.Contract.DTOs;
-using Subscriptions.Application.Interfaces;
+using Subscriptions.Domain.Repositories;
 
 
 namespace Subscriptions.Application.Jobs

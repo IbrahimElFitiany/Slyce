@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Subscriptions.Application.Interfaces;
 using Subscriptions.Domain.Entities;
 using Subscriptions.Domain.Enums;
+using Subscriptions.Domain.Repositories;
 using Subscriptions.Infrastructure.Persistence;
 
 namespace Subscriptions.Infrastructure.Repositories

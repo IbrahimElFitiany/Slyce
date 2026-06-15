@@ -1,5 +1,6 @@
 ﻿using Customers.Application.Interfaces;
 using Customers.Domain.Enums;
+using Customers.Domain.Repositories;
 using MediatR;
 using Shared.Application.Exceptions;
 

@@ -2,6 +2,7 @@
 using Menus.Contracts.Interfaces;
 using Orders.Application.Interfaces;
 using Orders.Domain.Aggregates.Carts;
+using Orders.Domain.Repositories;
 using Restaurants.Contracts.Interfaces;
 using Shared.Application.Exceptions;
 using Shared.Domain.Exceptions;

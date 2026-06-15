@@ -1,5 +1,5 @@
-﻿using Identity.Application.Interfaces;
-using Identity.Domain.Aggregates;
+﻿using Identity.Domain.Aggregates;
+using Identity.Domain.Repositories;
 using Identity.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Shared.Domain.ValueObjects;

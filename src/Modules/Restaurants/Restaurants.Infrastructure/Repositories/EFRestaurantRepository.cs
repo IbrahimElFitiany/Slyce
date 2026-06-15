@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Restaurants.Application.Interfaces;
 using Restaurants.Domain.Entities;
+using Restaurants.Domain.Repositories;
 using Restaurants.Infrastructure.Persistence;
 
 namespace Restaurants.Infrastructure.Repositories

@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Application.Behaviors;
 using Identity.Infrastructure.Cache;
+using Identity.Domain.Repositories;
 
 
 namespace Identity.Infrastructure

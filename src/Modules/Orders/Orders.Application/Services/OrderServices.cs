@@ -3,6 +3,7 @@ using Orders.Contract.DTOs;
 using Orders.Contract.Interfaces;
 using Orders.Domain;
 using Orders.Domain.Aggregates.Order;
+using Orders.Domain.Repositories;
 using Shared.Domain.ValueObjects;
 
 namespace Orders.Application.Services

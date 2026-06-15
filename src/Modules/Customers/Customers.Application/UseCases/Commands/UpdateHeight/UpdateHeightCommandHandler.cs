@@ -2,6 +2,7 @@
 using Customers.Application.Interfaces;
 using Shared.Application.Exceptions;
 using Customers.Domain.ValueObjects;
+using Customers.Domain.Repositories;
 
 namespace Customers.Application.UseCases.Commands.UpdateHeight
 {

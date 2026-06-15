@@ -1,5 +1,6 @@
 ﻿using Identity.Application.Interfaces;
 using Identity.Domain.Enums;
+using Identity.Domain.Repositories;
 using MediatR;
 using Restaurants.Contracts.Interfaces;
 using Shared.Application.Exceptions;

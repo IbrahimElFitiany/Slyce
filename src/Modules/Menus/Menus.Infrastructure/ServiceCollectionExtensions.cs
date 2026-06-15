@@ -4,6 +4,7 @@ using Menus.Application.Interfaces;
 using Menus.Application.UseCases.Commands.AddMealSize;
 using Menus.Application.UseCases.Commands.CreateMenuCategory;
 using Menus.Contracts.Interfaces;
+using Menus.Domain.Repositories;
 using Menus.Infrastructure.Caching;
 using Menus.Infrastructure.Persistence;
 using Menus.Infrastructure.Queries;
